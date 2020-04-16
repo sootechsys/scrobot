@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration>
+
+	<Appenders>
+        <!-- Console 출력을 위한 Appender -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %5p [%c] %m%n" />
+        </Console>
+
+    </Appenders>
+    
+	<Loggers>
+        <Logger name="java.sql" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="egovframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+		<!-- log SQL with timing information, post execution -->
+
+        <Logger name="jdbc.sqlonly" level="off" />
+        <Logger name="jdbc.sqltiming" level="info" />
+        <Logger name="jdbc.audit" level="off" />
+        <Logger name="jdbc.resultset" level="off" />
+        <Logger name="jdbc.resultsettable" level="info" />
+        <Logger name="jdbc.connection" level="off" />
+        
+        <Logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>
+
+
+
