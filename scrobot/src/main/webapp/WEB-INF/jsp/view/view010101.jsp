@@ -275,7 +275,7 @@
 	}
 	
 
-	//행 병합
+	//행 병합;
 	function sum(){ debugger;
 		var colspan = $(".tableFocus").length;
 		var tfnameList = $(".tableFocus").attr('name');
