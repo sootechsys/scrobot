@@ -65,7 +65,7 @@
 	// 포커스잡힌 td의 정보
 	voFocusTdInfo = "";
 
-	/* 테이블그리기 */
+	/* 테이블그리기 * */
 	function tableCreation() {
 		
 		var column = prompt("몇행?");
