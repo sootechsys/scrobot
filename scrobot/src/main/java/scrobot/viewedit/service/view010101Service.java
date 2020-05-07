@@ -15,16 +15,9 @@
  */
 package scrobot.viewedit.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.hsqldb.lib.HashMap;
 import org.springframework.stereotype.Repository;
 
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
-import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
  * @Class Name : SampleDAO.java
@@ -58,7 +51,7 @@ public class view010101Service extends EgovAbstractMapper {
 
 	
 
-}//service class end
+}
  
 
 
