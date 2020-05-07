@@ -27,6 +27,7 @@
     <title><spring:message code="title.sample" /></title>
     <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>"/>
     <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+    <script type="text/javascript" src="./js/scrobot.js" ></script> 
     <script type="text/javaScript" language="javascript" defer="defer">
     
 
@@ -41,7 +42,7 @@
                     if(data == "Y"){
                     	window.location.href = "/viewEdit.do";
                     } else{
-                    	alert("ID 또는 비밀번호를 확인하시기 바랍니다.")
+                    	robot.alert("ID 또는 비밀번호를 확인하시기 바랍니다.")
                     }
                 },
                 error: function(){
