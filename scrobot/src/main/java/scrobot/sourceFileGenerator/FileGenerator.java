@@ -47,8 +47,6 @@ public class FileGenerator {
 		
 		//vo
 		if(Utils.contains(targets, "vo")) {
-			System.out.println("cfg=====>" + cfg);
-			System.out.println("metaMap=====>" + metaMap);
 			genVo(cfg, metaMap);
 		}
 		
@@ -63,7 +61,10 @@ public class FileGenerator {
 			genUpdtFormJsp(cfg, metaMap);
 			genDetailJsp(cfg, metaMap);
 		}
-		//TODO js
+		//vo
+		if(Utils.contains(targets, "html")) {
+			genHtml(cfg, metaMap);
+		}
 	}
 	
 	
@@ -298,6 +299,32 @@ public class FileGenerator {
 		//
 		gen(cfg, metaMap, temp, path, filename);
 		
+	}
+	
+	
+	/**
+	 * html 파일 생성
+	 * @param cfg
+	 * @param metaMap
+	 * @throws TemplateNotFoundException
+	 * @throws MalformedTemplateNameException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws TemplateException
+	 */
+	private void genHtml(Configuration cfg, Map<String, Object> metaMap) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		
+		//템플릿
+		Template temp = cfg.getTemplate("html.ftl");
+		
+		//파일 생성 경로
+		Path path = Paths.get(metaMap.get("outputPath").toString(), metaMap.get("businessNm").toString(), "html");
+		
+		//파일명
+		String filename = metaMap.get("businessNm") + ".html";
+		
+		//
+		gen(cfg, metaMap, temp, path, filename);
 	}
 }
 

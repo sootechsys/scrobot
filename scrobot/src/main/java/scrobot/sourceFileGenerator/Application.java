@@ -1,6 +1,8 @@
 package scrobot.sourceFileGenerator;
 
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,8 +12,10 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,6 +57,22 @@ public class Application {
 		
 		//
 		Utils.log(Thread.currentThread().getStackTrace(), "<<");
+		
+	}
+	
+	/**
+	 * @param args
+	 * @throws IOException 
+	 * @throws TemplateException 
+	 * @throws UnsupportedFlavorException 
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	public static void creationHTML(Map<String,Object> paramMap) throws IOException, TemplateException, UnsupportedFlavorException, ClassNotFoundException, SQLException {
+		
+		Map<String,Object> configMap = loadConfigJsonHTML(paramMap);
+
+		processAll(configMap);
 		
 	}
 
@@ -114,13 +134,8 @@ public class Application {
 	private static Map<String,Object> loadConfigJson(Map<String,Object> paramMap) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		URL url = Application.class.getProtectionDomain().getCodeSource().getLocation();
 		Path path = Paths.get(url.toString().replaceAll("classes", "").replaceAll("file:/", ""));
-		System.out.println("path=======>>>>" + path);
-		//
 		String filename = "app.json";
 
-		//
-		
-		
 		Map<String,Object> map = new Gson().fromJson(new FileReader(path.resolve(filename).toFile()), Map.class);
 		
 		//현재 시간
@@ -131,6 +146,14 @@ public class Application {
 		List<Map<String,Object>> datas = new ArrayList();
 		Map<String,Object> viewInfo = new HashMap();
 		
+		Set key = paramMap.keySet();
+		
+		for (Iterator iterator = key.iterator(); iterator.hasNext();) {
+            String keyName = (String) iterator.next();
+            String valueName = (String) paramMap.get(keyName);
+
+		}
+
 		
 		if(paramMap.get("value0") == null){
 			paramMap.put("value0", "sootech");
@@ -144,7 +167,6 @@ public class Application {
 		viewInfo.put("kor", paramMap.get("label0"));
 		viewInfo.put("comment", paramMap.get("label0"));
 		viewInfo.put("drag1", paramMap.get("drag1"));
-		viewInfo.put("drag2", paramMap.get("drag2"));
 		
 		datas.add(viewInfo);
 		
@@ -152,6 +174,54 @@ public class Application {
 		map.put("datas", datas);
 		
 		//
+		Utils.log(Thread.currentThread().getStackTrace(), "<<", map);
+		return map;
+	}
+	
+	
+	/**
+	 * 환경 파일 로드
+	 * 실행 파일과 같은 경로의 app.json파일 로드
+	 * @return
+	 * @throws JsonSyntaxException
+	 * @throws JsonIOException
+	 * @throws IOException 
+	 */
+	@SuppressWarnings("unchecked")
+	private static Map<String,Object> loadConfigJsonHTML(Map<String,Object> paramMap) throws JsonSyntaxException, JsonIOException, IOException {
+		URL url = Application.class.getProtectionDomain().getCodeSource().getLocation();
+		Path path = Paths.get(url.toString().replaceAll("classes", "").replaceAll("file:/", ""));
+		String filename = "app2.json";
+
+		Map<String,Object> map = new Gson().fromJson(new FileReader(path.resolve(filename).toFile()), Map.class);
+		
+		
+		Path cssPath = Paths.get(url.toString().replaceAll("classes", "").replaceAll("file:/", "").replaceAll("WEB-INF", "css/egovframework"));
+		String cssFileName = "sample.css";
+		
+		BufferedReader reader = new BufferedReader(new FileReader(cssPath.resolve(cssFileName).toFile()));
+		
+		String         line = null;
+	    StringBuilder  stringBuilder = new StringBuilder();
+
+	    try {
+	        while((line = reader.readLine()) != null) {
+	            stringBuilder.append(line);
+	        }
+
+	        
+	    } finally {
+	        reader.close();
+	    }
+		
+	    String style = paramMap.get("style").toString();
+	    stringBuilder.append(style);
+	    
+	    map.put("style", stringBuilder.toString());
+		map.put("templatePath", path.toString().replaceAll("WEB-INF", "template"));
+		map.put("businessNm", paramMap.get("businessNm"));
+		map.put("html", paramMap.get("html"));
+		
 		Utils.log(Thread.currentThread().getStackTrace(), "<<", map);
 		return map;
 	}

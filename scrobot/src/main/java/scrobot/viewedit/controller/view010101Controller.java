@@ -52,6 +52,14 @@ public class view010101Controller {
 		Application.main(param);
 	}
 	
+	/**
+	 * HTML 만들기를 실행한다.
+	 */
+	@RequestMapping(value = "/creationHTML.do", produces = "application/text; charset=utf8" )
+	public void creationHTML(@RequestParam Map<String, Object> param, SessionStatus status) throws Exception {
+		Application.creationHTML(param);
+	}
+	
 
 
 
