@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
+
     <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javaScript" language="javascript" defer="defer">
 
         /* 로그인 화면 function */

@@ -38,14 +38,13 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="./js/jquery-1.11.3.min.js"></script>
-<script src="./js/jquery-ui-1.11.4.custom.min.js"></script>
+<script type="text/javascript" src="./js/scrobot.js" ></script> 
 <script type="text/javaScript">
 	
 	/* 2020.05.04
 	id,class,name,label을 가져와 좌측바에 위치시킨다.
 	*/
-	function info() { debugger;
+	function info() { 
 		
 		var vmObj = {
 				"id" : $(".tableFocus").attr("id"),
@@ -84,7 +83,7 @@
 		
 	//생성한 모든 컴포넌트를 삭제
 	var RollBack = "";
-	function fn_sourceReset(){debugger;
+	function fn_sourceReset(){
 		//복사 후 삭제. 되돌리기 위하여
 		RollBack = $("#creationTable").clone();
 		//$("#creationTable").html(RollBack);
@@ -93,7 +92,7 @@
 	}
 	
 	//되돌리기
-	function fn_sourceRollBack(){ debugger;
+	function fn_sourceRollBack(){ 
 		if(RollBack != null){
 			RollBack.appendTo("#creationTable");
 		}else{

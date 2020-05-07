@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -103,34 +107,141 @@
 </style>
 <script type="text/javaScript">
 
-  fn_draggable = function(){
-	  
-	  $( ".div_content" ).draggable();
-	  $( ".div_title" ).draggable({ containment: "parent" });
-	  $( ".span_title" ).draggable({ containment: "parent" });
-	  $( ".div_button" ).draggable({ containment: "parent" });
-	  
-	  $(".button").draggable({cancel:false, containment: "parent"});
-	  $( ".div_table" ).draggable({ containment: "parent" });
-  }
 
-	// 포커스잡힌 td의 정보
-	voFocusTdInfo = "";
-	
-	// 포커스잡힌 div의 정보
-	voFocusDivInfo = "";
-	
-	// 선택된 컴포넌트 종류
-	vsCompoClickDvs = "";
-	
-	
-	vnDivContentCount = 0;
-	vnTitleCount = 0;
-	vnDivButtonCount = 0;
-	vnButtonCount = 0;
-	vnTableCount = 0;
-	vnInputCount = 0;
-	vnSelectCount = 0;
+//포커스잡힌 td의 정보
+  voFocusTdInfo = "";
+
+  // 포커스잡힌 div의 정보
+  voFocusDivInfo = "";
+
+  // 선택된 컴포넌트 종류
+  vsCompoClickDvs = "";
+
+  // div_content 개수
+  vnDivContentCount = 0;
+
+  // title 개수
+  vnTitleCount = 0;
+
+  // div_button 개수
+  vnDivButtonCount = 0;
+
+  // button 개수
+  vnButtonCount = 0;
+
+  // table 개수
+  vnTableCount = 0;
+
+  // input 개수
+  vnInputCount = 0;
+
+  // select 개수
+  vnSelectCount = 0;
+
+  // outline 제자리 복귀시 rownum
+  vnSortNum = 0;
+
+
+  $(function(){
+  	
+  	$(document).click(function(e){
+
+  		if (!$(e.target).is('.div_content')) {
+  	        // code
+  	    }
+
+  	});
+  	
+  	$( "#sortable" ).sortable({
+        //items: "li:not([level=1])",
+        cancel: "[level=1]",
+        dropOnEmpty: false,
+        placeholder: "ui-state-highlight",
+        
+      /************************************* 
+    	 * 정렬 시작 이벤트
+    	 * 정렬을 하려고 outline 움직이는 순간 발생한다.
+    	**************************************/
+        start : function( event, ui){
+      	  
+      	  // outline 에러시 제자리 복귀하기 위한 index 저장
+      	  vnSortNum = ui.item.parent().children().index(ui.item);
+        },
+        
+        /************************************* 
+         * 정렬 업데이트 이벤트
+         * outline 정렬이 완료되는 순간 발생한다.
+         **************************************/
+        update: function( event, ui ) {
+        	  var voInfo = ui.item;
+        	  
+        	  // outline이 바라보는 실제 컴포넌트id
+        	  var vsOrgId = voInfo.attr("orgId");
+        	  
+        	  var voLiInfo = voInfo.parent().children();
+        	  var vnRealIndex = voLiInfo.index(voInfo);
+        	  
+        	  var vsParentNm = "";
+        	  
+        	  // 자리이동시 상위에 level1인 부모값을 찾는다.
+        	  for(var i=vnRealIndex-1; i>=0; i--){
+        		if(voLiInfo.eq(i).attr("level") == 1){
+        			vsParentNm = voLiInfo.eq(i).attr("id");
+        			break;
+        		}
+        	  }
+        	  
+        	  // 부모가 없는곳으로 이동했을경우 제자리 복귀
+        	  if(vsParentNm == ""){
+        		  robot.alert("객체는 div안에서 존재해야 합니다.")
+        		  $("#sortable").children().eq(vnSortNum).after(voInfo);
+        		  
+        	  // 다른 부모에게 이동했을경우 속성값중 parent값 업데이트
+        	  } else{
+            	  var vsOrgParentId = $("#"+vsParentNm).attr("orgId");
+            	  
+            	
+            	  voInfo.attr("parent", vsParentNm);
+          	  var vnIndex = $("[parent="+vsParentNm+"]").index(voInfo);
+          	  
+          	  
+          	  // 다른 부모에게 이동했지만 첫번째 자식일경우 prepend
+          	  if(vnIndex == 0){
+          		  $("#"+vsOrgParentId).prepend($("#"+vsOrgId))
+          	  // 첫번째 자식이 아닌경우 바로 위의 형제 노드를 찾아 after 처리
+          	  } else{
+          		  
+          		  var voBeforeInfo = $("[parent="+vsParentNm+"]").eq(vnIndex-1).attr("orgId");
+          		  
+          		  $("#"+voBeforeInfo).after($("#"+vsOrgId));
+          		  
+          	  }
+        	  }
+        	  
+        	  
+         }
+      });
+  	
+  	
+      $( "#sortable" ).disableSelection();
+  });
+  
+  
+  /************************************* 
+   * accordion 관련 함수
+   **************************************/
+    fn_draggable = function(){
+  	  $( ".div_content" ).draggable();
+  	  $( ".div_content" ).resizable();
+  	  $( ".div_title" ).draggable({ containment: "parent" });
+  	  $( ".span_title" ).draggable({ containment: "parent" });
+  	  $( ".div_button" ).draggable({ containment: "parent" });
+  	  
+  	  $(".button").draggable({cancel:false, containment: "parent"});
+  	  $( ".div_table" ).draggable({ containment: "parent" });
+    }
+    
+    $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
 	
 	
 	
@@ -138,34 +249,175 @@
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 그리기 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 	
 	
+	/************************************* 
+     * outline 그리기 함수
+     **************************************/
+	fn_rightDraw = function(){
+		var vsBasicSource = "<li class=\"ui-state-default\" "; 
+		var vsRightSource = "";
+		
+		// 컴포넌트 그리는 div자식들 가져온다.
+		var voChild = $("#creationTable").children();
+		var vnChildCount = voChild.length;
+		
+		// div_content가 1개이상이라면
+		if(vnChildCount != 0){
+			for(var a=0; a<vnChildCount; a++){
+				var voSortableChild = $("#sortable").children();
+				var vnSortableChildCount = voSortableChild.length;
+				
+				var vsTagNm = voChild.eq(a).prop("tagName");
+				var vsTagId = voChild.eq(a).prop("id");
+				var vsTagInfo = vsTagNm + "_" + vsTagId;
+				
+				vsRightSource =  vsBasicSource + "id = \""+vsTagInfo + "\"";
+				vsRightSource += " orgId=\""+vsTagId+"\"";
+				vsRightSource += " level=\"1\"";
+				vsRightSource += ">";
+				vsRightSource +=  vsTagInfo + "</li>"
+				
+				var vnoverlapCount = 0;
+				
+				//outline에 1개이상 있다면
+				if(vnSortableChildCount != 0){
+					
+					// 컴포넌트가 outline에 이미 존재하는지 체크
+					for(var b=0; b<vnSortableChildCount; b++){
+						if(voSortableChild.eq(b).text() == vsTagInfo){
+							vnoverlapCount++;
+							
+						}
+					}
+					
+					// 존재하지 않다면 outline에 추가
+					if(vnoverlapCount == 0){
+						$("#sortable").append(vsRightSource);
+					}
+			    // outline에 컴포넌트가 0개라면 바로 outline 추가
+				} else{
+					$("#sortable").append(vsRightSource);
+				}
+				
+				
+				// 버튼div, 타이틀div, 테이블div 등등 손자를 그리기위하여 포커스잡힌 div를 가져옴
+				var voFocusDiv = $("[mainFocus=true]");
+				var voChild2 = voFocusDiv.children();
+				
+				vsTagNm = voFocusDiv.eq(a).prop("tagName");
+				vsTagId = voFocusDiv.eq(a).prop("id");
+				vsTagInfo = vsTagNm + "_" + vsTagId;
+				
+				
+				var vnChildCount2 = voChild2.length
+				if(vnChildCount2 != 0){
+					for(var b=0; b<vnChildCount2; b++){
+						if(voChild2.eq(b).prop("id") != ""){
+							var vsTagNm2 = voChild2.eq(b).prop("tagName");
+							var vsTagId2 = voChild2.eq(b).prop("id");
+							var vsTagInfo2 = vsTagNm2 + "_" + vsTagId2;
+							
+							vsRightSource =  vsBasicSource + "id = \""+vsTagInfo2 + "\"";
+							vsRightSource += " orgId=\""+vsTagId2+"\"";
+							vsRightSource += " level = \"2\"";
+							vsRightSource += " parent = \""+vsTagInfo + "\"";
+							vsRightSource += "><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span>";
+							vsRightSource +=  vsTagInfo2 + "</li>"
+							
+							var vnoverlapCount = 0;
+							
+							// 손자가 outline에 이미 존재하는지 체크
+							for(var c=0; c<vnSortableChildCount; c++){
+								if(voSortableChild.eq(c).text() == vsTagInfo2){
+									vnoverlapCount++;
+								}
+							}
+							
+							// 존재하지 않는다면 추가
+							if(vnoverlapCount == 0){
+								
+								// 자식이 하나도 없다면 부모바로 다음에 존재해야 함으로 after처리
+								if($("[parent="+vsTagInfo+"]").length == 0){
+									$("#"+vsTagInfo).after(vsRightSource);
+							    // 자식이 하나 이상이라면 가장 마지막 처리
+								} else{
+									$("[parent="+vsTagInfo+"]").last().after(vsRightSource);
+								}
+								
+							}
+
+/* 							var voChild3 = voChild2.children();
+							var vnChildCount3 = voChild3.length
+							if(vnChildCount3 != 0){
+								for(var c=0; c<vnChildCount3; c++){
+									if(voChild3.eq(c).prop("id") != ""){
+										var vsTagNm3 = voChild3.eq(c).prop("tagName");
+										var vsTagId3 = voChild3.eq(c).prop("id");
+										var vsTagInfo3 = vsTagNm3 + "_" + vsTagId3;
+										
+										vsRightSource =  vsBasicSource + "id = \""+vsTagInfo3 + "\"";
+										vsRightSource += " parent = \""+vsTagInfo2 + "\"";
+										vsRightSource += "><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span>";
+										vsRightSource +=  vsTagInfo3 + "</li>"
+										
+										var vnoverlapCount = 0;
+										for(var d=0; d<vnSortableChildCount; d++){
+											if(voSortableChild.eq(d).text() == vsTagInfo3){
+												vnoverlapCount++;
+											}
+										}
+										
+										if(vnoverlapCount == 0){
+											if($("[parent="+vsTagInfo2+"]").length == 0){
+												$("#"+vsTagInfo2).after(vsRightSource);
+											} else{
+												$("[parent="+vsTagInfo2+"]").after(vsRightSource);
+											}
+										}
+
+									}
+								}
+								
+							} */
+						}
+						
+						
+					}
+					
+				}
+			}
+		}
+	}
+	
 	
 	/* DIV 만들기 */
 	function divCreation() {
-		
-		var width = prompt("가로 사이즈?");
-		if(width == null){
-			return false;
-		}
-		var height = prompt("세로사이즈?");
-
-		if (width < 1 || height < 1) {
-			return false;
-		}
-
-		// 전체 div 시작
-		var vsSource = "<div id=\"div" + vnDivContentCount;
-		vsSource += "\" class=\"div_content\" ";
-		vsSource += " style=\"position:relative; margin-top:30px; width:"+width+"px; height:"+height+"px; border: 1px solid;\" ";
-		vsSource += " onclick=\"fn_divOnClick(this)\">";
-
-		vsSource += "</div>";
-
-		$("#creationTable").append(vsSource);
-		
-		// divcontent영역 개수 증가
-		vnDivContentCount ++;
-
+		robot.prompt("가로크기와 세로크기를 지정하십시오.", ["가로크기","세로크기"],"생성","취소","fn_divCreationCallBack");
 	};
+	
+	/* DIV 만들기 CallBack */
+	fn_divCreationCallBack = function(param){
+		
+		if(param != ""){
+			// 전체 div 시작
+			var vsSource = "<div id=\"div" + vnDivContentCount + "\"";;
+			vsSource += " class=\"div_content\" ";
+			vsSource += " style=\"position:relative; margin-top:30px; width:"+param[0]+"px; height:"+param[1]+"px; border: 1px solid;\" ";
+			vsSource += " onclick=\"fn_divOnClick(this)\"";
+			vsSource += " >";
+
+			vsSource += "</div>";
+
+			$("#creationTable").append(vsSource);
+			
+			// divcontent영역 개수 증가
+			vnDivContentCount ++;
+			
+			// right div 그리기
+			fn_rightDraw();
+				
+		}
+			
+	}
 	
 	
 	
@@ -182,8 +434,8 @@
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
 		// 타이틀 div 시작
-		var vsSource = "  <div id=\"div" + vnTitleCount + "_title";
-		vsSource += "  \" class=\"div_title\" width=\""+width+"\" ";
+		var vsSource = "  <div id=\"div" + vnTitleCount + "_title\"";
+		vsSource += "   class=\"div_title\" width=\""+width+"\" ";
 		vsSource += "   style=\"position:relative; text-align:left; margin:10px 0px 0px 5px;\" ";
 		vsSource += "  onclick=\"fn_divTitleOnClick(this)\" ";
 		vsSource += ">";
@@ -192,8 +444,8 @@
 		vsSource += "  <img src=\"<c:url value='/images/egovframework/example/title_dot.gif'/>\" />";
 	
 		// 타이틀 span
-		vsSource += "  <span id=\"span" + vnTitleCount + "_title";
-		vsSource += "  \"class=\"span_title\" "
+		vsSource += "  <span id=\"span" + vnTitleCount + "_title\"";
+		vsSource += "  class=\"span_title\" "
 		vsSource += "  onclick=\"fn_spanTitleOnClick(this)\"> Title "
 		vsSource += "  </span>";
 		vsSource += "  </div>";
@@ -201,6 +453,9 @@
 		$(voFocusDivInfo).append(vsSource);
 		
 		vnTitleCount++;
+		
+		// right div 그리기
+		fn_rightDraw();
 
 	};
 	
@@ -216,10 +471,10 @@
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
 		// 타이틀 div 시작
-		var vsSource = "  <div id=\"div" + vnDivButtonCount + "_button";
-		vsSource += "  \" class=\"div_button\" width=\""+width+"\"";
+		var vsSource = "  <div id=\"div" + vnDivButtonCount + "_button\"";
+		vsSource += "   class=\"div_button\" width=\""+width+"\"";
 		vsSource += "   style=\"position:relative; text-align:right;\" ";
-		vsSource += "  onclick=\"fn_divButtonOnClick(this)\"";
+		vsSource += "   onclick=\"fn_divButtonOnClick(this)\"";
 		vsSource += ">";
 	
 		// 타이틀 span
@@ -234,6 +489,9 @@
 		
 		vnDivButtonCount++;
 		vnButtonCount++;
+		
+		// right div 그리기
+		fn_rightDraw();
 
 	};
 	
@@ -248,35 +506,32 @@
 		if(!fn_divFocusYn()){
 			return false;
 		};
+		
+		robot.prompt("행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
+
+	};
+	
+	
+	/* 테이블그리기 CallBack */
+	fn_tableCreationCallBack = function(param) {
+
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
-		
-		var column = prompt("몇행?");
-		
-		if(column == null){
-			return false;
-		}
-		var row = prompt("몇열?");
-
-		if (column < 1 || row < 1) {
-			return false;
-		}
-
 
 		// div table 시작
-		var vsTableSource = "  <div id=\"div" + vnTableCount + "_table";
-		vsTableSource += "  \" class=\"div_table\" ";
+		var vsTableSource = "  <div id=\"div" + vnTableCount + "_table\"";
+		vsTableSource += "   class=\"div_table\" ";
 		vsTableSource += "   style=\"position:relative; padding:10px 0px 10px 0px; width:"+(width-5)+"\" ";
 		vsTableSource += "  onclick=\"fn_divTableOnClick(this)\" "
 		vsTableSource += ">";
 
 		// table 시작
-		vsTableSource += "<table id=\"table" + vnTableCount;
-		vsTableSource += "\" class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
+		vsTableSource += "<table id=\"table" + vnTableCount + "\"";;
+		vsTableSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
 		vsTableSource += " style=\"position:relative; margin:0px 12px 0px 12px; width:"+(width-24)+"\">";
 		vsTableSource += "\n <colgroup>";
 
-		for (var i = 0; i < column; i++) {
+		for (var i = 0; i < param[0]; i++) {
 			//짝수 셀
 			if(i % 2 == 0){
 				vsTableSource += "\n  <col width=\"100\"/>";
@@ -291,9 +546,9 @@
 		//tbody 추가
 		vsTableSource += "\n <tbody>"
 
-		for (var i = 0; i < row; i++) {
+		for (var i = 0; i < param[1]; i++) {
 			vsTableSource += "\n <tr>";
-			for (var j = 0; j < column; j++) {
+			for (var j = 0; j < param[0]; j++) {
 				vsTableSource += "\n  <td class=\"tbtd_content creationTd\" "
 				vsTableSource += "name=\"tbtd_"+j+"\""
 				vsTableSource += "style=\"height:30px;\" "
@@ -313,6 +568,9 @@
 		$(voFocusDivInfo).append(vsTableSource);
 
 		vnTableCount++;
+		
+		// right div 그리기
+		fn_rightDraw();
 
 	};
 
@@ -329,7 +587,7 @@
 		vsInputSource += "</input>";
 
 		$(".tableFocus").append(vsInputSource);
-		voFocusTdInfo.className = "tbtd_content";
+		voFocusTdInfo.className = "tbtd_content creationTd";
 		
 		// input박스 왼쪽정렬
 		$(voFocusTdInfo).css("text-align","left");
@@ -349,7 +607,7 @@
 		vsSelectSource += "></select>";
 
 		$(".tableFocus").append(vsSelectSource);
-		voFocusTdInfo.className = "tbtd_content";
+		voFocusTdInfo.className = "tbtd_content creationTd";
 		
 		vnSelectCount++;
 	};
@@ -369,11 +627,26 @@
 	var shiftHold = 0;
 	$(document).ready(function(){
 		$("body").keydown(function (e){
+			// shift
 			if(e.keyCode == 16){
 				shiftHold = 1;
 			}
+			// delete
+			if(e.keyCode == 46){
+				// 현재 포커스를 가지고있는 객체를 삭제한다.
+				var voRightInfo = $("[orgId="+$("[focus=true]").attr("id")+"]");
+				if(voRightInfo.attr("level") == "1"){
+					$("[parent="+voRightInfo.attr("id")+"]").remove();
+					voRightInfo.remove();
+				} else{
+					voRightInfo.remove();
+				}
+					
+				$("[focus=true]").remove();
+			}
 		});
 		$("body").keyup(function (e){
+			// shift
 			if(e.keyCode == 16){
 				shiftHold = 0;
 			}
@@ -383,7 +656,7 @@
 	
 	/* div 온클릭 이벤트 
 	 * 포커스 주입 */
-	fn_divOnClick = function(param){ debugger;
+	fn_divOnClick = function(param){ 
 		fn_draggable();
 		if(shiftHold == 0){//shift가 눌리지 않았을때. 하나만 클릭이 되어야 한다.
 			
@@ -520,7 +793,7 @@
 
 	/* 테이블 td 온클릭 이벤트
 		포커스 주입 */
-	fn_tdOnClick = function(param) { debugger;
+	fn_tdOnClick = function(param) { 
 		
 		vsCompoClickDvs = "td";
 		// td에 자식이 없을 경우에만 포커스
@@ -561,7 +834,7 @@
 		}
 		param.removeChild;
 
-		voFocusTdInfo.className = "tbtd_content";
+		voFocusTdInfo.className = "tbtd_content creationTd";
 
 		
 	}
@@ -580,7 +853,7 @@
 		
 		var vnFocusCount = $("[mainFocus=true]").length;
 		if (vnFocusCount == 0) {
-			alert("div를 선택하여 주시기 바랍니다.")
+			robot.alert("div를 선택하여 주시기 바랍니다.")
 			return false;
 		} else{
 			return true;
@@ -607,12 +880,12 @@
 	}
 	
 	/* table td focus 해제 */
-	fn_tableFocusCancel = function(){debugger;
+	fn_tableFocusCancel = function(){
 		
 		var vnTableFocusCount = $(".tableFocus").length;
 		if(vnTableFocusCount != 0){
 			for(var i=0; i<vnTableFocusCount; i++){
-				$(".tableFocus")[0].className = "tbtd_content";
+				$(".tableFocus")[0].className = "tbtd_content creationTd";
 			}
 			
 		}
@@ -625,7 +898,7 @@
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ TABLE 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 	
 	/* 행추가 */
-	function fn_tableColAdd() { debugger;
+	function fn_tableColAdd() { 
 			
 		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
 		var tdnum = $(vsTableId+"> tbody td").length;
@@ -650,14 +923,14 @@
 	}
 	
 	/* 행삭제 */
-	function fn_tableColDel(){debugger;
+	function fn_tableColDel(){
 		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
 		$(vsTableId+">tbody:last > tr:last").remove();
 	}
 	
 
 	//행 병합;
-	function fn_tableColMerge(){ debugger;
+	function fn_tableColMerge(){ 
 		
 		//행병합 시 colSpan 속성 갯수 구하기
 		var colComp = 0;
@@ -714,7 +987,7 @@
 	}//fn_tableColMerge() end
 		
 	//행 분할시 하나씩만 할 수 있도록 한다.
- 	function fn_tableColDivision(){ debugger;
+ 	function fn_tableColDivision(){ 
  		
  		var vsColspanYN = $(".tableFocus").attr("colSpan");
  		if(typeof vsColspanYN == "undefined" || vsColspanYN == null){
@@ -765,7 +1038,7 @@
 		}
 		
 		$.ajax({
-			url : "/creationSource.do",
+			url : "/creationHTML.do",
 			type : "POST",
 			data : vjCreationInfo,
 			success : function() {
@@ -796,7 +1069,7 @@
 	/**********************************
 	 수정  프로세스 
 	***********************************/
-	function infoUpdate(){debugger;
+	function infoUpdate(){
 		
 		var vsTrnum = $("#propertyTable tbody tr").length;
 			vsTrnum --;
@@ -836,7 +1109,7 @@
 	/**********************************
 	 검색 프로세스 
 	***********************************/
-	function infoSearch(){debugger;
+	function infoSearch(){
 		//vsProperty == 검색어 
 		var vsProperty = $("#Search").val();
 		var vsTrnum = $("#propertyTable tbody tr").length;
@@ -938,6 +1211,11 @@
 				<td><input type="button" onclick="infoUpdate();" value="수정"></input></td>
 			</tr>
 		</table>
+	</div>
+	
+	<div style="width: 150px; float: right;">
+		<ul id="sortable">
+		</ul>
 	</div>
 </body>
 </html>
