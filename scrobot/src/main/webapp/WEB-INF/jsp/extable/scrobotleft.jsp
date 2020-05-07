@@ -1,55 +1,56 @@
-<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%
-	/**
-	* @Class Name : egovSampleList.jsp
-	* @Description : Sample List 화면
-	* @Modification Information
-	*
-	*   수정일         수정자                   수정내용
-	*  -------    --------    ---------------------------
-	*  2009.02.01            최초 생성
-	*
-	* author 실행환경 개발팀
-	* since 2009.02.01
-	*
-	* Copyright (C) 2009 by MOPAS  All right reserved.
-	*/
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><spring:message code="title.sample" /></title>
-<link type="text/css" rel="stylesheet"
-	href="<c:url value='/css/egovframework/sample.css'/>" />
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<style>
-/* The Modal (background) */
-.modal {
-	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0, 0, 0); /* Fallback color */
-	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
+<meta charset="UTF-8">
+<title>scrobot_공통사이드바</title>
+ 
 
-/* Modal Content/Box */
-.modal-content {
-	background-color: #fefefe;
-	margin: 15% auto; /* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 30%; /* Could be more or less, depending on screen size */
-}
-
+	<style>
+		/* 사이드바 스타일 */
+		.sidenav {
+			height:100%;
+			width: 20%;
+			position: fixed;
+			z-index:1;
+			top: 0;
+			left: 0;
+			margin-top:35px;
+			background-color: #97d5e0;
+			overflow-x: hidden;
+			transition:0.5s ease-in-out;
+			/* padding-top: 60px; */
+		}
+		.sidenav tr {
+			padding: 10px 10px 10px 10px;
+			text-decoration: none;
+			/* font-size: 25px; */
+			color: #fff;
+			display: block;
+			transition: 0.2s ease-in-out;
+		}
+		.sidenav table{
+			/* margin:auto; */
+			width:100%;
+		}
+		
+		.sidenav table thead tr th{
+			margin:auto;
+			
+		}
+		
+		.sidenav tbody{
+			width:80%;
+		}
+		.sidenav td{
+			width:40px;
+			height:20px;
+			
+		}
+		
+		/* 미디어쿼리 적용 */
+	
 .tableFocus {
 	border: 3px solid grey !important;
 }
@@ -87,12 +88,20 @@
 .inputBox{
 	width:150px;
 }
+#propertyTable{
+	width:100%; 
+	border: 1px solid #444444; 
+	align: center;
+	border-collapse: collapse;
+	background-color: white;					
+}
+
+#propertyTable tr {
+	 border: 1px solid #444444;
+}
+
 </style>
-
-<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-<script type="text/javaScript" language="javascript" defer="defer">
-
-
+<script type="text/javaScript">
 
   fn_draggable = function(){
 	  
@@ -356,17 +365,29 @@
 	
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ click 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 	
+	//shift 클릭으로 포커스 주입을 위한 전역변수 ( 0<안눌림> / 1<눌림> )
+	var shiftHold = 0;
+	$(document).ready(function(){
+		$("body").keydown(function (e){
+			if(e.keyCode == 16){
+				shiftHold = 1;
+			}
+		});
+		$("body").keyup(function (e){
+			if(e.keyCode == 16){
+				shiftHold = 0;
+			}
+		});
+	})
+	
 	
 	/* div 온클릭 이벤트 
 	 * 포커스 주입 */
-	fn_divOnClick = function(param) {
-	
+	fn_divOnClick = function(param){ debugger;
 		fn_draggable();
-		
-		// 클릭한 값이 div라면
-		if(vsCompoClickDvs == ""){
+		if(shiftHold == 0){//shift가 눌리지 않았을때. 하나만 클릭이 되어야 한다.
 			
-				
+			if(vsCompoClickDvs == ""){
 				//div 포커스 해제
 				fn_divFocusCancel();
 				//테이블 포커스 해제
@@ -375,33 +396,70 @@
 				voFocusDivInfo = param;
 				$(param).attr("focus","true");
 				$(param).attr("mainFocus","true");
+			} 
+			else if(vsCompoClickDvs == "divTitle" || vsCompoClickDvs == "divButton" || vsCompoClickDvs == "divTable"){
+				if (voFocusDivInfo.className == "divFocus") {
+					voFocusDivInfo.className = "";
+			    } else {
+			    	//div 포커스 해제
+					fn_divFocusCancel();
+					//테이블 포커스 해제
+					fn_tableFocusCancel();
+					$(voFocusDivInfo).attr("focus","true");	
+			    }
+			} else if(vsCompoClickDvs == "td"){
 				
-			
-			
-		} else if(vsCompoClickDvs == "divTitle" || vsCompoClickDvs == "divButton" || vsCompoClickDvs == "divTable"){
-			if (voFocusDivInfo.className == "divFocus") {
-				voFocusDivInfo.className = "";
-		    } else {
-		    	//div 포커스 해제
+				//div 포커스 해제
 				fn_divFocusCancel();
-				//테이블 포커스 해제
-				fn_tableFocusCancel();
-				$(voFocusDivInfo).attr("focus","true");
-		    	
-		    }
+				voFocusDivInfo = "";
+			}
 
-		
-		} else if(vsCompoClickDvs == "td"){
 			
-			//div 포커스 해제
-			fn_divFocusCancel();
-			voFocusDivInfo = "";
-		}
-
+			vsCompoClickDvs = "";
 		
-		vsCompoClickDvs = "";
-	
+		}else if(shiftHold == 1){
+			
+			if(vsCompoClickDvs == ""){
+				//div 포커스 해제 (포커스 되어있다면 false)
+				var vsType = $(param).attr("focus");
+				if(vsType == "true"){
+					$(param).attr("focus","false");
+					$(param).attr("mainFocus","false");
+				}
+				else if(vsType == "false"){
+					$(param).attr("focus","true");
+					$(param).attr("mainFocus","true");
+				}
+				//fn_divFocusCancel();
+				//테이블 포커스 해제
+				//fn_tableFocusCancel();
+				
+				voFocusDivInfo = param;
+				//$(param).attr("focus","true");
+				//$(param).attr("mainFocus","true");
+			} 
+			else if(vsCompoClickDvs == "divTitle" || vsCompoClickDvs == "divButton" || vsCompoClickDvs == "divTable"){
+				if (voFocusDivInfo.className == "divFocus") {
+					voFocusDivInfo.className = "";
+			    } else {
+			    	//div 포커스 해제
+					fn_divFocusCancel();
+					//테이블 포커스 해제
+					fn_tableFocusCancel();
+					$(voFocusDivInfo).attr("focus","true");	
+			    }
+			} else if(vsCompoClickDvs == "td"){
+				
+				//div 포커스 해제
+				fn_divFocusCancel();
+				voFocusDivInfo = "";
+			}
+
+			
+			vsCompoClickDvs = "";
+		}
 	}
+		
 	
 	
 	/* div 타이틀 Onclick */
@@ -462,21 +520,36 @@
 
 	/* 테이블 td 온클릭 이벤트
 		포커스 주입 */
-	fn_tdOnClick = function(param) {
+	fn_tdOnClick = function(param) { debugger;
 		
 		vsCompoClickDvs = "td";
 		// td에 자식이 없을 경우에만 포커스
-		if(param.children.length == 0){
-			if (param.className == "tableFocus") {
-				param.className = "tbtd_content";
-			} else {
-				/* voFocusTdInfo.className = "tbtd_content";
-				voFocusTdInfo = param; */
-				param.className = "tableFocus";
+		var vitdCount = $(".tableFocus").length;
+		if(shiftHold == 0){
+			if(param.children.length == 0){
+				if(vitdCount == 0){
+					if(param.className == "tbtd_content creationTd"){
+						param.className = "tableFocus";
+					}
+				}else if(vitdCount >= 1){
+					fn_tableFocusCancel();
+					param.className = "tableFocus";
+				}
 			}
 		}
-
+		else if(shiftHold == 1){
+			if(param.children.length == 0){
+				if (param.className == "tableFocus") {
+					param.className = "tbtd_content creationTd";
+				} else {
+					/* voFocusTdInfo.className = "tbtd_content";
+					voFocusTdInfo = param; */
+					param.className = "tableFocus";
+				}
+			}
+		}
 	}
+		
 
 	/* 테이블 td 더블클릭 이벤트
 		라벨 설정 */
@@ -552,7 +625,7 @@
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ TABLE 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 	
 	/* 행추가 */
-	function fn_tableColAdd() {
+	function fn_tableColAdd() { debugger;
 			
 		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
 		var tdnum = $(vsTableId+"> tbody td").length;
@@ -563,7 +636,7 @@
 		var buffer = "<tr>";
 		
 		for(var i=0; i<count; i++){
-			buffer += "\n  <td class=\"tbtd_content\" "
+			buffer += "\n  <td class=\"tbtd_content creationTd\" "
 			buffer += "name=\"tbtd_"+i+"\""
 			buffer += "style=\"height:30px; cursor:pointer\" "
 			buffer += "onclick=\"fn_tdOnClick(this)\" "
@@ -577,82 +650,93 @@
 	}
 	
 	/* 행삭제 */
-	function fn_tableColDel(){
+	function fn_tableColDel(){debugger;
 		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
 		$(vsTableId+">tbody:last > tr:last").remove();
 	}
 	
 
 	//행 병합;
-	function fn_tableColMerge(){ 
-		var colspan = $(".tableFocus").length;
-		var tfnameList = $(".tableFocus").attr('name');
-		if(colspan > 1){
-			// 병합했던 셀의 병합을 위한 분기처리
-			// 기존 colSpan 값을 가져온다
-			var style = ($("td.tableFocus").attr('colSpan') == null) ? null : $(".tableFocus");
-			if(style == null){
-				$("td.tableFocus[name ="+tfnameList+"]").attr("class","tbtd_sum"); // 병합할 td 클래스명 일시변경
-				$(".tbtd_sum").attr("colSpan",colspan);
-				$(".tbtd_sum").attr("class","tbtd_content"); //원상복귀
-				$(".tableFocus").remove();
-				//$(".tableFocus").attr("class", "hide")
+	function fn_tableColMerge(){ debugger;
+		
+		//행병합 시 colSpan 속성 갯수 구하기
+		var colComp = 0;
+		//선택된 것들 중 가장 앞에 있는 셀의 name을 가져옴
+		var tfnameFirst = $(".tableFocus").attr("name");
+		//name 뒤에 수를 가져옴
+		var tfnameFirstNum = parseInt(tfnameFirst.substring(tfnameFirst.lastIndexOf("_")+1));
+		//tableFocus된 셀의 갯수 파악
+		var FocusCount = $(".tableFocus").length;
+		//열병합 방지 변수
+		var rowSpan = 0;
+		for(var i=tfnameFirstNum; i<FocusCount+tfnameFirstNum+1; i++){
+			var viCol = $(".tableFocus[name=tbtd_"+i+"]").attr("colSpan");
+			var vitfname = $(".tableFocus[name=tbtd_"+i+"]").attr("name");
+			if(typeof viCol != "undefined"){ // 콜스판찾아오기
+				colComp += parseInt(viCol);
 			}
-			else if(style != null){//이미 병합한 셀이 있으면 원래 콜스판들 다 더해서 주면됨.
-				var tempArray = new Array();
-				$("td.tableFocus").each(function(){
-					tempArray.push($(this).attr('colSpan')); //colSpan 값 가져옴
-				});
-					tempArray.filter(function(item){
-						return item !== null && item !==undefined && item !== "";
-					});
-					
-					//colSpan 값 더하기
-					var totalCol = 0;
-					var count = 0;
-					for(var i=0; i<tempArray.length; i++){
-						var num = tempArray[i];
-						
-						if(num !== undefined){
-							var number = parseInt(num);
-							totalCol += number;
-						}else if(num === undefined){
-							count++;
-						}
-					
+			if(typeof vitfname == "undefined"){// name이 undefined면 열을 선택했거나 떨어져서 선택
+				var maxlength = FocusCount+tfnameFirstNum;
+				if(i == maxlength){
+					//만약 이전에 이름이 있었다면?
+					var j = i-1;
+					var beforeName = $(".tableFocus[name=tbtd_"+j+"]").attr("name");
+					if(beforeName != null){
+						rowSpan = 0;
+						console.log(beforeName);
+					}else{
+						rowSpan = 1;
+						if(rowSpan == 1){
+							alert("다시 선택하세요");
+							break;
 					}
-					
-					totalCol += count;
-					
-					$("td.tableFocus[name ="+tfnameList+"]").attr("class","tbtd_sum");
-					$(".tbtd_sum").attr("colSpan",totalCol);
-					$(".tbtd_sum").attr("class","tbtd_content"); //원상복귀
-					$(".tableFocus").remove();
+				}
 			}
-			
-		}else{
-			alert("2개이상 선택하세요");
 		}
+	}
 		
-		
+		if(colComp == 0){
+			if(rowSpan == 0){
+				$(".tableFocus[name =tbtd_"+tfnameFirstNum+"]").attr("class","tbtd_sum"); // 병합할 td 클래스명 일시변경
+				$(".tbtd_sum").attr("colSpan",FocusCount);
+				$(".tbtd_sum").attr("class","tbtd_content creationTd"); //원상복귀
+				$(".tableFocus").remove();
+			}
+		}
+		else if(colComp != 0){
+			//콜스판 포함한 셀의 수
+			var totalSel = colComp + FocusCount - 1;
+			$(".tableFocus[name=tbtd_"+tfnameFirstNum+"]").attr("class","tbtd_sum");
+			$(".tbtd_sum").attr("colSpan",totalSel);
+			$(".tbtd_sum").attr("class","tbtd_content creationTd"); 
+			$(".tableFocus").remove();
+		}			
 	}//fn_tableColMerge() end
-	
-	//행 분할s
- 	function fn_tableColDivision(){ 
-	 	var colspan = $(".tableFocus").attr("colSpan");
-	 	var name = $(".tableFocus").attr('name');
- 		var namenum = parseInt(name.substring(name.lastIndexOf("_")+1)); 
- 		var buffer ="";
- 		for(namenum; namenum<colspan; namenum++){
- 			buffer += "\n  <td class=\"tbtd_content\" ";
- 			buffer += "name=\"tbtd_"+namenum+"\"";
- 			buffer += "style=\"height:30px; cursor:pointer\" ";
- 			buffer += "onclick=\"fn_tdOnClick(this)\" ";
- 			buffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
- 			buffer += "</td>";
+		
+	//행 분할시 하나씩만 할 수 있도록 한다.
+ 	function fn_tableColDivision(){ debugger;
+ 		
+ 		var vsColspanYN = $(".tableFocus").attr("colSpan");
+ 		if(typeof vsColspanYN == "undefined" || vsColspanYN == null){
+ 			alert("병합되지 않은 셀 또는 열은 분할할 수 없습니다.");
  		}
-		$("td.tableFocus[name ="+name+"]").after(buffer);
-		$("td.tableFocus[name ="+name+"]").remove();
+ 		else{
+	 		var colspan = $(".tableFocus").attr("colSpan");
+	 		var name = $(".tableFocus").attr('name');
+	 	 	var namenum = parseInt(name.substring(name.lastIndexOf("_")+1)); 
+	 	 	var totalnum = parseInt(colspan)+namenum;
+	 	 	var buffer ="";
+	 	 	for(namenum; namenum<totalnum; namenum++){
+	 	 		buffer += "\n  <td class=\"tbtd_content creationTd\" ";
+	 	 		buffer += "name=\"tbtd_"+namenum+"\"";
+	 	 		buffer += "style=\"height:30px; cursor:pointer\" ";
+	 	 		buffer += "onclick=\"fn_tdOnClick(this)\" ";
+	 	 		buffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
+	 	 		buffer += "</td>";
+	 	 		}
+	 			$("td.tableFocus[name ="+name+"]").after(buffer);
+	 			$("td.tableFocus[name ="+name+"]").remove();
+ 			}
 	}
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ TABLE 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
@@ -665,7 +749,9 @@
 	fn_createSource = function() {
 		// html 만들기
 		var vsHtml = $("#creationTable").html();
-		var vsbusinessNm = $("#businessNm").val();
+		//prompt로 우선 vsbusinessNm을 받는다
+		var vsbusinessNm = prompt("업무명");
+		//var vsbusinessNm = $("#businessNm").val();
 		var vsStyle = $("style").html();
 		
 		if(vsbusinessNm == null || vsbusinessNm == ""){
@@ -679,7 +765,7 @@
 		}
 		
 		$.ajax({
-			url : "/creationHTML.do",
+			url : "/creationSource.do",
 			type : "POST",
 			data : vjCreationInfo,
 			success : function() {
@@ -689,7 +775,7 @@
 			error : function() {
 			}
 		})
-		
+	}
 		// 모든소스 만들기
 /* 		var vjCreationInfo = $("#creationForm").serialize();
 
@@ -704,30 +790,114 @@
 			error : function() {
 			}
 		}) */
+	
+	
+		
+	/**********************************
+	 수정  프로세스 
+	***********************************/
+	function infoUpdate(){debugger;
+		
+		var vsTrnum = $("#propertyTable tbody tr").length;
+			vsTrnum --;
+		
+		var vmObj = {};
+		//jsonArray에 변경정보 담기
+		for(var i=0; i<vsTrnum; i++){
+			var vsKey = $("tr[name=buffer"+i+"] > td:first").text();
+			var vsValue = $("tr[name=buffer"+i+"] > td:last > input[type=text]").val();
+			
+			if(vsKey != null && vsValue != null){
+				if(vsKey == "id"){
+					vmObj["id"] = vsValue;	
+				}
+				if(vsKey == "class"){
+					vmObj["class"] = vsValue;	
+				}
+				if(vsKey == "name"){
+					vmObj["name"] = vsValue;	
+				}
+				if(vsKey == "label"){
+					vmObj["label"] = vsValue;	
+				}
+			}
+		}
+		//key값 셋팅
+		var keys = Object.keys(vmObj);
+		
+		//key와 value를 가져와 해당 component에 입력
+		for(var i in keys){
+			//console.log("key="+keys[i],"value="+vmObj[keys[i]]);
+			$(".tableFocus").attr(keys[i],vmObj[keys[i]]);
+		}
+	}//수정 프로세스 end
+	
+		
+	/**********************************
+	 검색 프로세스 
+	***********************************/
+	function infoSearch(){debugger;
+		//vsProperty == 검색어 
+		var vsProperty = $("#Search").val();
+		var vsTrnum = $("#propertyTable tbody tr").length;
+			vsTrnum --;
+		
+		//반복문을 통해 td의 값(속성 키,값)을 가져와 JsonArray에 삽입
+		var vmObj = {};
+		
+		for(var i=0; i<vsTrnum; i++){
+			//vsKey == 속성키
+			var vsKey = $("tr[name=buffer"+i+"] > td:first").text();
+			var vsValue = $("tr[name=buffer"+i+"] > td:last > input[type=text]").val();
+			if(vsKey != null && vsValue != null){
+				if(vsKey == "id"){
+					vmObj["id"] = vsValue;	
+				}
+				if(vsKey == "class"){
+					vmObj["class"] = vsValue;	
+				}
+				if(vsKey == "name"){
+					vmObj["name"] = vsValue;	
+				}
+				if(vsKey == "label"){
+					vmObj["label"] = vsValue;	
+				}
+			}
+		}	
+		
+		// vmObj의 key값만 저장
+		var Keys = Object.keys(vmObj);
+		
+		// 키값으로 검색어 찾기 
+		for(var j=0; j<Keys.length; j++){
+			//입력값이 없을때 
+			if(vsProperty == null){
+				console.log("alert");
+				alert("검색어를 입력하세요");
+				break;
+			}
+			// 입력값이 테이블에 있을때 
+			if(Keys[j] == vsProperty){
+				console.log("success");
+				for(var k=0; k<vsTrnum; k++){	
+					$("tr[name=buffer"+k+"]").hide();
+				}
+					$("tr[name=buffer"+j+"]").show();
+				break;
+			} 
+			
+		}		
+	}//검색 프로세스 end
 
-	}
+	
 </script>
-</head>
 
-<body
-	style="text-align: center; margin: 0 auto; display: inline; margin-top: 400px; overflow: auto;">
-	<jsp:include page="../header.jsp" />
-	<form:form id="editForm" name="editForm" method="post"
-		style="overflow:auto; ">
-		<div id="content_pop" style="width: 1200px;">
-			<!-- 타이틀 -->
-			<div id="title">
-				<ul>
-					<li><img
-						src="<c:url value='/images/egovframework/example/title_dot.gif'/>"
-						alt="" />화면그리기</li>
-				</ul>
-			</div>
-			<!-- // 타이틀 -->
-			<br></br> <br></br>
-			<div style="width: 500px; float: left;">
-				<table width="50%" border="1" cellpadding="0" cellspacing="0"
-					style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
+</head>
+ 
+<body>
+	<div id="mysidenav" class="sidenav">
+		<!-- <div style="width: 500px; float: left;"> -->
+				<table width="50%" border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
 					<colgroup>
 						<col width="100" />
 						<col width="100" />
@@ -748,50 +918,26 @@
 							onclick="inputCreation();">Input Box</td>
 						<td class="tbtd_content" style="cursor: pointer"
 							onclick="selectCreation();">Select Box</td>
-
 					</tr>
 					
 					<tr>
 						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAdd();">행 추가</td>
-					</tr>
-					<tr>
 						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDel();">행 삭제</td>
 					</tr>
 					<tr>
 						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColMerge();">병합</td>
-					</tr>
-					<tr>
 						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDivision();">분할</td>
 					</tr>
 				</table>
-			</div>
-
-
-		</div>
-
-
-
-	</form:form>
-	<form:form id="creationForm"
-		style="position:absolute; width: 600px; top: 100px; left: 400px;"
-		name="creationForm" method="post">
-		<div id="div_creationForm">
-			<div id="div_businessNm">
-				<span>업무명</span> <input type="text" value="" id="businessNm"
-					name="businessNm"></input> <br></br>
-			</div>
-			<div id="creationTable">
-
-			</div>
-		</div>
-		
-		<div id="saveDiv" style="margin: 50px 0px 0px 250px;">
-			<input type="button" onclick="fn_createSource()" value="생성"></input>
-		</div>
-	</form:form>
-
-
-
-
+			<!-- </div> -->
+		<table id="propertyTable">
+			<tr>
+				<!-- 이거로 검색. -->
+				<td><input type="text" id="Search"></input></td>
+				<td><input type="button" onclick="infoSearch();" value="검색"></input><td>
+				<td><input type="button" onclick="infoUpdate();" value="수정"></input></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>

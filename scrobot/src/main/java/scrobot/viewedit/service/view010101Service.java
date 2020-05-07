@@ -15,9 +15,16 @@
  */
 package scrobot.viewedit.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hsqldb.lib.HashMap;
 import org.springframework.stereotype.Repository;
 
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
  * @Class Name : SampleDAO.java
@@ -38,7 +45,7 @@ import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
 
 @Repository("view010101Service")
 public class view010101Service extends EgovAbstractMapper {
-
+	
 	/**
 	 * 
 	 * @param vo - 등록할 정보가 담긴 SampleVO
@@ -49,6 +56,15 @@ public class view010101Service extends EgovAbstractMapper {
 		return insert("sampleDAO.insertSample");
 	}
 
+	
+
+}//service class end
+ 
 
 
-}
+
+
+
+
+
+
