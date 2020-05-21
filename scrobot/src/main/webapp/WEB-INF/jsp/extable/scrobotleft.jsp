@@ -15,12 +15,11 @@
 		/* 사이드바 스타일 */
 		.sidenav {
 			height:100%;
-			width: 20%;
 			position: fixed;
 			z-index:1;
 			top: 0;
 			left: 0;
-			margin-top:35px;
+			margin-top:50px;
 			background-color: #97d5e0;
 			overflow-x: hidden;
 			transition:0.5s ease-in-out;
@@ -48,50 +47,13 @@
 			width:80%;
 		}
 		.sidenav td{
-			width:40px;
+			width:50px;
 			height:20px;
 			
 		}
 		
 		/* 미디어쿼리 적용 */
-	
-.tableFocus {
-	border: 3px solid grey !important;
-}
 
-[focus="true"]{
-	border: 3px solid grey !important;
-}
-
-
-.span_title {
-	font-weight: bold;
-	font-size: 15pt;
-	cursor: pointer;
-	
-}
-
-.div_button{
-	height:30px;
-	margin-top:20px;
-	
-}
-
-.button{
-	
-	margin-right:20px;
-	width:60px;
-	height:30px;
-	
-}
-
-.creationTd{
-	 cursor:pointer;
-}
-
-.inputBox{
-	width:150px;
-}
 #propertyTable{
 	width:100%; 
 	border: 1px solid #444444; 
@@ -103,6 +65,9 @@
 #propertyTable tr {
 	 border: 1px solid #444444;
 }
+
+
+
 
 </style>
 <script type="text/javaScript">
@@ -123,9 +88,6 @@
   // title 개수
   vnTitleCount = 0;
 
-  // div_button 개수
-  vnDivButtonCount = 0;
-
   // button 개수
   vnButtonCount = 0;
 
@@ -140,19 +102,22 @@
 
   // outline 제자리 복귀시 rownum
   vnSortNum = 0;
+  
+  vbTitleDragCheck = false;
+  vbButtonDragCheck = false;
 
 
   $(function(){
+	  
+	  
   	
   	$(document).click(function(e){
 
-  		if (!$(e.target).is('.div_content')) {
-  	        // code
-  	    }
+  		fn_draggable();
 
   	});
   	
-  	$( "#sortable" ).sortable({
+  	 $( "#sortable" ).sortable({
         //items: "li:not([level=1])",
         cancel: "[level=1]",
         dropOnEmpty: false,
@@ -227,18 +192,231 @@
   });
   
   
+  
   /************************************* 
    * accordion 관련 함수
    **************************************/
     fn_draggable = function(){
-  	  $( ".div_content" ).draggable();
+  	  $( ".div_content" ).draggable({ cursor: "move",
+  									  grid: [ 10, 10 ],
+  									  stop: function( event, ui ) {/* 1188 */debugger;
+  										  
+  										var voChild = $("#creationTable").children();
+  										
+  										var vnTotalLeft = 0;
+  										var vnTotalTop = 0;
+  										for(var i=0; i<voChild.length; i++){
+  											if(voChild.eq(i).attr("id") != ""){
+  												var vnLeft = Number(voChild.eq(i).css("left").replace("px",""));
+  												var vnWidth = Number(voChild.eq(i).width());
+  												
+  												var vnTop = Number(voChild.eq(i).css("top").replace("px",""));
+  												var vnHeight = Number(voChild.eq(i).height());
+  												
+  												if(vnTotalLeft < vnLeft+vnWidth){
+  													vnTotalLeft = vnLeft+vnWidth;
+  												}
+  												
+  												if(vnTotalTop < vnTop+vnHeight){
+  													vnTotalTop = vnTop+vnHeight;
+  												}
+  											}
+  										}
+  										
+  										if(vnTotalLeft >  $("#creationForm").width()){
+  											var vsFormLeft = (ui.offset.left+500)+"px";
+    										  var vsTableLeft = (ui.offset.left+430)+"px";
+    									  	  $("#creationForm").css("width",vsFormLeft);
+    									  	  
+    									  	  $("#creationTable").css("width",vsTableLeft);
+  										}
+  										
+  										if(vnTotalTop+200 >  $("#creationForm").height()){
+  											var vsFormTop = (ui.offset.top+600)+"px";
+    										  var vsTableTop = (ui.offset.top+430)+"px";
+    									  	  $("#creationForm").css("height",vsFormTop);
+    									  	  
+    									  	  $("#creationTable").css("height",vsTableTop);
+  										}
+  										  
+  										  
+  									  }
+  	  });
   	  $( ".div_content" ).resizable();
-  	  $( ".div_title" ).draggable({ containment: "parent" });
-  	  $( ".span_title" ).draggable({ containment: "parent" });
-  	  $( ".div_button" ).draggable({ containment: "parent" });
+  	  $( ".div_content" ).droppable({
+/*         drop: function( event, ui ) {
+        
+            if(ui.draggable.attr("class").indexOf("div_content") == -1){
+            	
+            	var vnTop = Number(ui.draggable.css("top").replace("px",""));
+            	var vnOldParentTop = Number(ui.draggable.parent().css("top").replace("px",""));
+    			var vnNewParentTop = Number($( this ).css("top").replace("px",""));
+    			
+            	
+        		if(ui.draggable.parent().attr("id") == "creationTable"){
+        		
+        			
+        			
+        			ui.draggable.css("top",(vnTop-vnNewParentTop-30)+"px")
+
+        		} else {
+        			
+        			ui.draggable.css("top",(vnOldParentTop-vnNewParentTop+vnTop)+"px")
+        		}
+        		
+        		$( this ).append(ui.draggable);
+        		
+
+        		
+        	}
+        
+        } */
+      });
   	  
-  	  $(".button").draggable({cancel:false, containment: "parent"});
-  	  $( ".div_table" ).draggable({ containment: "parent" });
+  	  
+  	$( "#creationTable" ).droppable({
+        drop: function( event, ui ) {
+        
+	        if(ui.draggable.attr("class").indexOf("div_content") == -1){
+	        		
+	            var voContent = $(".div_content");
+	            var vnContLength = voContent.length;
+	            
+	            // 부모 아이디
+	            var vsParentId = ui.draggable.parent().attr("id");
+	            
+	         	// 부모 클래스
+	            var vsParentClass = ui.draggable.parent().attr("class");
+	            
+	            // 움직인곳의 세로높이
+	            var vnCurrTop = Number(ui.draggable.css("top").replace("px",""));
+	            
+	         	// 움직인곳의 가로높이
+	            var vnCurrLeft = Number(ui.draggable.css("left").replace("px",""));
+	         	
+	         	var vsDivYn = "N";
+	        	var vnDivRow = 0;
+	        	
+	        	
+	        	
+	        	
+	            if(vsParentClass != null){
+	            	// 출발한 곳이 안이라면
+	            	if(vsParentClass.indexOf("div_content") != -1){
+	            		// 출발한 div의 높이
+		            	var vnOldParentTop = Number(ui.draggable.parent().css("top").replace("px",""));
+		            	
+		            	// 출발한 div의 폭
+		            	var vnOldParentLeft = Number(ui.draggable.parent().css("left").replace("px",""));
+		            	vnCurrTop += vnOldParentTop;
+		            	vnCurrLeft += vnOldParentLeft;
+	            	}
+	            	
+	            }
+	            
+	         	// div_content 개수 동안 반복
+	         	for(var i=0; i<vnContLength; i++){
+	         		var top = Number(voContent.eq(i).css("top").replace("px",""));
+            		var height = Number(voContent.eq(i).css("height").replace("px",""));
+            		var left = Number(voContent.eq(i).css("left").replace("px",""));
+            		var width = Number(voContent.eq(i).css("width").replace("px",""));
+            		
+            		
+            		
+            		// 도착한 곳이 div 안이라면(밖->안)
+	                if(vnCurrTop < top+height && vnCurrTop > top &&
+	                   vnCurrLeft < left+width && vnCurrLeft > left){
+	                	
+	                	vsDivYn = "Y";
+	                }
+            		
+            		
+    	            if(vsDivYn == "Y"){
+    	            	vnDivRow = i;
+    	            	break;
+    	            }
+            		
+            		
+            		
+	         	}
+	         	
+	         	
+	            // 도착한 div의 높이
+    			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
+    			// 도착한 div의 폭
+    			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
+	         	
+	         	
+	         	
+	            // 출발한 곳이 밖이라면
+	            if(vsParentId == "creationTable"){
+	            		
+	            	
+	            	// 움직인곳이 div 안으로 이동했다면(밖->안)
+	            	if(vsDivYn == "Y"){
+            			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-30)+"px")
+            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-30)+"px")
+            			
+            			voContent.eq(vnDivRow).append(ui.draggable);
+            			
+	            	
+	            	// 움직인곳이 밖으로 이동했다면(밖->밖)
+	            	} else{
+	            		// 아무액션 필요없음
+	            	}
+	            
+	            // 출발한 곳이 div 안일경우
+	            } else{
+	            	
+	            	
+	            	
+            		
+	            	
+            		// 도착한 곳이 div 안이라면(안->안)
+	            	if(vsDivYn == "Y"){
+	            		
+            			ui.draggable.css("top",(vnCurrTop-vnNewParentTop)+"px")
+            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft)+"px")
+            			voContent.eq(vnDivRow).append(ui.draggable);
+	            	
+	            	// 도착한 곳이 div 밖이라면(안->밖)
+	            	} else{
+	            		
+	            		
+	            		ui.draggable.css("top",(vnCurrTop+30)+"px")
+	            		ui.draggable.css("left",(vnCurrLeft+30)+"px")
+	            		$( this ).append(ui.draggable);
+	            	}
+	            	
+	            }
+	         	
+	         	
+	            
+	        		
+	        
+	        }
+        }
+  	 });
+  	
+  	  $( ".table" ).resizable();
+  	  
+  	  $( ".table" ).draggable({ cursor: "move",
+		    grid: [ 10, 10 ]
+				});
+
+	  
+  	  $( ".div_title" ).draggable({ cursor: "move",
+  		  						    grid: [ 10, 10 ],
+  		  						    stop: function(){
+  		  			                   vbTitleDragCheck = true;
+  		  			   				}});
+  	  
+  	  $(".button").draggable({ cancel:false,
+  	     					   cursor: "move",
+			    			   grid: [ 10, 10 ],
+  		                       stop: function(){
+		  			               vbButtonDragCheck = true;
+		  			   		}});
     }
     
     $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
@@ -247,201 +425,123 @@
 	
 	
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 그리기 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+
 	
 	
-	/************************************* 
-     * outline 그리기 함수
-     **************************************/
-	fn_rightDraw = function(){
-		var vsBasicSource = "<li class=\"ui-state-default\" "; 
-		var vsRightSource = "";
-		
-		// 컴포넌트 그리는 div자식들 가져온다.
-		var voChild = $("#creationTable").children();
-		var vnChildCount = voChild.length;
-		
-		// div_content가 1개이상이라면
-		if(vnChildCount != 0){
-			for(var a=0; a<vnChildCount; a++){
-				var voSortableChild = $("#sortable").children();
-				var vnSortableChildCount = voSortableChild.length;
-				
-				var vsTagNm = voChild.eq(a).prop("tagName");
-				var vsTagId = voChild.eq(a).prop("id");
-				var vsTagInfo = vsTagNm + "_" + vsTagId;
-				
-				vsRightSource =  vsBasicSource + "id = \""+vsTagInfo + "\"";
-				vsRightSource += " orgId=\""+vsTagId+"\"";
-				vsRightSource += " level=\"1\"";
-				vsRightSource += ">";
-				vsRightSource +=  vsTagInfo + "</li>"
-				
-				var vnoverlapCount = 0;
-				
-				//outline에 1개이상 있다면
-				if(vnSortableChildCount != 0){
-					
-					// 컴포넌트가 outline에 이미 존재하는지 체크
-					for(var b=0; b<vnSortableChildCount; b++){
-						if(voSortableChild.eq(b).text() == vsTagInfo){
-							vnoverlapCount++;
-							
-						}
-					}
-					
-					// 존재하지 않다면 outline에 추가
-					if(vnoverlapCount == 0){
-						$("#sortable").append(vsRightSource);
-					}
-			    // outline에 컴포넌트가 0개라면 바로 outline 추가
-				} else{
-					$("#sortable").append(vsRightSource);
+	// 컴포넌트 생성시 위치잡기
+	fn_creationPosition = function(param){
+		// div focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_divFocusYn()){
+			var voChildInfo = $("#creationTable").children();
+			if(voChildInfo.length != 0){
+				var vsParentTop = Number(voChildInfo.last().css("top").replace("px",""));
+				var vsParentHeight = Number(voChildInfo.last().css("height").replace("px",""));
+			}
+			
+		// 포커스가 있다면 포커스잡힌 div에 생성
+		} else{
+			
+			if(param == "content"){
+				var voChildInfo = $("#creationTable").children();
+				if(voChildInfo.length != 0){
+					var vsParentTop = Number(voChildInfo.last().css("top").replace("px",""));
+					var vsParentHeight = Number(voChildInfo.last().css("height").replace("px",""));
 				}
-				
-				
-				// 버튼div, 타이틀div, 테이블div 등등 손자를 그리기위하여 포커스잡힌 div를 가져옴
-				var voFocusDiv = $("[mainFocus=true]");
-				var voChild2 = voFocusDiv.children();
-				
-				vsTagNm = voFocusDiv.eq(a).prop("tagName");
-				vsTagId = voFocusDiv.eq(a).prop("id");
-				vsTagInfo = vsTagNm + "_" + vsTagId;
-				
-				
-				var vnChildCount2 = voChild2.length
-				if(vnChildCount2 != 0){
-					for(var b=0; b<vnChildCount2; b++){
-						if(voChild2.eq(b).prop("id") != ""){
-							var vsTagNm2 = voChild2.eq(b).prop("tagName");
-							var vsTagId2 = voChild2.eq(b).prop("id");
-							var vsTagInfo2 = vsTagNm2 + "_" + vsTagId2;
-							
-							vsRightSource =  vsBasicSource + "id = \""+vsTagInfo2 + "\"";
-							vsRightSource += " orgId=\""+vsTagId2+"\"";
-							vsRightSource += " level = \"2\"";
-							vsRightSource += " parent = \""+vsTagInfo + "\"";
-							vsRightSource += "><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span>";
-							vsRightSource +=  vsTagInfo2 + "</li>"
-							
-							var vnoverlapCount = 0;
-							
-							// 손자가 outline에 이미 존재하는지 체크
-							for(var c=0; c<vnSortableChildCount; c++){
-								if(voSortableChild.eq(c).text() == vsTagInfo2){
-									vnoverlapCount++;
-								}
-							}
-							
-							// 존재하지 않는다면 추가
-							if(vnoverlapCount == 0){
-								
-								// 자식이 하나도 없다면 부모바로 다음에 존재해야 함으로 after처리
-								if($("[parent="+vsTagInfo+"]").length == 0){
-									$("#"+vsTagInfo).after(vsRightSource);
-							    // 자식이 하나 이상이라면 가장 마지막 처리
-								} else{
-									$("[parent="+vsTagInfo+"]").last().after(vsRightSource);
-								}
-								
-							}
-
-/* 							var voChild3 = voChild2.children();
-							var vnChildCount3 = voChild3.length
-							if(vnChildCount3 != 0){
-								for(var c=0; c<vnChildCount3; c++){
-									if(voChild3.eq(c).prop("id") != ""){
-										var vsTagNm3 = voChild3.eq(c).prop("tagName");
-										var vsTagId3 = voChild3.eq(c).prop("id");
-										var vsTagInfo3 = vsTagNm3 + "_" + vsTagId3;
-										
-										vsRightSource =  vsBasicSource + "id = \""+vsTagInfo3 + "\"";
-										vsRightSource += " parent = \""+vsTagInfo2 + "\"";
-										vsRightSource += "><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span>";
-										vsRightSource +=  vsTagInfo3 + "</li>"
-										
-										var vnoverlapCount = 0;
-										for(var d=0; d<vnSortableChildCount; d++){
-											if(voSortableChild.eq(d).text() == vsTagInfo3){
-												vnoverlapCount++;
-											}
-										}
-										
-										if(vnoverlapCount == 0){
-											if($("[parent="+vsTagInfo2+"]").length == 0){
-												$("#"+vsTagInfo2).after(vsRightSource);
-											} else{
-												$("[parent="+vsTagInfo2+"]").after(vsRightSource);
-											}
-										}
-
-									}
-								}
-								
-							} */
-						}
-						
-						
+			} else{
+				var voChildInfo = $(voFocusDivInfo).children();
+				var vnChildCount = voChildInfo.length;
+				for(var i=0; i<vnChildCount; i++){
+					if(voChildInfo.eq(i).attr("id") == "" || voChildInfo.eq(i).attr("id") == null){
+						continue;
 					}
+					
+					var vsParentTop = Number(voChildInfo.eq(i).css("top").replace("px",""));
+					var vsParentHeight = Number(voChildInfo.eq(i).last().css("height").replace("px",""));
 					
 				}
 			}
+			
+			
+		}
+		
+		var vnWidth = 0;
+		
+		if(vsParentTop == null){
+			vsParentTop = 0;
+		}
+		
+		if(vsParentHeight == null){
+			vsParentHeight = 0;
+		}
+		
+		if((vsParentTop+vsParentHeight) != 0){
+			vnWidth = (vsParentTop+vsParentHeight+20);
+		}
+		
+		return vnWidth;
+	}
+	
+	
+	/* 컴포넌트 생성시 폼크기 동적조정 */
+	fn_setformSize = function(){
+		var vnFormHeight = Number($("#creationForm").css("height").replace("px",""));
+		var vnContentTop = Number($("#creationTable").children().last().css("top").replace("px",""));
+		var vnContentHeight = Number($("#creationTable").children().last().css("height").replace("px",""));
+		var vnTotalSize = vnContentTop+vnContentHeight+220;
+		var vnTableSize = vnContentTop+vnContentHeight+50;
+		
+		if(vnFormHeight <= vnTotalSize){
+			vnFormHeight = vnTotalSize+"px";
+			$("#creationForm").css("height",vnFormHeight)
+			$("#creationTable").css("height",vnTableSize+"px")
 		}
 	}
 	
 	
 	/* DIV 만들기 */
 	function divCreation() {
-		robot.prompt("가로크기와 세로크기를 지정하십시오.", ["가로크기","세로크기"],"생성","취소","fn_divCreationCallBack");
+		
+		// 전체 div 시작
+		var vsSource = "<div id=\"div" + vnDivContentCount + "\"";;
+		vsSource += " class=\"div_content\" ";
+		vsSource += " style=\"top:"+fn_creationPosition("content")+"px;\"";
+		vsSource += " onclick=\"fn_divOnClick(this)\"";
+		vsSource += " >";
+
+		vsSource += "</div>";
+
+		$("#creationTable").append(vsSource);
+		
+		// divcontent영역 개수 증가
+		vnDivContentCount ++;
+		
+		
+		// form 크기 동적조정
+		fn_setformSize();
+		
+		// right div 그리기
+		//fn_rightDraw();
 	};
 	
-	/* DIV 만들기 CallBack */
-	fn_divCreationCallBack = function(param){
-		
-		if(param != ""){
-			// 전체 div 시작
-			var vsSource = "<div id=\"div" + vnDivContentCount + "\"";;
-			vsSource += " class=\"div_content\" ";
-			vsSource += " style=\"position:relative; margin-top:30px; width:"+param[0]+"px; height:"+param[1]+"px; border: 1px solid;\" ";
-			vsSource += " onclick=\"fn_divOnClick(this)\"";
-			vsSource += " >";
 
-			vsSource += "</div>";
-
-			$("#creationTable").append(vsSource);
-			
-			// divcontent영역 개수 증가
-			vnDivContentCount ++;
-			
-			// right div 그리기
-			fn_rightDraw();
-				
-		}
-			
-	}
-	
-	
-	
 	
 	
 	/* TITLE 만들기 */
 	function titleCreation() {
 		
-		// div focus 여부
-		if(!fn_divFocusYn()){
-			return false;
-		};
 		
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
 		// 타이틀 div 시작
 		var vsSource = "  <div id=\"div" + vnTitleCount + "_title\"";
-		vsSource += "   class=\"div_title\" width=\""+width+"\" ";
-		vsSource += "   style=\"position:relative; text-align:left; margin:10px 0px 0px 5px;\" ";
+		vsSource += "   class=\"div_title\"";
+		
+		vsSource += "   style=\"top:"+fn_creationPosition()+"px;\"";
+
+		
 		vsSource += "  onclick=\"fn_divTitleOnClick(this)\" ";
 		vsSource += ">";
-	
-		// 타이틀 이미지
-		vsSource += "  <img src=\"<c:url value='/images/egovframework/example/title_dot.gif'/>\" />";
 	
 		// 타이틀 span
 		vsSource += "  <span id=\"span" + vnTitleCount + "_title\"";
@@ -450,48 +550,58 @@
 		vsSource += "  </span>";
 		vsSource += "  </div>";
 		
-		$(voFocusDivInfo).append(vsSource);
+		// div focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_divFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 div에 생성
+		} else{
+			$(voFocusDivInfo).append(vsSource);
+		}
+		
+		
 		
 		vnTitleCount++;
 		
+		// form 크기 동적조정
+		fn_setformSize();
+		
 		// right div 그리기
-		fn_rightDraw();
+		//fn_rightDraw();
 
 	};
 	
 	
 	/* button 만들기 */
 	function buttonCreation() {
-		
-		// div focus 여부
-		if(!fn_divFocusYn()){
-			return false;
-		};
-		
+
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
-		// 타이틀 div 시작
-		var vsSource = "  <div id=\"div" + vnDivButtonCount + "_button\"";
-		vsSource += "   class=\"div_button\" width=\""+width+"\"";
-		vsSource += "   style=\"position:relative; text-align:right;\" ";
-		vsSource += "   onclick=\"fn_divButtonOnClick(this)\"";
-		vsSource += ">";
 	
 		// 타이틀 span
-		vsSource += "  <input type=\"button\" id=\"div" + vnDivButtonCount + "_title_button" + vnButtonCount+"\"";
+		var vsSource = "  <input type=\"button\" id=\"button" + vnButtonCount+"\"";
 		vsSource += "  class=\"button\" "
 		vsSource += "  value=\"button\" "
+		vsSource += "  style=\"top:"+fn_creationPosition()+"px;\"";
 		vsSource += "  onclick=\"fn_buttonOnClick(this)\">"
 		vsSource += "  </input>";
-		vsSource += "  </div>";
 		
-		$(voFocusDivInfo).append(vsSource);
+		// div focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_divFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 div에 생성
+		} else{
+			$(voFocusDivInfo).append(vsSource);
+		}
 		
-		vnDivButtonCount++;
 		vnButtonCount++;
 		
+		// form 크기 동적조정
+		fn_setformSize();
+		
 		// right div 그리기
-		fn_rightDraw();
+		//fn_rightDraw();
 
 	};
 	
@@ -501,11 +611,6 @@
 	
 	/* 테이블그리기 */
 	function tableCreation() {
-		
-		// div focus 여부
-		if(!fn_divFocusYn()){
-			return false;
-		};
 		
 		robot.prompt("행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
 
@@ -518,59 +623,61 @@
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
 
-		// div table 시작
-		var vsTableSource = "  <div id=\"div" + vnTableCount + "_table\"";
-		vsTableSource += "   class=\"div_table\" ";
-		vsTableSource += "   style=\"position:relative; padding:10px 0px 10px 0px; width:"+(width-5)+"\" ";
-		vsTableSource += "  onclick=\"fn_divTableOnClick(this)\" "
-		vsTableSource += ">";
-
 		// table 시작
-		vsTableSource += "<table id=\"table" + vnTableCount + "\"";;
-		vsTableSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
-		vsTableSource += " style=\"position:relative; margin:0px 12px 0px 12px; width:"+(width-24)+"\">";
-		vsTableSource += "\n <colgroup>";
+		var vsSource = "<table id=\"table" + vnTableCount + "\"";;
+		vsSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
+		vsSource += " style=\"top:"+fn_creationPosition()+"px;\"";
+		vsSource += "\n <colgroup>";
 
 		for (var i = 0; i < param[0]; i++) {
 			//짝수 셀
 			if(i % 2 == 0){
-				vsTableSource += "\n  <col width=\"100\"/>";
+				vsSource += "\n  <col width=\"100\"/>";
 			// 홀수 셀
 			} else{
-				vsTableSource += "\n  <col width=\"200\"/>";
+				vsSource += "\n  <col width=\"225\"/>";
 			}
 			
 		}
-		vsTableSource += "\n </colgroup>";
+		vsSource += "\n </colgroup>";
 		
 		//tbody 추가
-		vsTableSource += "\n <tbody>"
+		vsSource += "\n <tbody>"
 
 		for (var i = 0; i < param[1]; i++) {
-			vsTableSource += "\n <tr>";
+			vsSource += "\n <tr>";
 			for (var j = 0; j < param[0]; j++) {
-				vsTableSource += "\n  <td class=\"tbtd_content creationTd\" "
-				vsTableSource += "name=\"tbtd_"+j+"\""
-				vsTableSource += "style=\"height:30px;\" "
-				vsTableSource += "onclick=\"fn_tdOnClick(this)\" "
-				vsTableSource += "ondblclick=\"fn_tdDbClick(this)\"> "
-				vsTableSource += "</td>";
+				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
+				vsSource += "name=\"tbtd_"+j+"\""
+				vsSource += "style=\"height:30px;\" "
+				vsSource += "onclick=\"fn_tdOnClick(this)\" "
+				vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
+				vsSource += "</td>";
 			}
-			vsTableSource += "\n </tr>";
+			vsSource += "\n </tr>";
 		}
 		
 		//tbody 추가
-		vsTableSource += "\n </tbody>"
+		vsSource += "\n </tbody>"
 
-		vsTableSource += "</table>";
-		vsTableSource += "</div>";
-
-		$(voFocusDivInfo).append(vsTableSource);
+		vsSource += "</table>";
+		
+		// div focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_divFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 div에 생성
+		} else{
+			$(voFocusDivInfo).append(vsSource);
+		}
 
 		vnTableCount++;
 		
+		// form 크기 동적조정
+		fn_setformSize();
+		
 		// right div 그리기
-		fn_rightDraw();
+		//fn_rightDraw();
 
 	};
 
@@ -657,7 +764,7 @@
 	/* div 온클릭 이벤트 
 	 * 포커스 주입 */
 	fn_divOnClick = function(param){ 
-		fn_draggable();
+		
 		if(shiftHold == 0){//shift가 눌리지 않았을때. 하나만 클릭이 되어야 한다.
 			
 			if(vsCompoClickDvs == ""){
@@ -738,31 +845,36 @@
 	/* div 타이틀 Onclick */
 	fn_divTitleOnClick = function(param) {
 		
-		vsCompoClickDvs = "divTitle";
-		voFocusDivInfo = param;
+		
+		if(vbTitleDragCheck == false){
+			vsCompoClickDvs = "divTitle";
+			voFocusDivInfo = param;
+		}
+		
+		vbTitleDragCheck = false;
+		
 
 	}
 	
 	
 	/* 스팬타이틀 Onclick */
-	fn_spanTitleOnClick = function(param) {
+	fn_spanTitleOnClick = function(param) {debugger;
 		
-		vsCompoClickDvs = "title";
+	
+		if(vbTitleDragCheck == false){
+			vsCompoClickDvs = "title";
 		
-		var title = prompt("타이틀을 입력하시오");
-		if(title != null){
-			param.textContent = title;
+			var title = prompt("타이틀을 입력하시오");
+			if(title != null){
+				$(param).parent().css("width","1000px");
+				param.textContent = title;
+				var vnWidth = $(param).css("width");
+				$(param).parent().css("width",vnWidth);
 		}
-
 	}
 	
 	
-	
-	/* div 버튼 Onclick */
-	fn_divButtonOnClick = function(param) {
 		
-		vsCompoClickDvs = "divButton";
-		voFocusDivInfo = param;
 
 	}
 	
@@ -770,24 +882,16 @@
 	/* 버튼 Onclick */
 	fn_buttonOnClick = function(param) {
 		
-		vsCompoClickDvs = "button";
-		
-		var buttonNm = prompt("버튼명을 입력하시오");
-		if(buttonNm != null && buttonNm != ""){
-			$(param).val(buttonNm);
-		}
-
-	}
-	
-	/* div 테이블 Onclick */
-	fn_divTableOnClick = function(param) {
-		
-		if(vsCompoClickDvs != "td"){
-			vsCompoClickDvs = "divTable";
-			voFocusDivInfo = param;
+		if(vbButtonDragCheck == false){
+			vsCompoClickDvs = "button";
+			
+			var buttonNm = prompt("버튼명을 입력하시오");
+			if(buttonNm != null && buttonNm != ""){
+				$(param).val(buttonNm);
+			}
 		}
 		
-
+		vbButtonDragCheck = false;
 	}
 	
 
@@ -853,7 +957,7 @@
 		
 		var vnFocusCount = $("[mainFocus=true]").length;
 		if (vnFocusCount == 0) {
-			robot.alert("div를 선택하여 주시기 바랍니다.")
+			//robot.alert("div를 선택하여 주시기 바랍니다.")
 			return false;
 		} else{
 			return true;
@@ -1016,55 +1120,6 @@
 	
 	
 	
-	
-
-	/* 글 등록 화면 function */
-	fn_createSource = function() {
-		// html 만들기
-		var vsHtml = $("#creationTable").html();
-		//prompt로 우선 vsbusinessNm을 받는다
-		var vsbusinessNm = prompt("업무명");
-		//var vsbusinessNm = $("#businessNm").val();
-		var vsStyle = $("style").html();
-		
-		if(vsbusinessNm == null || vsbusinessNm == ""){
-			alert("업무명을 입력하시오");
-			return false;
-		}
-		var vjCreationInfo = {
-				"html" : vsHtml,
-				"businessNm" : vsbusinessNm,
-				"style" : vsStyle
-		}
-		
-		$.ajax({
-			url : "/creationHTML.do",
-			type : "POST",
-			data : vjCreationInfo,
-			success : function() {
-				alert("완료");
-
-			},
-			error : function() {
-			}
-		})
-	}
-		// 모든소스 만들기
-/* 		var vjCreationInfo = $("#creationForm").serialize();
-
-		$.ajax({
-			url : "/creationSource.do",
-			type : "POST",
-			data : vjCreationInfo,
-			success : function() {
-				alert("완료");
-
-			},
-			error : function() {
-			}
-		}) */
-	
-	
 		
 	/**********************************
 	 수정  프로세스 
@@ -1170,7 +1225,7 @@
 <body>
 	<div id="mysidenav" class="sidenav">
 		<!-- <div style="width: 500px; float: left;"> -->
-				<table width="50%" border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
+				<table width="400px" border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
 					<colgroup>
 						<col width="100" />
 						<col width="100" />
@@ -1203,7 +1258,7 @@
 					</tr>
 				</table>
 			<!-- </div> -->
-		<table id="propertyTable">
+		<table id="propertyTable" style="display:none;">
 			<tr>
 				<!-- 이거로 검색. -->
 				<td><input type="text" id="Search"></input></td>
@@ -1213,7 +1268,7 @@
 		</table>
 	</div>
 	
-	<div style="width: 150px; float: right;">
+	<div style="width: 150px; float: right; display:none;">
 		<ul id="sortable">
 		</ul>
 	</div>

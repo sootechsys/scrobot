@@ -8,24 +8,28 @@
 <script src="https://code.jquery.com/jquery-latest.js"></script> 
  
 <style>
-	body{
-		margin:0;
-	}
 	
 	.nav-container {
 		display:flex;
 		flex-direction:row;
 		width:100%;
-		height:35px;
+		height:50px;
 		margin:0;
 		padding:0;
 		background-color:lightsky;
 		list-style-type:none;
 		background-color:#97d5e0;
+		
+	}
+	
+	#nav{
+		z-index:1;
+		position:fixed;
+		width:100%
 	}
 	
 	.nav-item {
-		padding:5px;
+		padding:15px;
 		cursor:pointer;
 	}
 	
@@ -39,47 +43,25 @@
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="./js/scrobot.js" ></script> 
+<script src ="./js/colResizable-1.6.js"></script>
+<script src ="./js/colResizable-1.6.min.js"></script>
+<head>
 <script type="text/javaScript">
 	
 	/* 2020.05.04
-	id,class,name,label을 가져와 좌측바에 위치시킨다.
+	상세보기 페이지를 위치시킨다.
 	*/
-	function info() { 
-		
-		var vmObj = {
-				"id" : $(".tableFocus").attr("id"),
-				"class" : $(".tableFocus").attr("class"),
-				"name" : $(".tableFocus").attr("name"),
-				"label" : $(".tableFocus").attr("label"),
-				"style" : $(".tableFocus").attr("style")
-		};
-		
-		//console.log(vmObj);
-		
-		var keys = Object.keys(vmObj);
-		
-		//console.log(keys);
-		
-		var vsbuffer = "";
-		//undefined check
-		for(var i in keys){
-			//테이블 상세보기 마다 초기화 
-			$("tr[name=buffer"+i+"]").remove();
-			
-		//	console.log("key="+keys[i],"value="+vmObj[keys[i]]);
-			
-			if(typeof vmObj[keys[i]] == "undefined"){
-				vmObj[keys[i]] = ""; 
-			}
-			
-			vsbuffer +="<tr name=\"buffer"+i+"\">";
-			vsbuffer +="<td>"+keys[i]+"</td>";
-			vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
-			vsbuffer +="</tr>";
+	var infoCount = 0;
+	function info(){ debugger;
+		$("#propertyTable").show();
+		if(infoCount == 0){
+			infoCount++;
 		}
-			
-		$("#propertyTable > tbody:last").append(vsbuffer);	
+		else if(infoCount == 1){
+			$("#propertyTable").hide();
+			infoCount--;
 		}
+	}
 		
 	//생성한 모든 컴포넌트를 삭제
 	var RollBack = "";
@@ -100,21 +82,88 @@
 		}
 	}
 	
+	fn_preview = function(){debugger;
+	
+		var info = {"header" : "Preview",
+				    "width"  : $("#creationForm").css("width"),
+				    "height" : $("#creationForm").css("height")}
+		robot.openPop(info, "",$("#div_creationForm").html(),"tag");
+	}
+	
+	
+	
+	/* 글 등록 화면 function */
+	fn_createSource = function() {
+		// html 만들기
+		var vsHtml = $("#creationTable").html();
+		//prompt로 우선 vsbusinessNm을 받는다
+		var vsbusinessNm = prompt("업무명");
+		//var vsbusinessNm = $("#businessNm").val();
+		var vsStyle = $("style").html();
+		
+		if(vsbusinessNm == null || vsbusinessNm == ""){
+			alert("업무명을 입력하시오");
+			return false;
+		}
+		var vjCreationInfo = {
+				"html" : vsHtml,
+				"businessNm" : vsbusinessNm,
+				"style" : vsStyle
+		}
+		
+		$.ajax({
+			url : "/creationHTML.do",
+			type : "POST",
+			data : vjCreationInfo,
+			success : function() {
+				alert("완료");
+
+			},
+			error : function() {
+			}
+		})
+	}
+		// 모든소스 만들기
+/* 		var vjCreationInfo = $("#creationForm").serialize();
+
+		$.ajax({
+			url : "/creationSource.do",
+			type : "POST",
+			data : vjCreationInfo,
+			success : function() {
+				alert("완료");
+
+			},
+			error : function() {
+			}
+		}) */
+		
+		
+	fn_call = function(){
+		
+		var info = {"header" : "불러오기",
+				    "width"  : "700px",
+				    "height" : "500px"
+				    }
+		robot.openPop(info, "", "view010101P01.jsp");
+	}
 
 
 </script>
 </head>
 
 <body>
-	 <nav>
+	 <div id="nav">
 	 	<ul class="nav-container">
 	 		<li class="nav-item" onclick="fn_sourceReset();">새로만들기</li>
 	 		<li class="nav-item" onclick="fn_sourceRollBack();">되돌리기</li>
 	 		<li class="nav-item" onclick="fn_createSource();">저장</li>
 	 		<li class="nav-item" onclick="">다른이름으로저장</li>
 	 		<li class="nav-item" onclick="info();">상세보기</li>
+	 		<li class="nav-item" onclick="fn_preview();">미리보기</li>
+	 		<li class="nav-item" onclick="fn_call();">불러오기</li>
 	 	</ul>
-	 </nav>
+	 </div>
 </body>
 </html>
 

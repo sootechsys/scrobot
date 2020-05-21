@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package scrobot.viewedit.service;
+package scrobot.cmm.service;
 
 import java.util.Map;
 
@@ -38,28 +38,10 @@ import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
  *  Copyright (C) by MOPAS All right reserved.
  */
 
-@Repository("view010101Service")
-public class view010101Service extends EgovAbstractMapper {
+@Repository("cmm010101Service")
+public class cmm010101Service extends EgovAbstractMapper {
 	
-	/**
-	 * 
-	 * @param vo - 등록할 정보가 담긴 SampleVO
-	 * @return 등록 결과
-	 * @exception Exception
-	 */
-	public void registViewDrawWrk(Map<String, Object> param) throws Exception {
-	    insert("view010101.insertViewDrawWrk", param);
-	}
-	
-	/**
-	 * 
-	 * @param vo - 등록할 정보가 담긴 SampleVO
-	 * @return 등록 결과
-	 * @exception Exception
-	 */
-	public void registViewDrawWrkHistry(Map<String, Object> param) throws Exception {
-	    insert("view010101.insertViewDrawWrkHistry", param);
-	}
+
 
 	
 

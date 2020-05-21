@@ -5,7 +5,7 @@
 
 	<insert id="insertJoin" parameterType="hashmap">
 
-			INSERT INTO PERSON
+			INSERT INTO USER01
 				( ID
 				  , PASS
 				  , NAME)

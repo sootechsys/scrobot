@@ -15,11 +15,13 @@
  */
 package scrobot.viewedit.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
 import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
  * @Class Name : SampleDAO.java
@@ -38,8 +40,8 @@ import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
  *  Copyright (C) by MOPAS All right reserved.
  */
 
-@Repository("view010101Service")
-public class view010101Service extends EgovAbstractMapper {
+@Repository("view010101P01Service")
+public class view010101P01Service extends EgovAbstractMapper {
 	
 	/**
 	 * 
@@ -47,8 +49,8 @@ public class view010101Service extends EgovAbstractMapper {
 	 * @return 등록 결과
 	 * @exception Exception
 	 */
-	public void registViewDrawWrk(Map<String, Object> param) throws Exception {
-	    insert("view010101.insertViewDrawWrk", param);
+	public List<EgovMap> retrieveWrkList(Map<String, Object> param) throws Exception {
+	    return selectList("view010101P01.retrieveWrkList", param);
 	}
 	
 	/**
@@ -57,8 +59,8 @@ public class view010101Service extends EgovAbstractMapper {
 	 * @return 등록 결과
 	 * @exception Exception
 	 */
-	public void registViewDrawWrkHistry(Map<String, Object> param) throws Exception {
-	    insert("view010101.insertViewDrawWrkHistry", param);
+	public List<EgovMap> retrieveWrkHistryList(Map<String, Object> param) throws Exception {
+		return selectList("view010101P01.retrieveWrkHistryList", param);
 	}
 
 	

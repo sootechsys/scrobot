@@ -45,10 +45,12 @@ import scrobot.user.service.user010102Service;
 @Controller
 public class user010102Controller {
 	
-	/** EgovSampleService */
+	/** user010101Service */
+	@Resource(name = "user010101Service")
 	private user010101Service user010101service;
 
-	/** EgovSampleService */
+	/** user010102Service */
+	@Resource(name = "user010102Service")
 	private user010102Service user010102service;
 
 	/**
@@ -61,7 +63,6 @@ public class user010102Controller {
 	@RequestMapping(value = "/registJoin.do", method = RequestMethod.POST, produces = "application/text; charset=utf8" )
 	@ResponseBody
 	public String registJoin(@RequestParam Map<String, Object> param, SessionStatus status) throws Exception {
-		
 		
 		EgovMap join = user010101service.retrieveLogin(param);
 		String loginSuccessYn = (String) join.get("loginSuccessYn");

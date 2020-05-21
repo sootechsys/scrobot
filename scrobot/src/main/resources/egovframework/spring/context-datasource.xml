@@ -7,9 +7,9 @@
 	<!-- Mysql (POM에서 commons-dbcp, mysql-connector-java 관련 라이브러리 설정 )  -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-        <property name="url" value="jdbc:log4jdbc:mysql://192.168.0.12:3306/sootechsys?useUnicode=true&amp;characterEncoding=utf8"/>
-        <property name="username" value="sootechsys"/>
-        <property name="password" value="!@sootechsys08"/>
+        <property name="url" value="jdbc:log4jdbc:mysql://192.168.0.20:3306/scrobot?useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="username" value="jhj"/>
+        <property name="password" value="1q2w3e4r"/>
     </bean>
     
 </beans>

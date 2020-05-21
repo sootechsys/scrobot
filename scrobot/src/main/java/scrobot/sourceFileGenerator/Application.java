@@ -68,11 +68,13 @@ public class Application {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void creationHTML(Map<String,Object> paramMap) throws IOException, TemplateException, UnsupportedFlavorException, ClassNotFoundException, SQLException {
+	public static Map<String,Object> creationHTML(Map<String,Object> paramMap) throws IOException, TemplateException, UnsupportedFlavorException, ClassNotFoundException, SQLException {
 		
 		Map<String,Object> configMap = loadConfigJsonHTML(paramMap);
 
 		processAll(configMap);
+		
+		return configMap;
 		
 	}
 

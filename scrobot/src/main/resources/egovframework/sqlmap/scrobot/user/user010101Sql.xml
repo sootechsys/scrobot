@@ -6,7 +6,7 @@
 
 	    	/* retrieveLogin */
 			SELECT IF(COUNT(*)=0,'N','Y') AS loginSuccessYn
-			FROM PERSON
+			FROM USER01
 			WHERE ID = #{id}
 			<if test='dvsNm == "login"'>
 			AND PASS = #{pass}    
