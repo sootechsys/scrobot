@@ -105,3 +105,78 @@
 			}
 		}
 	}
+	
+	
+	
+ 	 $( "#sortable" ).sortable({
+         //items: "li:not([level=1])",
+         cancel: "[level=1]",
+         dropOnEmpty: false,
+         placeholder: "ui-state-highlight",
+         
+       /************************************* 
+     	 * 정렬 시작 이벤트
+     	 * 정렬을 하려고 outline 움직이는 순간 발생한다.
+     	**************************************/
+         start : function( event, ui){
+       	  
+       	  // outline 에러시 제자리 복귀하기 위한 index 저장
+       	  vnSortNum = ui.item.parent().children().index(ui.item);
+         },
+         
+         /************************************* 
+          * 정렬 업데이트 이벤트
+          * outline 정렬이 완료되는 순간 발생한다.
+          **************************************/
+         update: function( event, ui ) {
+         	  var voInfo = ui.item;
+         	  
+         	  // outline이 바라보는 실제 컴포넌트id
+         	  var vsOrgId = voInfo.attr("orgId");
+         	  
+         	  var voLiInfo = voInfo.parent().children();
+         	  var vnRealIndex = voLiInfo.index(voInfo);
+         	  
+         	  var vsParentNm = "";
+         	  
+         	  // 자리이동시 상위에 level1인 부모값을 찾는다.
+         	  for(var i=vnRealIndex-1; i>=0; i--){
+         		if(voLiInfo.eq(i).attr("level") == 1){
+         			vsParentNm = voLiInfo.eq(i).attr("id");
+         			break;
+         		}
+         	  }
+         	  
+         	  // 부모가 없는곳으로 이동했을경우 제자리 복귀
+         	  if(vsParentNm == ""){
+         		  robot.alert("객체는 div안에서 존재해야 합니다.")
+         		  $("#sortable").children().eq(vnSortNum).after(voInfo);
+         		  
+         	  // 다른 부모에게 이동했을경우 속성값중 parent값 업데이트
+         	  } else{
+             	  var vsOrgParentId = $("#"+vsParentNm).attr("orgId");
+             	  
+             	
+             	  voInfo.attr("parent", vsParentNm);
+           	  var vnIndex = $("[parent="+vsParentNm+"]").index(voInfo);
+           	  
+           	  
+           	  // 다른 부모에게 이동했지만 첫번째 자식일경우 prepend
+           	  if(vnIndex == 0){
+           		  $("#"+vsOrgParentId).prepend($("#"+vsOrgId))
+           	  // 첫번째 자식이 아닌경우 바로 위의 형제 노드를 찾아 after 처리
+           	  } else{
+           		  
+           		  var voBeforeInfo = $("[parent="+vsParentNm+"]").eq(vnIndex-1).attr("orgId");
+           		  
+           		  $("#"+voBeforeInfo).after($("#"+vsOrgId));
+           		  
+           	  }
+         	  }
+         	  
+         	  
+          }
+       });
+   	
+   	
+       $( "#sortable" ).disableSelection();

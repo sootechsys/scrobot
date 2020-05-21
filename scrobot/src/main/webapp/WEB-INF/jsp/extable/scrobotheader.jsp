@@ -52,7 +52,7 @@
 	상세보기 페이지를 위치시킨다.
 	*/
 	var infoCount = 0;
-	function info(){ debugger;
+	function info(){ 
 		$("#propertyTable").show();
 		if(infoCount == 0){
 			infoCount++;
@@ -82,7 +82,7 @@
 		}
 	}
 	
-	fn_preview = function(){debugger;
+	fn_preview = function(){
 	
 		var info = {"header" : "Preview",
 				    "width"  : $("#creationForm").css("width"),

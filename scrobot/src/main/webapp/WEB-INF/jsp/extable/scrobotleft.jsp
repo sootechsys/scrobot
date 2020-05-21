@@ -23,6 +23,7 @@
 			background-color: #97d5e0;
 			overflow-x: hidden;
 			transition:0.5s ease-in-out;
+			width:320px;
 			/* padding-top: 60px; */
 		}
 		.sidenav tr {
@@ -52,15 +53,19 @@
 			
 		}
 		
+		.JCLRgrip{
+			cursor:ew-resize;
+		}
+		
 		/* 미디어쿼리 적용 */
 
-#propertyTable{
+/* #propertyTable{
 	width:100%; 
 	border: 1px solid #444444; 
 	align: center;
 	border-collapse: collapse;
 	background-color: white;					
-}
+} */
 
 #propertyTable tr {
 	 border: 1px solid #444444;
@@ -111,84 +116,9 @@
 	  
 	  
   	
-  	$(document).click(function(e){
 
-  		fn_draggable();
+  	
 
-  	});
-  	
-  	 $( "#sortable" ).sortable({
-        //items: "li:not([level=1])",
-        cancel: "[level=1]",
-        dropOnEmpty: false,
-        placeholder: "ui-state-highlight",
-        
-      /************************************* 
-    	 * 정렬 시작 이벤트
-    	 * 정렬을 하려고 outline 움직이는 순간 발생한다.
-    	**************************************/
-        start : function( event, ui){
-      	  
-      	  // outline 에러시 제자리 복귀하기 위한 index 저장
-      	  vnSortNum = ui.item.parent().children().index(ui.item);
-        },
-        
-        /************************************* 
-         * 정렬 업데이트 이벤트
-         * outline 정렬이 완료되는 순간 발생한다.
-         **************************************/
-        update: function( event, ui ) {
-        	  var voInfo = ui.item;
-        	  
-        	  // outline이 바라보는 실제 컴포넌트id
-        	  var vsOrgId = voInfo.attr("orgId");
-        	  
-        	  var voLiInfo = voInfo.parent().children();
-        	  var vnRealIndex = voLiInfo.index(voInfo);
-        	  
-        	  var vsParentNm = "";
-        	  
-        	  // 자리이동시 상위에 level1인 부모값을 찾는다.
-        	  for(var i=vnRealIndex-1; i>=0; i--){
-        		if(voLiInfo.eq(i).attr("level") == 1){
-        			vsParentNm = voLiInfo.eq(i).attr("id");
-        			break;
-        		}
-        	  }
-        	  
-        	  // 부모가 없는곳으로 이동했을경우 제자리 복귀
-        	  if(vsParentNm == ""){
-        		  robot.alert("객체는 div안에서 존재해야 합니다.")
-        		  $("#sortable").children().eq(vnSortNum).after(voInfo);
-        		  
-        	  // 다른 부모에게 이동했을경우 속성값중 parent값 업데이트
-        	  } else{
-            	  var vsOrgParentId = $("#"+vsParentNm).attr("orgId");
-            	  
-            	
-            	  voInfo.attr("parent", vsParentNm);
-          	  var vnIndex = $("[parent="+vsParentNm+"]").index(voInfo);
-          	  
-          	  
-          	  // 다른 부모에게 이동했지만 첫번째 자식일경우 prepend
-          	  if(vnIndex == 0){
-          		  $("#"+vsOrgParentId).prepend($("#"+vsOrgId))
-          	  // 첫번째 자식이 아닌경우 바로 위의 형제 노드를 찾아 after 처리
-          	  } else{
-          		  
-          		  var voBeforeInfo = $("[parent="+vsParentNm+"]").eq(vnIndex-1).attr("orgId");
-          		  
-          		  $("#"+voBeforeInfo).after($("#"+vsOrgId));
-          		  
-          	  }
-        	  }
-        	  
-        	  
-         }
-      });
-  	
-  	
-      $( "#sortable" ).disableSelection();
   });
   
   
@@ -199,7 +129,7 @@
     fn_draggable = function(){
   	  $( ".div_content" ).draggable({ cursor: "move",
   									  grid: [ 10, 10 ],
-  									  stop: function( event, ui ) {/* 1188 */debugger;
+  									  stop: function( event, ui ) {/* 1188 */
   										  
   										var voChild = $("#creationTable").children();
   										
@@ -341,10 +271,8 @@
 	         	}
 	         	
 	         	
-	            // 도착한 div의 높이
-    			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
-    			// 도착한 div의 폭
-    			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
+	         	
+	            
 	         	
 	         	
 	         	
@@ -354,6 +282,11 @@
 	            	
 	            	// 움직인곳이 div 안으로 이동했다면(밖->안)
 	            	if(vsDivYn == "Y"){
+	            		// 도착한 div의 높이
+	        			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
+	        			// 도착한 div의 폭
+	        			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
+	        			
             			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-30)+"px")
             			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-30)+"px")
             			
@@ -375,6 +308,11 @@
             		// 도착한 곳이 div 안이라면(안->안)
 	            	if(vsDivYn == "Y"){
 	            		
+	            		// 도착한 div의 높이
+	        			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
+	        			// 도착한 div의 폭
+	        			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
+	        			
             			ui.draggable.css("top",(vnCurrTop-vnNewParentTop)+"px")
             			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft)+"px")
             			voContent.eq(vnDivRow).append(ui.draggable);
@@ -398,11 +336,11 @@
         }
   	 });
   	
-  	  $( ".table" ).resizable();
+   	  $( ".table" ).resizable();
   	  
   	  $( ".table" ).draggable({ cursor: "move",
 		    grid: [ 10, 10 ]
-				});
+				}); 
 
 	  
   	  $( ".div_title" ).draggable({ cursor: "move",
@@ -620,6 +558,10 @@
 	/* 테이블그리기 CallBack */
 	fn_tableCreationCallBack = function(param) {
 
+		if(param == "" || param == null){
+			return false;
+		}
+		
 		// 부모 가로크기
 		var width = $(voFocusDivInfo).css("width");
 
@@ -645,10 +587,10 @@
 		vsSource += "\n <tbody>"
 
 		for (var i = 0; i < param[1]; i++) {
-			vsSource += "\n <tr>";
+			vsSource += "\n <tr name=\"tr\" row=\""+i+"\">";
 			for (var j = 0; j < param[0]; j++) {
 				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
-				vsSource += "name=\"tbtd_"+j+"\""
+				vsSource += "shell=\""+j+"\"";
 				vsSource += "style=\"height:30px;\" "
 				vsSource += "onclick=\"fn_tdOnClick(this)\" "
 				vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
@@ -733,6 +675,7 @@
 	//shift 클릭으로 포커스 주입을 위한 전역변수 ( 0<안눌림> / 1<눌림> )
 	var shiftHold = 0;
 	$(document).ready(function(){
+		
 		$("body").keydown(function (e){
 			// shift
 			if(e.keyCode == 16){
@@ -758,12 +701,38 @@
 				shiftHold = 0;
 			}
 		});
+		
+		
+		$("#creationTable").click(function(e){
+
+  			
+
+  		});
+		
+		$(document).click(function(e){
+
+			fn_draggable();
+			//fn_colResize();
+			
+			if($(e.target).attr("id") == "creationTable"){
+				//div 포커스 해제
+				fn_divFocusCancel();
+				//테이블 포커스 해제
+				fn_tableFocusCancel();
+			}
+
+		});
+		
+	  	
 	})
+	
+	
+	
 	
 	
 	/* div 온클릭 이벤트 
 	 * 포커스 주입 */
-	fn_divOnClick = function(param){ 
+	fn_divOnClick = function(param){
 		
 		if(shiftHold == 0){//shift가 눌리지 않았을때. 하나만 클릭이 되어야 한다.
 			
@@ -797,6 +766,39 @@
 			
 			vsCompoClickDvs = "";
 		
+			//div 선택시 id/class/name/label/style 을 propertyTable에 append
+			var divNum = $("#creationTable > div").length;
+			var vmObj = {};
+			for(var i=0; i<divNum; i++){
+				var vsfocus = $("#div"+i).attr("focus");
+				if(vsfocus == "true"){
+					vmObj = {
+							"id" : $("#div"+i).attr("id"),
+							"class" : $("#div"+i).attr("class"),
+							"name" : $("#div"+i).attr("name"),
+							"label" : $("#div"+i).attr("label"),
+							"style" : $("#div"+i).attr("style")
+					};
+				}
+			}
+			
+			var keys = Object.keys(vmObj);
+			var vsbuffer = "";
+			
+			for(var i in keys){
+				$("tr[name=buffer"+i+"]").remove();
+				if(typeof vmObj[keys[i]] == "undefined"){
+					vmObj[keys[i]]="";
+				}
+				vsbuffer +="<tr name=\"buffer"+i+"\">";
+				vsbuffer +="<td>"+keys[i]+"</td>";
+				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+				vsbuffer +="</tr>";
+			}
+			
+			$("#propertyTable > tbody:last").append(vsbuffer);
+			
+			
 		}else if(shiftHold == 1){
 			
 			if(vsCompoClickDvs == ""){
@@ -858,7 +860,7 @@
 	
 	
 	/* 스팬타이틀 Onclick */
-	fn_spanTitleOnClick = function(param) {debugger;
+	fn_spanTitleOnClick = function(param) {
 		
 	
 		if(vbTitleDragCheck == false){
@@ -912,9 +914,40 @@
 					fn_tableFocusCancel();
 					param.className = "tableFocus";
 				}
+				// td 선택 시 상세보기 테이블에 데이터 추가 1개기준.
+				var vmObj = {
+						"id" : $(".tableFocus").attr("id"),
+						"class" : $(".tableFocus").attr("class"),
+						"name" : $(".tableFocus").attr("name"),
+						"label" : $(".tableFocus").attr("label"),
+						"style" : $(".tableFocus").attr("style")
+				};
+			
+				var keys = Object.keys(vmObj);
+				var vsbuffer = "";
+				for(var i in keys){
+					//테이블 상세보기 마다 초기화 
+					$("tr[name=buffer"+i+"]").remove();
+					
+				//	console.log("key="+keys[i],"value="+vmObj[keys[i]]);
+					
+					if(typeof vmObj[keys[i]] == "undefined"){
+						vmObj[keys[i]] = ""; 
+					}
+					
+					vsbuffer +="<tr name=\"buffer"+i+"\">";
+					vsbuffer +="<td>"+keys[i]+"</td>";
+					vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+					vsbuffer +="</tr>";
+				}
+					
+				$("#propertyTable > tbody:last").append(vsbuffer);	
 			}
-		}
-		else if(shiftHold == 1){
+			
+			
+			
+			
+		} else if(shiftHold == 1){
 			if(param.children.length == 0){
 				if (param.className == "tableFocus") {
 					param.className = "tbtd_content creationTd";
@@ -935,6 +968,7 @@
 		
 		if(label != null){
 			param.textContent = label;
+			$(".tableFocus").attr("label",label);
 		}
 		param.removeChild;
 
@@ -1001,120 +1035,590 @@
 
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ TABLE 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 	
-	/* 행추가 */
-	function fn_tableColAdd() { 
-			
-		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
-		var tdnum = $(vsTableId+"> tbody td").length;
-		var trnum = $(vsTableId+"> tbody tr").length;
+	/*
+	* focus는 tableFocus
+	* 병합 분할은 row shell로 하는걸로
+	*/
+	
+	//위로 행추가
+	//focus된 셀을 누르고 추가시 위에 추가.
+	//현재 테이블 기준으로 가져옴
+	function fn_tableColAddUp(){
+		var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
+		var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		currentTdNum = currentTdNum / currentTrNum; // table td길이
 		
-		var count = tdnum/trnum;
+		var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
+		var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
 		
-		var buffer = "<tr>";
-		
-		for(var i=0; i<count; i++){
-			buffer += "\n  <td class=\"tbtd_content creationTd\" "
-			buffer += "name=\"tbtd_"+i+"\""
+		var buffer = "<tr name=\"tr\" row=\"\">";
+		for(var i=0; i<currentTdNum; i++){
+			buffer += "\n  <td class=\"tbtd_content creationTd\""
+			buffer += "shell = \""+i+"\"";
 			buffer += "style=\"height:30px; cursor:pointer\" "
 			buffer += "onclick=\"fn_tdOnClick(this)\" "
 			buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
 			buffer += "</td>"
 		}
-		
 		buffer += "\n </tr>";
 		
-		$(vsTableId+"> tbody:last").append(buffer);
+		if(vsFocusTrRow ==0){ //가장 위 선택 시 
+			$("#"+vsTableId+"> tbody > tr:first").before(buffer);
+		}else if(vsFocusTrRow !=0){ // 다른곳 선택 시 
+			for(var a=0; a<currentTdNum; a++){ // td갯수만큼 반복
+				var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow-1)+"] > td[shell="+a+"]").attr("rowSpan");// 각td마다 rowSpan을 가져온다
+				if(typeof rowSpan != "undefined" || rowSpan != null){// rowSpan이 있으면
+					viRowSpan = parseInt(rowSpan);
+					viRowSpan += 1;
+					$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow-1+"] > td[shell="+a+"]").attr("rowSpan",viRowSpan);
+				}
+			}
+			$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").before(buffer);
+		}
+			
+		
+		//다 끝나고 나면 tr row 정비
+		// row를 다시 1번부터 매겨줌
+		var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
+		for(var i=1; i<=resetTrNum; i++){
+			$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
+			}
+		
+		
 	}
 	
-	/* 행삭제 */
+	
+	//아래행추가
+	//focus된 셀을 누르고 추가시 아래에 추가.
+	//현재 테이블 기준으로 가져옴
+	function fn_tableColAddDown(){
+		var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
+		var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		currentTdNum = currentTdNum / currentTrNum; // table td길이
+		
+		var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
+		var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
+		
+		var buffer = "<tr name=\"tr\" row=\"\">";
+		for(var i=0; i<currentTdNum; i++){
+			buffer += "\n  <td class=\"tbtd_content creationTd\""
+			buffer += "shell = \""+i+"\"";
+			buffer += "style=\"height:30px; cursor:pointer\" "
+			buffer += "onclick=\"fn_tdOnClick(this)\" "
+			buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
+			buffer += "</td>"
+		}
+		buffer += "\n </tr>";
+		
+		for(var a=0; a<currentTdNum; a++){ // td갯수만큼 반복
+			
+	    	var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+1)+"] > td[shell="+a+"]").attr("rowSpan");// 각td마다 rowSpan을 가져온다
+	    	
+	    	if(typeof rowSpan != "undefined" || rowSpan != null){// rowSpan이 있으면
+	    		
+	    		viRowSpan = parseInt(rowSpan);
+	    		viRowSpan += 1;
+	    		$("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+1)+"] > td[shell="+a+"]").attr("rowspan",viRowSpan);
+	    	}
+	    }
+	    	$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").after(buffer);
+		
+		//다 끝나고 나면 tr row 정비
+		// row를 다시 1번부터 매겨줌
+		var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
+		for(var i=1; i<=resetTrNum; i++){
+			$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
+			}
+		
+		
+	}
+	
+	
+	
+	
+	//행삭제
+	//focus된 행을 삭제한다.
 	function fn_tableColDel(){
-		var vsTableId = "#"+$(".tableFocus").parent().parent().parent().attr("id");
-		$(vsTableId+">tbody:last > tr:last").remove();
+		var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
+		var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		currentTdNum = currentTdNum / currentTrNum; // table td길이
+		var vsFocusTrRow = $(".tableFocus").parent().attr("row");// focus tr row
+		var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
+		
+		
+			
+		for(var i=0; i<currentTdNum; i++){
+			var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"] > td[shell="+i+"]").attr("rowspan");// 각td마다 rowSpan을 가져온다	
+			if(typeof rowSpan != "undefined" || rowSpan != null){ // rowSpan 있을떄
+				var viRowSpan = parseInt(rowSpan);	
+				
+				var buffer = "<td class=\"tbtd_content creationTd\""
+					buffer += "shell = \""+i+"\"";
+					buffer += "style=\"height:30px; cursor:pointer\" "
+					buffer += "onclick=\"fn_tdOnClick(this)\" "
+					buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
+					buffer += "</td>"
+			
+				$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").remove();
+					
+				for(var j=1; j<viRowSpan; j++){
+					$("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+j)+"] > td[shell="+i+"]").after(buffer);
+				}
+				
+			}
+			else if(typeof rowSpan == "undefined" || rowSpan == null){ //rowSpan 없을떄
+				$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").remove();
+			}
+		}
+		
+		//다 끝나고 나면 tr row 정비
+		// row를 다시 1번부터 매겨줌
+		var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
+		for(var i=1; i<=resetTrNum; i++){
+			$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
+			}
+	}
+	
+	/* 테이블 병합 
+	 * 테이블 병합 순서
+	 * 1. 테이블의 모든 colspan rowspan을 받아온다
+	 * 2. 각각을 비교 - 1:1 = 1 / r:1 = rn / 1:c = cn / r:c = r:c
+	*/
+
+	// 테이블 병합.
+function fn_tableMerge(){ 
+	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); // 테이블 아이디
+	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; //현재 tr 갯수
+	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+	currentTdNum = currentTdNum / currentTrNum; //현재 td 갯수
+	
+	//rowSpan 탐색
+	var vsRow = new Array(currentTdNum);
+		for(var i=0; i<currentTrNum; i++){
+			vsRow[i] = new Array(currentTrNum);
+		}
+
+	for(var i=0; i<currentTrNum; i++){//tr갯수만큼 반복
+		var viTdLength = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td").length;
+		for(var j=0; j<currentTdNum; j++){//td갯수만큼 반복
+			var rowSpan = $("#"+vsTableId+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("rowspan");
+				if(typeof rowSpan != "undefined" || rowSpan != null){
+					vsRow[i][j] = rowSpan;
+				}
+				else{
+					vsRow[i][j] = 1;
+				}
+		}
 	}
 	
 
-	//행 병합;
-	function fn_tableColMerge(){ 
+	
+	//colSpan 탐색
+	var vsCol = new Array(currentTdNum);
+		for(var i=0; i<currentTrNum; i++){
+			vsCol[i] = new Array(currentTrNum);
+		}
 		
-		//행병합 시 colSpan 속성 갯수 구하기
-		var colComp = 0;
-		//선택된 것들 중 가장 앞에 있는 셀의 name을 가져옴
-		var tfnameFirst = $(".tableFocus").attr("name");
-		//name 뒤에 수를 가져옴
-		var tfnameFirstNum = parseInt(tfnameFirst.substring(tfnameFirst.lastIndexOf("_")+1));
-		//tableFocus된 셀의 갯수 파악
-		var FocusCount = $(".tableFocus").length;
-		//열병합 방지 변수
-		var rowSpan = 0;
-		for(var i=tfnameFirstNum; i<FocusCount+tfnameFirstNum+1; i++){
-			var viCol = $(".tableFocus[name=tbtd_"+i+"]").attr("colSpan");
-			var vitfname = $(".tableFocus[name=tbtd_"+i+"]").attr("name");
-			if(typeof viCol != "undefined"){ // 콜스판찾아오기
-				colComp += parseInt(viCol);
+	for(var i=0; i<currentTrNum; i++){//tr갯수만큼 반복
+		var viTdLength = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td").length;
+		for(var j=0; j<currentTdNum; j++){//td갯수만큼 반복
+			var colSpan = $("#"+vsTableId+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("colspan");
+				if(typeof colSpan != "undefined" || colSpan != null){
+					vsCol[i][j] = colSpan;
+				}
+				else{
+					vsCol[i][j] = 1;
+				}
+		}	
+	}
+	
+	
+	//text 탐색
+	var vsText = new Array(currentTdNum);
+		for(var i=0; i<currentTrNum; i++){
+			vsText[i] = new Array(currentTrNum);
+		}
+		
+	for(var i=0; i<currentTrNum; i++){
+		for(var j=0; j<currentTdNum; j++){
+			vsText[i][j] = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").text();
+		}
+	}
+	
+	
+	
+	//row / col 세이브
+	var vsTotal = new Array(currentTdNum);
+	for(var i=0; i<currentTrNum; i++){
+		vsTotal[i] = new Array(currentTrNum);
+	}
+	
+	for(var i=0; i<currentTrNum; i++){
+		for(var j=0; j<currentTdNum; j++){
+			var rowSpan = vsRow[i][j];
+			var colSpan = vsCol[i][j];
+			// 분기처리 - 1. xx 2. xy 3. yx 4. yy
+			// 1. xx 둘다 없다
+			if(rowSpan == "1" && colSpan == "1"){
+				if(vsTotal[i][j]=="c0" || vsTotal[i][j]=="r0"){ // row&col에 먹힌거면
+					continue;
+				}else{
+					vsTotal[i][j] = "1";
+				}
 			}
-			if(typeof vitfname == "undefined"){// name이 undefined면 열을 선택했거나 떨어져서 선택
-				var maxlength = FocusCount+tfnameFirstNum;
-				if(i == maxlength){
-					//만약 이전에 이름이 있었다면?
-					var j = i-1;
-					var beforeName = $(".tableFocus[name=tbtd_"+j+"]").attr("name");
-					if(beforeName != null){
-						rowSpan = 0;
-						console.log(beforeName);
-					}else{
-						rowSpan = 1;
-						if(rowSpan == 1){
-							alert("다시 선택하세요");
-							break;
+			// 2. row는 있고 col은 없다
+			else if(rowSpan != "1" && colSpan == "1"){
+				var virowSpan = parseInt(rowSpan);
+				for (var a=1; a<virowSpan; a++){
+					if(i+a > currentTrNum){
+						break;
+					}
+					vsTotal[i+a][j] = "r0";
+					vsTotal[i][j] = "r"+rowSpan;
+				}
+			}
+			// 3. row는 없고 col은 있다
+			else if(rowSpan == "1" && colSpan != "1"){
+				var viColSpan = parseInt(colSpan);
+				for (var a=1; a<viColSpan; a++){
+					if(j+a > currentTdNum){
+						break;
+					}
+					vsTotal[i][j+a] = "c0";
+					vsTotal[i][j] = "c"+colSpan;
+				}
+			}
+			// 4. yy 둘다 있다 i=tr j=td
+			else if(rowSpan != "1" && colSpan != "1"){
+				var virowSpan = parseInt(rowSpan);
+				var viColSpan = parseInt(colSpan);
+				for (var a=i; a<virowSpan+i; a++){
+					for(var b=j; b<viColSpan+j; b++){
+						if(a == i && b == j){
+							vsTotal[a][b]= rowSpan+":"+colSpan;
+						}else if(a == i){
+							vsTotal[a][b]="c0";
+						}else if(a!=i){
+							vsTotal[a][b]="r0";
+						}
 					}
 				}
 			}
 		}
 	}
+	
+	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 상단까지 배열로 col / row 가져오기 실시함 / text ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 		
-		if(colComp == 0){
-			if(rowSpan == 0){
-				$(".tableFocus[name =tbtd_"+tfnameFirstNum+"]").attr("class","tbtd_sum"); // 병합할 td 클래스명 일시변경
-				$(".tbtd_sum").attr("colSpan",FocusCount);
-				$(".tbtd_sum").attr("class","tbtd_content creationTd"); //원상복귀
-				$(".tableFocus").remove();
+	// focus 된 td들의 위치를 정확히 파악해서 그곳에다가 attr해줌. 0인경우 remove(); || hide(); 
+	var vsTalbeFocus = new Array(currentTdNum);
+	for(var i=0; i<currentTrNum; i++){
+		vsTalbeFocus[i] = new Array(currentTrNum);
+	}
+	
+	for(var i=0; i<currentTrNum; i++){
+		for(var j=0; j<currentTdNum; j++){
+			vsTalbeFocus[i][j] = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("class");
+		}
+	}
+
+	
+	
+	var tableFocusRowNumber = $(".tableFocus").parent().attr("row");
+	var stub = parseInt(tableFocusRowNumber);
+	var tableFocusShellNumber = $(".tableFocus").attr("shell"); //tablefocus 좌상단
+	var stub2 = parseInt(tableFocusShellNumber);
+	
+	var Span = [];
+	
+	//rowSpan의 갯수는 각 tr당 r이 속해있는 것 중 
+	
+	var inputRowSpan = 0; // 최종 row
+	var inputColSpan = 0; // 최종 col
+	for(var i=0; i<currentTrNum; i++){
+		for(var j=0; j<currentTdNum; j++){
+			var check = vsTotal[i][j];
+			var classCheck = vsTalbeFocus[i][j];
+			// 유형 = tf-c / tf-r / tf-cr / tf-1 / tf-0
+			if(typeof Span[i] == "undefined" && Span[i] == null){
+				Span[i]=0;
+			}
+			if(classCheck == "tableFocus"){
+				if(check.indexOf(":") != -1){ // tf-cr
+					var vaCheck = check.split(":");
+					var viRNum = parseInt(vaCheck[0]);
+					var viCNum = parseInt(vaCheck[1]);
+					var colSize = Span[i];
+					Span[i] = colSize+viCNum;
+				}
+				else if(check.indexOf("c") != -1){
+					var viStup2 = parseInt(check.replace("c",""));
+					var colSize = Span[i];
+					Span[i] = colSize+viStup2;
+				}
+				else if(check.indexOf("r") != -1){
+					var colSize = Span[i];
+					Span[i] = colSize+1;					
+				}
+				else if(check == "1"){
+					var colSize = Span[i];
+					Span[i] = colSize+1;
+				}
+			}
+
+		}
+	}
+	
+	
+	inputColSpan = Span[stub]; //colSpan 길이
+	
+	//rowSpan 길이
+	var viFocusRow = new Array(currentTdNum);
+	for(var i=0; i<currentTrNum; i++){
+		viFocusRow[i] = new Array(currentTrNum);
+	}
+	
+	
+	for(var i=0; i<currentTrNum; i++){
+		for(var j=0; j<currentTdNum; j++){
+			var check = vsTotal[i][j];
+			var classCheck = vsTalbeFocus[i][j];
+			if(classCheck == "tableFocus"){
+				if(check.indexOf(":") != -1){
+					var vaCheck = check.split(":");
+					var viRNum = parseInt(vaCheck[0]);
+					viFocusRow[i][j] = viRNum;
+				}
+				else if(check.indexOf("r") != -1){
+					var viStup1 = parseInt(check.replace("r",""));
+					var viRNum = parseInt(viStup1);
+					viFocusRow[i][j] = viRNum;
+					
+				}
+				else if(check.indexOf("c") != -1){
+					viFocusRow[i][j] = 1;
+				}
+				else if(check == 1){
+					viFocusRow[i][j] = 1;
+				}
+			}
+			else if(classCheck != "tableFocus"){
+				viFocusRow[i][j] = 0;
+			}
+			
+		}
+	}
+	
+	var total = [];
+	for(var i=0; i<currentTdNum; i++){
+		for(var j=0; j<currentTrNum; j++){
+			var adder = viFocusRow[j][i];
+			if(typeof total[i] =="undefined"){
+				total[i]=0;
+			}
+			if(adder == 0){
+				continue;
+			}
+			else if(adder != 0){
+				var current = total[i];
+				total[i] = current + adder;
 			}
 		}
-		else if(colComp != 0){
-			//콜스판 포함한 셀의 수
-			var totalSel = colComp + FocusCount - 1;
-			$(".tableFocus[name=tbtd_"+tfnameFirstNum+"]").attr("class","tbtd_sum");
-			$(".tbtd_sum").attr("colSpan",totalSel);
-			$(".tbtd_sum").attr("class","tbtd_content creationTd"); 
-			$(".tableFocus").remove();
-		}			
-	}//fn_tableColMerge() end
-		
-	//행 분할시 하나씩만 할 수 있도록 한다.
- 	function fn_tableColDivision(){ 
- 		
- 		var vsColspanYN = $(".tableFocus").attr("colSpan");
- 		if(typeof vsColspanYN == "undefined" || vsColspanYN == null){
- 			alert("병합되지 않은 셀 또는 열은 분할할 수 없습니다.");
- 		}
- 		else{
-	 		var colspan = $(".tableFocus").attr("colSpan");
-	 		var name = $(".tableFocus").attr('name');
-	 	 	var namenum = parseInt(name.substring(name.lastIndexOf("_")+1)); 
-	 	 	var totalnum = parseInt(colspan)+namenum;
-	 	 	var buffer ="";
-	 	 	for(namenum; namenum<totalnum; namenum++){
-	 	 		buffer += "\n  <td class=\"tbtd_content creationTd\" ";
-	 	 		buffer += "name=\"tbtd_"+namenum+"\"";
-	 	 		buffer += "style=\"height:30px; cursor:pointer\" ";
-	 	 		buffer += "onclick=\"fn_tdOnClick(this)\" ";
-	 	 		buffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
-	 	 		buffer += "</td>";
-	 	 		}
-	 			$("td.tableFocus[name ="+name+"]").after(buffer);
-	 			$("td.tableFocus[name ="+name+"]").remove();
- 			}
 	}
+	
+	// inputRowSpan에 값 설정.
+	for(var i=0; i<total.length; i++){
+		var check = total[i];
+		if(inputRowSpan <= check){
+			inputRowSpan = check;
+		}		
+	}
+
+	
+	
+	
+
+		
+		//col row 재분배함
+		// 좌측 상단에만 줘야함, 나머지는 0으로 바꿔줘야함.
+		var first=0;
+		for(var i=0; i<currentTrNum; i++){
+			for(var j=0; j<currentTdNum; j++){
+				var check = vsTotal[i][j];
+				var classCheck = vsTalbeFocus[i][j];
+				
+				if(classCheck == "tableFocus"){
+					if(check != "0"){
+						if(first == 0){
+							first += 1;
+							if(inputRowSpan > 1 && inputColSpan > 1){ // r:c
+								// 여기서 줄인다..?
+								for(var a=stub; a<inputRowSpan+stub; a++){
+									for(var b=stub2; b<inputColSpan+stub2; b++){
+										if(a == stub && b == stub2){
+											continue;
+										}
+										
+										if(a == stub){
+											vsTotal[a][b] = "c0";
+										}
+										else if(a != stub){
+											vsTotal[a][b] = "r0";
+										}
+										
+									}
+								}
+								vsTotal[i][j] = inputRowSpan.toString()+":"+inputColSpan.toString();	
+							}
+							else if(inputRowSpan > 1 && inputColSpan <= 1){ // r
+								for(var a=stub; a<inputRowSpan+stub; a++){
+									if(a == stub){
+										continue;
+									}
+									vsTotal[a][j] = "r0"
+								}
+								vsTotal[i][j] = "r"+ inputRowSpan.toString()
+							}
+							else if(inputRowSpan <= 1 && inputColSpan > 1){ // c
+								for(var b=stub2; b<inputColSpan+stub2; b++){
+									if(b == stub2){
+										continue;
+									}
+									vsTotal[i][b] = "c0"
+								}
+								vsTotal[i][j] = "c"+inputColSpan.toString();
+							}
+							else if(inputRowSpan <= 1 && inputColSpan <= 1){ // 없
+								alert("하나만 선택하면 안되요");
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
+		for(var i=0; i<currentTrNum; i++){
+			for(var j=0; j<currentTdNum; j++){
+				var InputSpan = vsTotal[i][j];
+				// 0 / 1 / c / r / r:c
+				if(InputSpan == "c0" || InputSpan == "r0" ){ //포함되는 셀 hide();
+					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").hide(); // h
+				} 
+				else if(InputSpan == "1"){
+					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").show();
+				}
+				else if(InputSpan.indexOf(":") != -1){ // row:col // row나 col이 0일 수 있음 분기처리.
+					var vaCheck = InputSpan.split(":");
+					var vsRNum = vaCheck[0];
+					var vsCNum = vaCheck[1];
+					var viRNum = vsRNum.replace("r",""); //r 값
+					var viCNum = vsCNum.replace("c",""); //c 값
+					
+					if(viRNum == "0" && viCNum != "0"){
+						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+					}
+					else if(viCNum == "0" && viRNum != "0"){
+						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+					}
+					else if(viCNum != "0" && viRNum != "0"){
+						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+					}
+				}
+				else if(InputSpan.indexOf("c") != -1){ // col
+					var viStup2 = parseInt(InputSpan.replace("c",""));
+					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viStup2);
+				}
+				else if(InputSpan.indexOf("r") != -1){ // row
+					var viStup1 = parseInt(InputSpan.replace("r",""));
+					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viStup1);
+				}
+			}
+		}
+}//병합 end
+
+
+	/* 테이블 분할  - 눌린셀은 그냥 전부 분할되게.
+	 * 테이블 분할 
+	 * 1. 병합된 셀 분할
+	 * 2. 단일 셀 분할
+	*/
+	function fn_tableDivision(){ 
+		var vsTableId = $(".tableFocus").parent().parent().parent().attr("id");
+		var focusTr = parseInt($(".tableFocus").parent().attr("row"));
+		var focusTd = parseInt($(".tableFocus").attr("shell"));
+		var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		currentTdNum = currentTdNum / currentTrNum; 
+		
+		 var checkColSpan = $(".tableFocus").attr("colspan");
+		 	if(typeof checkColSpan == "undefined"){
+		 		checkColSpan = 0;
+		 	}
+		 var focusShellCol = parseInt(checkColSpan);
+		 
+		 var checkRowSpan = $(".tableFocus").attr("rowspan");
+		 	if(typeof checkRowSpan == "undefined"){
+		 		checkRowSpan = 0;
+		 	}
+		 var focusShellRow = parseInt(checkRowSpan);
+		 
+		 if(focusShellCol == 0 && focusShellRow != 0){// col이 없을떄
+			$("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("rowSpan");
+			
+		 	for(var a=focusTr+1; a<focusTr+focusShellRow; a++){
+				$("#"+vsTableId+"> tbody > tr[row="+a+"] > td[shell="+focusTd+"]").show();
+			}
+		 }
+		 else if(focusShellCol != 0 && focusShellRow == 0){ // row가 없을때
+			 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("colSpan");
+	
+			 for(var a=focusTd+1; a<focusTd+focusShellCol; a++){
+				$("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+a+"]").show();
+			}
+		 }
+		 else if(focusShellCol != 0 && focusShellRow != 0){ // 둘다 있으면
+			 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("rowSpan");
+			 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("colSpan");
+			 
+			 for(var a=focusTr; a<focusTr+focusShellRow; a++){
+				 for(var b=focusTd; b<focusTd+focusShellCol; b++){
+					 if(a==focusTr && b==focusTd){
+						 continue;
+					 }
+					 else{
+						 $("#"+vsTableId+"> tbody > tr[row="+a+"] > td[shell="+b+"]").show();
+					 }
+				 }
+			 }
+		 }
+		 else if(focusShellCol == 0 && focusShellRow == 0){ 			
+		}
+	}	
+	 
+		
+		
+	fn_colResize = function(){
+		
+		var onSampleResized = function(e){
+			var table = $ (e.currentTarget);
+		 };
+		
+			$ ("#table0").colResizable({
+			 	liveDrag : true , 
+			    gripInnerHtml : "<div class = 'grip'> </ div>" ,  
+			    draggingClass : "dragging" ,  
+			    onResize : onSampleResized
+		  });
+		}
+	
+
+
+	
+	
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ TABLE 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
@@ -1155,7 +1659,6 @@
 		
 		//key와 value를 가져와 해당 component에 입력
 		for(var i in keys){
-			//console.log("key="+keys[i],"value="+vmObj[keys[i]]);
 			$(".tableFocus").attr(keys[i],vmObj[keys[i]]);
 		}
 	}//수정 프로세스 end
@@ -1200,13 +1703,11 @@
 		for(var j=0; j<Keys.length; j++){
 			//입력값이 없을때 
 			if(vsProperty == null){
-				console.log("alert");
 				alert("검색어를 입력하세요");
 				break;
 			}
 			// 입력값이 테이블에 있을때 
 			if(Keys[j] == vsProperty){
-				console.log("success");
 				for(var k=0; k<vsTrnum; k++){	
 					$("tr[name=buffer"+k+"]").hide();
 				}
@@ -1225,7 +1726,7 @@
 <body>
 	<div id="mysidenav" class="sidenav">
 		<!-- <div style="width: 500px; float: left;"> -->
-				<table width="400px" border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
+				<table border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
 					<colgroup>
 						<col width="100" />
 						<col width="100" />
@@ -1249,12 +1750,13 @@
 					</tr>
 					
 					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAdd();">행 추가</td>
+						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddUp();">위로 행 추가</td>
+						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddDown();">아래 행 추가</td>
 						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDel();">행 삭제</td>
 					</tr>
 					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColMerge();">병합</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDivision();">분할</td>
+						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableMerge();">병합</td>
+						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableDivision();">분할</td>
 					</tr>
 				</table>
 			<!-- </div> -->

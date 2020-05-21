@@ -38,7 +38,7 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 	robot.openPop(info,callBack, vsSource,"tag");
 }
 
-robot.promptOnclick = function(callBack){
+robot.promptOnclick = function(callBack){debugger;
 	var voClassInfo = $(".prompt_input");
 	var voClassValue = [];
 	for(var i=0; i<voClassInfo.length; i++){
