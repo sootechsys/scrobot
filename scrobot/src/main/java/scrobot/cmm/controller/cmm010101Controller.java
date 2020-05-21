@@ -31,8 +31,7 @@ import scrobot.cmm.service.cmm010101Service;
  * @see
  *
  *  Copyright (C) by MOPAS All right reserved.
- *  kbh test!!!
- *  jhj test!!!
+ *  kbh test2!!!!!
  */
 
 @Controller
