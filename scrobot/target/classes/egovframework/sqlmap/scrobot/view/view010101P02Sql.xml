@@ -10,7 +10,7 @@
 			     , SOURCE
 			FROM ROBOT02
 			WHERE USER_ID = #{userId}
-			<if test='wrkNm != "" and wrkNm != null'>
+			<if test='wrkNm != "" and wrkNm != anull'>
 			AND WRK_NM = #{wrkNm}    
 			</if>
 			AND CHNG_HISTRY_DTTM = #{chngHistryDttm}
