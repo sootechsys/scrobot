@@ -110,7 +110,7 @@
   
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
-
+  vbInputBoxDragCheck = false;
 
   $(function(){
 	  
@@ -270,12 +270,6 @@
             		
 	         	}
 	         	
-	         	
-	         	
-	            
-	         	
-	         	
-	         	
 	            // 출발한 곳이 밖이라면
 	            if(vsParentId == "creationTable"){
 	            		
@@ -319,30 +313,25 @@
 	            	
 	            	// 도착한 곳이 div 밖이라면(안->밖)
 	            	} else{
-	            		
-	            		
 	            		ui.draggable.css("top",(vnCurrTop+30)+"px")
 	            		ui.draggable.css("left",(vnCurrLeft+30)+"px")
 	            		$( this ).append(ui.draggable);
 	            	}
 	            	
 	            }
-	         	
-	         	
-	            
-	        		
 	        
 	        }
         }
   	 });
   	
    	  $( ".table" ).resizable();
-  	  
-  	  $( ".table" ).draggable({ cursor: "move",
-		    grid: [ 10, 10 ]
-				}); 
-
-	  
+   	  
+   	  $( ".table" ).draggable({ cursor: "move",
+							    grid: [ 10, 10 ],
+							    stop: function(){
+					               vbTableDragCheck = true;
+								}});
+  	  	  
   	  $( ".div_title" ).draggable({ cursor: "move",
   		  						    grid: [ 10, 10 ],
   		  						    stop: function(){
@@ -355,13 +344,54 @@
   		                       stop: function(){
 		  			               vbButtonDragCheck = true;
 		  			   		}});
-    }
+  	  
     
     $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
-	
-	
-	
-	
+    
+    
+    $(".inputBox").draggable();
+  }
+  
+  
+  	//inputBox / selectBox는 DOM element가 아니라서 지원이 안됨.
+    //만들어야함
+
+    /*  function fn_inputBoxMouseDown(element, ev){ debugger;
+  		document.body.style.cursor = "move";
+  		
+  		document.onmousemove = function(ev){
+  			ev = ev||window.event;
+  		
+			//좌표
+  			var top = Event.pointerY(ev);
+  			var left = Event.pointerX(ev);
+  			
+  			//좌표값으로 css 값 변환
+  			element.style.position = "absolute";
+  			element.style.left = left+"px";
+  			element.style.top = top+"px";
+  			
+  			//이벤트 종료하고 false 반환
+  			Event.stop(ev);
+  			return false;
+  		};
+  		
+  		document.onmouseup = function(ev){
+  			ev = ev||window.event;
+  			
+  			document.body.style.cursor = "auto";
+  			
+  			document.onmousemove = null;
+  			document.onmouseup = null;
+  			Event.stop(ev);
+  			return false;
+  		};
+  		
+  		
+  	} */
+  	
+  	
+  	
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 그리기 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 
 	
@@ -549,7 +579,7 @@
 	
 	/* 테이블그리기 */
 	function tableCreation() {
-		
+		debugger;
 		robot.prompt("행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
 
 	};
@@ -631,8 +661,8 @@
 
 		fn_tableFocusYn();
 		voFocusTdInfo.textContent = "";
-		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
-		vsInputSource += "readonly style=\"text-align:left\">";
+		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\"";
+		vsInputSource += "readonly style=\"text-align:left\" onmousedown=\"fn_inputBoxMouseDown(this,event);\">";
 		vsInputSource += "</input>";
 
 		$(".tableFocus").append(vsInputSource);
@@ -642,7 +672,6 @@
 		$(voFocusTdInfo).css("text-align","left");
 		
 		vnInputCount++;
-		
 	};
 
 	
@@ -652,7 +681,7 @@
 
 		fn_tableFocusYn();
 		var vsSelectSource = "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
-		vsSelectSource += "style=\"width:100px;\""
+		vsSelectSource += "style=\"width:100px;\"";
 		vsSelectSource += "></select>";
 
 		$(".tableFocus").append(vsSelectSource);
@@ -879,6 +908,15 @@
 		
 
 	}
+
+	
+	/* 인풋박스 onclick */
+	fn_InputBoxOnClick = function(param){
+		if(vbInputBoxDragCheck == false){
+			vsCompoClickDvs = "inputBox";
+		}
+				
+		}
 	
 	
 	/* 버튼 Onclick */

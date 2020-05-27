@@ -40,32 +40,18 @@ import egovframework.rte.psl.dataaccess.util.EgovMap;
  *  Copyright (C) by MOPAS All right reserved.
  */
 
-@Repository("view010101P01Service")
-public class view010101P01Service extends EgovAbstractMapper {
-	
-
+@Repository("view010101P02Service")
+public class view010101P02Service extends EgovAbstractMapper {
 	
 	/**
 	 * 
-	 * @param vo - 등록할 정보가 담긴 SampleVO
-	 * @return 등록 결과
+	 * @param vo - 등록된 코드가 담긴 SampleVO
+	 * @return 코드 검색 결과
 	 * @exception Exception
 	 */
-	public List<EgovMap> retrieveWrkList(Map<String, Object> param) throws Exception {
-	    return selectList("view010101P01.retrieveWrkList", param);
+	public List<EgovMap> retrieveWrkDetail(Map<String, Object> param) throws Exception {
+	    return selectList("view010101P02.retrieveWrkDetail", param);
 	}
-	
-	/**
-	 * 
-	 * @param vo - 등록할 정보가 담긴 SampleVO
-	 * @return 등록 결과
-	 * @exception Exception
-	 */
-	public List<EgovMap> retrieveWrkHistryList(Map<String, Object> param) throws Exception {
-		return selectList("view010101P01.retrieveWrkHistryList", param);
-	}
-
-	
 
 }
  

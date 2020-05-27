@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
 import scrobot.sourceFileGenerator.Application;
 import scrobot.viewedit.service.view010101P01Service;
+import scrobot.viewedit.service.view010101P02Service;
 /**
  * @Class Name : viewEditController.java
  * @Description : EgovSample Controller Class
@@ -38,36 +40,34 @@ import scrobot.viewedit.service.view010101P01Service;
  */
 
 @Controller
-public class view010101P01Controller {
+public class view010101P02Controller {
 	
 	/** view010101Service */
-	@Resource(name = "view010101P01Service")
-	private view010101P01Service view010101P01service;
+	@Resource(name = "view010101P02Service")
+	private view010101P02Service view010101P02service;
 	
-	/**
-	 * HTML 만들기를 실행한다.
-	 */
-	@RequestMapping(value = "/retrieveWrk.ajax", produces = "application/text; charset=utf8" )
+	@RequestMapping(value = "/retrieveWrkDetail.ajax", produces = "application/text; charset=utf8" )
 	@ResponseBody
-	public ModelAndView retrieveWrk(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
+	public ModelAndView retrieveWrkDetail(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
-		
 		paramMap.put("userId", userId);
-		List<EgovMap> wrkList = view010101P01service.retrieveWrkList(paramMap);
-		List<EgovMap> wrkHistryList = view010101P01service.retrieveWrkHistryList(paramMap);
-		
-		Map<String, Object> resultMap = new HashMap();
-		
-		resultMap.put("wrkList", wrkList);
-		resultMap.put("wrkHistryList", wrkHistryList);
 		
 		ModelAndView mav = new ModelAndView("jsonView");
 		
-		mav.addObject("resultMap",resultMap);
+		List<EgovMap> eList = view010101P02service.retrieveWrkDetail(paramMap);
+		
+		mav.addObject("eList",eList);
+		
+		
 		return mav;
 	}
+
 	
-
-
+/*	@RequestMapping(value = "/view010101P02.do", produces = "application/text; charset=utf8" )
+	public ModelAndView retrieveWrkDetailPop(HttpServletResponse Response, HttpServletRequest request) {
+		
+		
+		return null;
+	}*/
 }
