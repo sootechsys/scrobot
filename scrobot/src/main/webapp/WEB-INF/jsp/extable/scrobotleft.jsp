@@ -110,16 +110,10 @@
   
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
-  vbInputBoxDragCheck = false;
+
+
+
   
-  $(function(){
-	  
-	  
-  	
-
-  	
-
-  });
   
   
   
@@ -270,6 +264,8 @@
             		
 	         	}
 	         	
+	         	ui.draggable.css("position","absloute");
+	         	
 	            // 출발한 곳이 밖이라면
 	            if(vsParentId == "creationTable"){
 	            		
@@ -313,25 +309,25 @@
 	            	
 	            	// 도착한 곳이 div 밖이라면(안->밖)
 	            	} else{
-	            		ui.draggable.css("top",(vnCurrTop+30)+"px")
-	            		ui.draggable.css("left",(vnCurrLeft+30)+"px")
+	     
+	            		ui.draggable.css("top",(vnCurrTop+31)+"px")
+	            		ui.draggable.css("left",(vnCurrLeft+31)+"px")
 	            		$( this ).append(ui.draggable);
 	            	}
-	            	
+	            
 	            }
-	        
 	        }
         }
   	 });
   	
    	  $( ".table" ).resizable();
-   	  
-   	  $( ".table" ).draggable({ cursor: "move",
-							    grid: [ 10, 10 ],
-							    stop: function(){
-					               vbTableDragCheck = true;
-								}});
-  	  	  
+
+  	  $( ".table" ).draggable({ cursor: "move",
+		    					grid: [ 10, 10 ]
+								}
+  	  ); 
+
+	  
   	  $( ".div_title" ).draggable({ cursor: "move",
   		  						    grid: [ 10, 10 ],
   		  						    stop: function(){
@@ -343,8 +339,36 @@
 			    			   grid: [ 10, 10 ],
   		                       stop: function(){
 		  			               vbButtonDragCheck = true;
-		  			   		}});
-  	  
+		  			   		}
+	});
+	
+  	  $(".inputBox").draggable({ cancel:false,
+		   					   cursor: "move",
+		   					   grid: [ 10, 10 ],
+		   					   stop: function(event,ui){
+  							}
+  	});
+  	
+  	$(".selectBox").draggable({ cancel:false,
+		    					cursor: "move",
+		      					grid: [ 10, 10 ],
+		      					stop: function(){
+		      					}
+  	});
+  	
+  	 $( "td" ).droppable({
+        drop: function( event, ui ) {debugger;
+        	var vsClass = ui.draggable.attr("class");
+        	if(vsClass.indexOf("inputBox") != -1 || vsClass.indexOf("selectBox") != -1){
+        		ui.draggable.css("top","");
+        		ui.draggable.css("left","");
+        		ui.draggable.css("position","relative");
+        		$(this).append(ui.draggable);
+        	}
+        
+        }
+    
+    });
     
     $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
     
@@ -660,19 +684,23 @@
 	/* input박스 그리기 */
 	function inputCreation() {
 
-		fn_tableFocusYn();
 		voFocusTdInfo.textContent = "";
-		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" focus=false ";
-		vsInputSource += "readonly style=\"text-align:left\" onclick=\"fn_InputBoxOnClick(this);\" ondblclick=\"fn_InputBoxOnDblClick(this);\">";
-		vsInputSource += "</input>";
+		
+		var vsSource = "";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "<br/>"
+		}
+		
+		vsSource += "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
+		vsSource += "readonly "
+		if(!fn_tableFocusYn()){
+			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
+		} else {
+			vsSource += "style=\"text-align:left; \">";
+		}
+		vsSource += "</input>";
 
-		$(".tableFocus").append(vsInputSource);
-		voFocusTdInfo.className = "tbtd_content creationTd";
-		
-		// input박스 왼쪽정렬
-		$(voFocusTdInfo).css("text-align","left");
-		
-		vnInputCount++;
 	};
 
 	
@@ -687,6 +715,32 @@
 
 		$(".tableFocus").append(vsSelectSource);
 		voFocusTdInfo.className = "tbtd_content creationTd";
+		voFocusTdInfo.textContent = "";
+		
+		var vsSource = "";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "<br/>"
+		}
+		vsSource += "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "style=\"text-align:left; width:100px; top:"+fn_creationPosition()+"px;\">";
+		} else {
+			vsSource += "style=\"text-align:left; width:100px; \">";
+		}
+		
+		vsSource += "style=\"width:100px;\""
+		vsSource += "></select>";
+		
+		// table focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_tableFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 td에 생성
+		} else{
+			$(".tableFocus").append(vsSource);
+		}
 		
 		vnSelectCount++;
 	};
