@@ -111,7 +111,7 @@
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
   vbInputBoxDragCheck = false;
-
+  
   $(function(){
 	  
 	  
@@ -512,9 +512,9 @@
 		vsSource += ">";
 	
 		// 타이틀 span
-		vsSource += "  <span id=\"span" + vnTitleCount + "_title\"";
+		vsSource += "  <span id=\"span" + vnTitleCount + "_title\" focus=false";
 		vsSource += "  class=\"span_title\" "
-		vsSource += "  onclick=\"fn_spanTitleOnClick(this)\"> Title "
+		vsSource += "  onclick=\"fn_spanTitleOnClick(this)\" ondblclick=\"fn_titleOnDblClick(this);\"> Title "
 		vsSource += "  </span>";
 		vsSource += "  </div>";
 		
@@ -550,8 +550,9 @@
 		var vsSource = "  <input type=\"button\" id=\"button" + vnButtonCount+"\"";
 		vsSource += "  class=\"button\" "
 		vsSource += "  value=\"button\" "
+		vsSource += "  focus=false "
 		vsSource += "  style=\"top:"+fn_creationPosition()+"px;\"";
-		vsSource += "  onclick=\"fn_buttonOnClick(this)\">"
+		vsSource += "  onclick=\"fn_buttonOnClick(this)\" ondblclick=\"fn_buttonOnDblClick(this);\">";
 		vsSource += "  </input>";
 		
 		// div focus 여부
@@ -661,8 +662,8 @@
 
 		fn_tableFocusYn();
 		voFocusTdInfo.textContent = "";
-		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\"";
-		vsInputSource += "readonly style=\"text-align:left\" onmousedown=\"fn_inputBoxMouseDown(this,event);\">";
+		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" focus=false ";
+		vsInputSource += "readonly style=\"text-align:left\" onclick=\"fn_InputBoxOnClick(this);\" ondblclick=\"fn_InputBoxOnDblClick(this);\">";
 		vsInputSource += "</input>";
 
 		$(".tableFocus").append(vsInputSource);
@@ -680,8 +681,8 @@
 	function selectCreation() {
 
 		fn_tableFocusYn();
-		var vsSelectSource = "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
-		vsSelectSource += "style=\"width:100px;\"";
+		var vsSelectSource = "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\" focus=false ";
+		vsSelectSource += "style=\"width:100px;\" onclick=\"fn_onclickSelectBox(this);\" ondblclick=\"fn_SelectBoxOnDblClick(this);\"";
 		vsSelectSource += "></select>";
 
 		$(".tableFocus").append(vsSelectSource);
@@ -890,19 +891,65 @@
 	
 	/* 스팬타이틀 Onclick */
 	fn_spanTitleOnClick = function(param) {
-		
-	
+		debugger;
+		var titleNum = $("#creationTable > div > span[class=\"span_title\"]").length;
 		if(vbTitleDragCheck == false){
 			vsCompoClickDvs = "title";
 		
-			var title = prompt("타이틀을 입력하시오");
+		// 더블클릭으로 변경 예정
+		/* 	var title = prompt("타이틀을 입력하시오");
 			if(title != null){
 				$(param).parent().css("width","1000px");
 				param.textContent = title;
 				var vnWidth = $(param).css("width");
 				$(param).parent().css("width",vnWidth);
+			} */
+			
+			var titleFocus = $(param).attr("focus");
+			
+			if(titleFocus == "false"){
+				for(var i=0; i<titleNum; i++){
+					var vsfocus = $("#span"+i+"_title").attr("focus",false);
+				}
+				$(param).attr("focus",true);
+				fn_tableFocusCancel();
+				fn_inputFocusCancel();
+				fn_buttonFocusCancel();
+				fn_selectFocusCancel();
+			}
+			else if(titleFocus == "true"){
+				$(param).attr("focus",false);
+			}
+			
+			var vmObj = {};
+			for(var i=0; i<titleNum; i++){
+				var vsfocus = $("#span"+i+"_title").attr("focus");
+				if(vsfocus == "true"){
+					vmObj = {
+							"id" : $("#span"+i+"_title").attr("id"),
+							"class" : $("#span"+i+"_title").attr("class"),
+							"name" : $("#span"+i+"_title").attr("name"),
+							"label" : $("#span"+i+"_title").attr("label"),
+							"style" : $("#span"+i+"_title").attr("style")
+					};
+				}
+			}
+			
+			var keys = Object.keys(vmObj);
+			var vsbuffer = "";
+			
+			for(var i in keys){
+				$("tr[name=buffer"+i+"]").remove();
+				if(typeof vmObj[keys[i]] == "undefined"){
+					vmObj[keys[i]]="";
+				}
+				vsbuffer +="<tr name=\"buffer"+i+"\">";
+				vsbuffer +="<td>"+keys[i]+"</td>";
+				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+				vsbuffer +="</tr>";
+			}
+			$("#propertyTable > tbody:last").append(vsbuffer);
 		}
-	}
 	
 	
 		
@@ -912,29 +959,191 @@
 	
 	/* 인풋박스 onclick */
 	fn_InputBoxOnClick = function(param){
+		debugger;
 		if(vbInputBoxDragCheck == false){
 			vsCompoClickDvs = "inputBox";
 		}
-				
+		
+		var inputFocusLength = $(".inputBox").length;
+		
+		var inputFocus = $(param).attr("focus");
+		
+		if(inputFocus == "false"){
+			//div 포커스 해제
+			fn_divFocusCancel();
+			//테이블 포커스 해제
+			fn_tableFocusCancel();
+			//타이틀
+			fn_titleFocusCancel();
+			//버튼
+			fn_buttonFocusCancel();
+			//셀렉트
+			fn_selectFocusCancel();
+			for(var i=0; i<inputFocusLength; i++){
+				var vsfocus = $(".inputBox").attr("focus",false);
+			}
+			$(param).attr("focus",true);
+		}
+		else if(inputFocus == "true"){
+			//div 포커스 해제
+			fn_divFocusCancel();
+			//테이블 포커스 해제
+			fn_tableFocusCancel();			
+			$(param).attr("focus",false);
+		}
+		
+		var vmObj = {};
+		for(var i=0; i<inputFocusLength; i++){
+			var vsfocus = $("input[name=value"+i+"]").attr("focus");
+			if(vsfocus == "true"){
+				vmObj = {
+						"id" : $("input[name=value"+i+"]").attr("id"),
+						"class" : $("input[name=value"+i+"]").attr("class"),
+						"name" : $("input[name=value"+i+"]").attr("name"),
+						"label" : $("input[name=value"+i+"]").attr("label"),
+						"style" : $("input[name=value"+i+"]").attr("style")
+				};
+			}
+		}
+		
+		var keys = Object.keys(vmObj);
+		var vsbuffer = "";
+		
+		for(var i in keys){
+			$("tr[name=buffer"+i+"]").remove();
+			if(typeof vmObj[keys[i]] == "undefined"){
+				vmObj[keys[i]]="";
+			}
+			vsbuffer +="<tr name=\"buffer"+i+"\">";
+			vsbuffer +="<td>"+keys[i]+"</td>";
+			vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+			vsbuffer +="</tr>";
+		}
+		$("#propertyTable > tbody:last").append(vsbuffer);
+	
 		}
 	
 	
 	/* 버튼 Onclick */
 	fn_buttonOnClick = function(param) {
-		
+		debugger;
 		if(vbButtonDragCheck == false){
 			vsCompoClickDvs = "button";
 			
-			var buttonNm = prompt("버튼명을 입력하시오");
+			//더블클릭 이벤트로 예정
+			/* var buttonNm = prompt("버튼명을 입력하시오");
 			if(buttonNm != null && buttonNm != ""){
 				$(param).val(buttonNm);
+			} */
+			
+			var vnButtonFocus = $(param).attr("focus");
+			//버튼갯수 길이
+			var buttonLength =  $(".button").length;
+			
+			if(vnButtonFocus == "false"){
+				fn_tableFocusCancel();
+				fn_inputFocusCancel();
+				fn_titleFocusCancel();
+				fn_selectFocusCancel();
+				for(var i=0; i<buttonLength; i++){
+					var vsfocus = $("#button"+i).attr("focus",false);
+				}
+				$(param).attr("focus",true);
+				
+				
+				var vmObj = {};
+				for(var i=0; i<buttonLength; i++){
+					var vsfocus = $("#button"+i).attr("focus");
+					if(vsfocus == "true"){
+						vmObj = {
+								"id" : $("#button"+i).attr("id"),
+								"class" : $("#button"+i).attr("class"),
+								"name" : $("#button"+i).attr("name"),
+								"label" : $("#button"+i).attr("label"),
+								"style" : $("#button"+i).attr("style")
+						};
+					}
+				}
+				var keys = Object.keys(vmObj);
+				var vsbuffer = "";
+				
+				for(var i in keys){
+					$("tr[name=buffer"+i+"]").remove();
+					if(typeof vmObj[keys[i]] == "undefined"){
+						vmObj[keys[i]]="";
+					}
+					vsbuffer +="<tr name=\"buffer"+i+"\">";
+					vsbuffer +="<td>"+keys[i]+"</td>";
+					vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+					vsbuffer +="</tr>";
+				}
+				$("#propertyTable > tbody:last").append(vsbuffer);
 			}
 		}
-		
+			else if(vnButtonFocus =="true"){
+				for(var i=0; i<buttonLength; i++){
+					var vsfocus = $("#button"+i).attr("focus",false);
+				}
+				$(param).attr("focus",false);
+			}
+			
 		vbButtonDragCheck = false;
 	}
 	
-
+	/*selectBox 온클릭 이벤트*/
+	fn_onclickSelectBox = function(param){debugger;
+		
+		var vnSelectBoxFocus = $(param).attr("focus");
+		
+		var SelectBoxLength = $(".selectBox").length;
+		
+		if(vnSelectBoxFocus == "false"){
+			fn_tableFocusCancel();
+			fn_inputFocusCancel();
+			fn_titleFocusCancel();
+		
+			for(var i=0; i<SelectBoxLength; i++){
+				var vsfocus = $("select[name=value"+i+"]").attr("focus",false);
+			}
+			$(param).attr("focus",true);
+			
+			var vmObj = {};
+			for(var i=0; i<SelectBoxLength; i++){
+				var vsfocus = $("select[name=value"+i+"]").attr("focus");
+				if(vsfocus == "true"){
+					vmObj = {
+							"id" : $("select[name=value"+i+"]").attr("id"),
+							"class" : $("select[name=value"+i+"]").attr("class"),
+							"name" : $("select[name=value"+i+"]").attr("name"),
+							"label" : $("select[name=value"+i+"]").attr("label"),
+							"style" : $("select[name=value"+i+"]").attr("style")
+					};
+				}
+			}
+			var keys = Object.keys(vmObj);
+			var vsbuffer = "";
+			
+			for(var i in keys){
+				$("tr[name=buffer"+i+"]").remove();
+				if(typeof vmObj[keys[i]] == "undefined"){
+					vmObj[keys[i]]="";
+				}
+				vsbuffer +="<tr name=\"buffer"+i+"\">";
+				vsbuffer +="<td>"+keys[i]+"</td>";
+				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
+				vsbuffer +="</tr>";
+			}
+			$("#propertyTable > tbody:last").append(vsbuffer);
+		}
+		else if(vnSelectBoxFocus =="true"){
+			for(var i=0; i<SelectBoxLength; i++){
+				var vsfocus = $("select[name=value"+i+"]").attr("focus",false);
+			}
+			$(param).attr("focus",false);
+		}
+				
+	}
+	
 	/* 테이블 td 온클릭 이벤트
 		포커스 주입 */
 	fn_tdOnClick = function(param) { 
@@ -946,6 +1155,9 @@
 			if(param.children.length == 0){
 				if(vitdCount == 0){
 					if(param.className == "tbtd_content creationTd"){
+						fn_inputFocusCancel();
+						fn_titleFocusCancel();
+						fn_buttonFocusCancel();
 						param.className = "tableFocus";
 					}
 				}else if(vitdCount >= 1){
@@ -982,9 +1194,6 @@
 				$("#propertyTable > tbody:last").append(vsbuffer);	
 			}
 			
-			
-			
-			
 		} else if(shiftHold == 1){
 			if(param.children.length == 0){
 				if (param.className == "tableFocus") {
@@ -1019,6 +1228,24 @@
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ click 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
+	
+	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 더블클릭 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+	fn_InputBoxOnDblClick = function(param){ //input
+		//기능 구분되면 작성
+	}
+	
+	fn_SelectBoxOnDblClick = function(param){ //select
+		// 기능구분되면 작성
+	}
+	
+	fn_titleOnDblClick = function(param){ // title
+		// 기능구분되면 작성
+	}
+	
+	fn_buttonOnDblClick = function(param){ //button
+		// 기능구분되면 작성	
+	}
+	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 더블클릭 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 
 	
 	
@@ -1045,8 +1272,7 @@
 			return false;
 		}
 	}
-	
-	
+
 	/* div focus 해제 */
 	fn_divFocusCancel = function(){
 		if($("[focus=true]").length != 0){
@@ -1067,6 +1293,38 @@
 		}
 	}
 	
+	/*title focus 해제 */
+	fn_titleFocusCancel = function(){
+		
+		var vnTitleCount = $("#creationTable > div > span[class=\"span_title\"]").length;
+		
+		for(var i=0; i<vnTitleCount; i++){
+			$("#span"+i+"_title").attr("focus",false);
+		}
+	}
+	
+	/*inputBox focs 해제*/
+	fn_inputFocusCancel = function(){
+		var vnInputBoxCount = $("input[class=\"inputBox ui-draggable ui-draggable-handle\"]").length; //수정필요
+		for(var i=0; i<vnInputBoxCount; i++){
+			$("input[name=value"+i+"]").attr("focus",false);
+		}
+	}
+	
+	/*button focus 해제 */
+	fn_buttonFocusCancel = function(){
+		var vnButtonCount = $(".button").length;
+		for(var i=0; i<vnButtonCount; i++){
+			$("#button"+i).attr("focus",false);
+		}
+	}
+	
+	fn_selectFocusCancel = function(){
+		var vnSelectCount = $(".selectBox").length;
+		for(var i=0; i<vnSelectCount; i++){
+			$("select[name=value"+i+"]").attr("focus",false);
+		}
+	}
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 포커스 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
