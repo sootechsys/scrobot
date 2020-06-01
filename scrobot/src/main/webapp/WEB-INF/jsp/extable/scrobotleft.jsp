@@ -1235,8 +1235,10 @@
 		// td에 자식이 없을 경우에만 포커스
 		var vitdCount = $(".tableFocus").length;
 		if(shiftHold == 0){
+			if(param.children.length == 0){
 				if(vitdCount == 0){
 					if(param.className.indexOf("tbtd_content") != -1){
+						
 						param.className = "tableFocus";
 					}
 				}else if(vitdCount >= 1){
@@ -1272,7 +1274,7 @@
 					
 				$("#propertyTable > tbody:last").append(vsbuffer);	
 			
-			
+			}
 			
 			
 		} else if(shiftHold == 1){
