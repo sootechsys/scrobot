@@ -1769,7 +1769,7 @@ function fn_tableMerge(){
 			} 
 			
 		}		
-	}//검색 프로세스 end
+	}//검색 프로세스 endss
 
 	
 </script>

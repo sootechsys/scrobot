@@ -3,7 +3,7 @@
  */
 robot = {};
 
-/* prompt - 프롬프트를 실행한다.
+/* prompt - 프롬프트를 실행한다.dd
  * msg : 메시지 내용(String)
  * ele : prompt 요소(Arrary)
  * btn1 : 버튼1 name(String)
