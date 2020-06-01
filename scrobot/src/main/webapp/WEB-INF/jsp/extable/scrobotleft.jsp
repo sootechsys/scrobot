@@ -643,7 +643,7 @@
 	
 	
 	/* input박스 그리기 */
-	function inputCreation() {
+	function inputCreation() {debugger;
 
 		voFocusTdInfo.textContent = "";
 		
