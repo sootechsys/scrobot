@@ -38,7 +38,7 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 	robot.openPop(info,callBack, vsSource,"tag");
 }
 
-robot.promptOnclick = function(callBack){debugger;
+robot.promptOnclick = function(callBack){
 	var voClassInfo = $(".prompt_input");
 	var voClassValue = [];
 	for(var i=0; i<voClassInfo.length; i++){
@@ -145,5 +145,30 @@ robot.closePop = function(param, callBack){
 	if(callBack != null && callBack != "" && typeof(callBack) == "function"){
 		callBack(param);
 	}
+}
+
+/* confirm - confirm창을 실행
+ * msg : 메시지 내용(String)
+ * btn1 : 버튼 name(String)
+ * btn2 : 버튼 name(String)
+ * param : 파라메터 값 (Array)
+ * callBack : callback함수(String)
+ * */
+robot.confirm = function(msg, btn1, btn2, param, callBack){
+	
+	var vsSource = "<h3>"+msg+"<h3><br><br>";
+	
+	if(btn1 == null || btn1 == ""){
+		btn1 = "확인";
+	}
+	if(btn2 == null || btn2 == ""){
+		btn2 = "취소";
+	}
+	
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop("+param+","+callBack+");\"></input>";
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
+	
+	var info = {"header" : "confirm"};
+	robot.openPop(info,callBack, vsSource,"tag");
 }
 

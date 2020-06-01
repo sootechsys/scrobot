@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
@@ -9,55 +9,56 @@
 <head>
 <meta charset="UTF-8">
 <title>scrobot_공통사이드바</title>
- 
 
-	<style>
-		/* 사이드바 스타일 */
-		.sidenav {
-			height:100%;
-			position: fixed;
-			z-index:1;
-			top: 0;
-			left: 0;
-			margin-top:50px;
-			background-color: #97d5e0;
-			overflow-x: hidden;
-			transition:0.5s ease-in-out;
-			width:320px;
-			/* padding-top: 60px; */
-		}
-		.sidenav tr {
-			padding: 10px 10px 10px 10px;
-			text-decoration: none;
-			/* font-size: 25px; */
-			color: #fff;
-			display: block;
-			transition: 0.2s ease-in-out;
-		}
-		.sidenav table{
-			/* margin:auto; */
-			width:100%;
-		}
-		
-		.sidenav table thead tr th{
-			margin:auto;
-			
-		}
-		
-		.sidenav tbody{
-			width:80%;
-		}
-		.sidenav td{
-			width:50px;
-			height:20px;
-			
-		}
-		
-		.JCLRgrip{
-			cursor:ew-resize;
-		}
-		
-		/* 미디어쿼리 적용 */
+
+<style>
+/* 사이드바 스타일 */
+.sidenav {
+	height: 100%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	margin-top: 50px;
+	background-color: #97d5e0;
+	overflow-x: hidden;
+	transition: 0.5s ease-in-out;
+	width: 320px;
+	/* padding-top: 60px; */
+}
+
+.sidenav tr {
+	padding: 10px 10px 10px 10px;
+	text-decoration: none;
+	/* font-size: 25px; */
+	color: #fff;
+	display: block;
+	transition: 0.2s ease-in-out;
+}
+
+.sidenav table {
+	/* margin:auto; */
+	width: 100%;
+}
+
+.sidenav table thead tr th {
+	margin: auto;
+}
+
+.sidenav tbody {
+	width: 80%;
+}
+
+.sidenav td {
+	width: 50px;
+	height: 20px;
+}
+
+.JCLRgrip {
+	cursor: ew-resize;
+}
+
+/* 미디어쿼리 적용 */
 
 /* #propertyTable{
 	width:100%; 
@@ -66,14 +67,9 @@
 	border-collapse: collapse;
 	background-color: white;					
 } */
-
 #propertyTable tr {
-	 border: 1px solid #444444;
+	border: 1px solid #444444;
 }
-
-
-
-
 </style>
 <script type="text/javaScript">
 
@@ -108,13 +104,12 @@
   // outline 제자리 복귀시 rownum
   vnSortNum = 0;
   
+  // drop여부
+  vsDropYn = "";
+  
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
 
-
-
-  
-  
   
   
   /************************************* 
@@ -166,6 +161,8 @@
   										  
   									  }
   	  });
+  	  
+  	  
   	  $( ".div_content" ).resizable();
   	  $( ".div_content" ).droppable({
 /*         drop: function( event, ui ) {
@@ -199,8 +196,9 @@
   	  
   	  
   	$( "#creationTable" ).droppable({
-        drop: function( event, ui ) {
+        drop: function( event, ui ) {debugger;
         
+        	vsDropYn = "Y";
 	        if(ui.draggable.attr("class").indexOf("div_content") == -1){
 	        		
 	            var voContent = $(".div_content");
@@ -221,10 +219,20 @@
 	         	var vsDivYn = "N";
 	        	var vnDivRow = 0;
 	        	
-	        	
-	        	
-	        	
 	            if(vsParentClass != null){
+	            	// 출발한 곳이 테이블이라면
+	            	if(vsParentClass.indexOf("tbtd_content ") != -1){
+	            		// 출발한 div의 높이
+		            	var vnOldParentTop = Number(ui.draggable.parent().offset().top);
+		            	
+		            	// 출발한 div의 폭
+		            	var vnOldParentLeft = Number(ui.draggable.parent().offset().left);
+		            	vnCurrTop += vnOldParentTop;
+		            	vnCurrTop -= 76;
+		            	vnCurrLeft += vnOldParentLeft;
+		            	vnCurrLeft -= 337;
+	            	}
+	            	
 	            	// 출발한 곳이 안이라면
 	            	if(vsParentClass.indexOf("div_content") != -1){
 	            		// 출발한 div의 높이
@@ -236,6 +244,9 @@
 		            	vnCurrLeft += vnOldParentLeft;
 	            	}
 	            	
+	            	
+	            	
+	            	
 	            }
 	            
 	         	// div_content 개수 동안 반복
@@ -245,8 +256,6 @@
             		var left = Number(voContent.eq(i).css("left").replace("px",""));
             		var width = Number(voContent.eq(i).css("width").replace("px",""));
             		
-            		
-            		
             		// 도착한 곳이 div 안이라면(밖->안)
 	                if(vnCurrTop < top+height && vnCurrTop > top &&
 	                   vnCurrLeft < left+width && vnCurrLeft > left){
@@ -254,35 +263,30 @@
 	                	vsDivYn = "Y";
 	                }
             		
-            		
     	            if(vsDivYn == "Y"){
     	            	vnDivRow = i;
     	            	break;
     	            }
-            		
-            		
-            		
 	         	}
 	         	
 	         	ui.draggable.css("position","absloute");
 	         	
 	            // 출발한 곳이 밖이라면
 	            if(vsParentId == "creationTable"){
-	            		
 	            	
 	            	// 움직인곳이 div 안으로 이동했다면(밖->안)
-	            	if(vsDivYn == "Y"){
+	            	if(vsDivYn == "Y"){debugger;
 	            		// 도착한 div의 높이
 	        			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
 	        			// 도착한 div의 폭
 	        			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
 	        			
-            			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-30)+"px")
-            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-30)+"px")
+	        			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-31)+"px")
+            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-31)+"px")
+            			
             			
             			voContent.eq(vnDivRow).append(ui.draggable);
             			
-	            	
 	            	// 움직인곳이 밖으로 이동했다면(밖->밖)
 	            	} else{
 	            		// 아무액션 필요없음
@@ -290,10 +294,6 @@
 	            
 	            // 출발한 곳이 div 안일경우
 	            } else{
-	            	
-	            	
-	            	
-            		
 	            	
             		// 도착한 곳이 div 안이라면(안->안)
 	            	if(vsDivYn == "Y"){
@@ -305,23 +305,24 @@
 	        			
             			ui.draggable.css("top",(vnCurrTop-vnNewParentTop)+"px")
             			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft)+"px")
+            			
             			voContent.eq(vnDivRow).append(ui.draggable);
 	            	
 	            	// 도착한 곳이 div 밖이라면(안->밖)
 	            	} else{
-	     
+	            		
 	            		ui.draggable.css("top",(vnCurrTop+31)+"px")
 	            		ui.draggable.css("left",(vnCurrLeft+31)+"px")
 	            		$( this ).append(ui.draggable);
 	            	}
-	            
+	            	
 	            }
 	        }
         }
   	 });
   	
    	  $( ".table" ).resizable();
-
+  	  
   	  $( ".table" ).draggable({ cursor: "move",
 		    					grid: [ 10, 10 ]
 								}
@@ -332,7 +333,8 @@
   		  						    grid: [ 10, 10 ],
   		  						    stop: function(){
   		  			                   vbTitleDragCheck = true;
-  		  			   				}});
+  		  			   				}
+  	  });
   	  
   	  $(".button").draggable({ cancel:false,
   	     					   cursor: "move",
@@ -340,9 +342,9 @@
   		                       stop: function(){
 		  			               vbButtonDragCheck = true;
 		  			   		}
-	});
-	
-  	  $(".inputBox").draggable({ cancel:false,
+  	  });
+  	  
+  	$(".inputBox").draggable({ cancel:false,
 		   					   cursor: "move",
 		   					   grid: [ 10, 10 ],
 		   					   stop: function(event,ui){
@@ -355,8 +357,8 @@
 		      					stop: function(){
 		      					}
   	});
-  	
-  	 $( "td" ).droppable({
+  
+    $( "td" ).droppable({
         drop: function( event, ui ) {debugger;
         	var vsClass = ui.draggable.attr("class");
         	if(vsClass.indexOf("inputBox") != -1 || vsClass.indexOf("selectBox") != -1){
@@ -367,55 +369,15 @@
         	}
         
         }
-    
     });
     
     $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
     
-    
-    $(".inputBox").draggable();
-  }
-  
-  
-  	//inputBox / selectBox는 DOM element가 아니라서 지원이 안됨.
-    //만들어야함
-
-    /*  function fn_inputBoxMouseDown(element, ev){ debugger;
-  		document.body.style.cursor = "move";
-  		
-  		document.onmousemove = function(ev){
-  			ev = ev||window.event;
-  		
-			//좌표
-  			var top = Event.pointerY(ev);
-  			var left = Event.pointerX(ev);
-  			
-  			//좌표값으로 css 값 변환
-  			element.style.position = "absolute";
-  			element.style.left = left+"px";
-  			element.style.top = top+"px";
-  			
-  			//이벤트 종료하고 false 반환
-  			Event.stop(ev);
-  			return false;
-  		};
-  		
-  		document.onmouseup = function(ev){
-  			ev = ev||window.event;
-  			
-  			document.body.style.cursor = "auto";
-  			
-  			document.onmousemove = null;
-  			document.onmouseup = null;
-  			Event.stop(ev);
-  			return false;
-  		};
-  		
-  		
-  	} */
-  	
-  	
-  	
+    };
+	
+	
+	
+	
 	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 그리기 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
 
 	
@@ -485,8 +447,8 @@
 		
 		if(vnFormHeight <= vnTotalSize){
 			vnFormHeight = vnTotalSize+"px";
-			$("#creationForm").css("height",vnFormHeight)
-			$("#creationTable").css("height",vnTableSize+"px")
+			$("#creationForm").css("height",vnFormHeight);
+			$("#creationTable").css("height",vnTableSize+"px");
 		}
 	}
 	
@@ -536,9 +498,9 @@
 		vsSource += ">";
 	
 		// 타이틀 span
-		vsSource += "  <span id=\"span" + vnTitleCount + "_title\" focus=false";
+		vsSource += "  <span id=\"span" + vnTitleCount + "_title\"";
 		vsSource += "  class=\"span_title\" "
-		vsSource += "  onclick=\"fn_spanTitleOnClick(this)\" ondblclick=\"fn_titleOnDblClick(this);\"> Title "
+		vsSource += "  onclick=\"fn_spanTitleOnClick(this)\"> Title "
 		vsSource += "  </span>";
 		vsSource += "  </div>";
 		
@@ -574,9 +536,8 @@
 		var vsSource = "  <input type=\"button\" id=\"button" + vnButtonCount+"\"";
 		vsSource += "  class=\"button\" "
 		vsSource += "  value=\"button\" "
-		vsSource += "  focus=false "
 		vsSource += "  style=\"top:"+fn_creationPosition()+"px;\"";
-		vsSource += "  onclick=\"fn_buttonOnClick(this)\" ondblclick=\"fn_buttonOnDblClick(this);\">";
+		vsSource += "  onclick=\"fn_buttonOnClick(this)\">"
 		vsSource += "  </input>";
 		
 		// div focus 여부
@@ -604,7 +565,7 @@
 	
 	/* 테이블그리기 */
 	function tableCreation() {
-		debugger;
+		
 		robot.prompt("행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
 
 	};
@@ -701,6 +662,21 @@
 		}
 		vsSource += "</input>";
 
+		// input박스 왼쪽정렬
+		$(voFocusTdInfo).css("text-align","left");
+		
+		
+		// table focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_tableFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 td에 생성
+		} else{
+			$(".tableFocus").append(vsSource);
+		}
+		
+		vnInputCount++;
+		
 	};
 
 	
@@ -708,13 +684,6 @@
 	/* select박스 그리기 */
 	function selectCreation() {
 
-		fn_tableFocusYn();
-		var vsSelectSource = "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\" focus=false ";
-		vsSelectSource += "style=\"width:100px;\" onclick=\"fn_onclickSelectBox(this);\" ondblclick=\"fn_SelectBoxOnDblClick(this);\"";
-		vsSelectSource += "></select>";
-
-		$(".tableFocus").append(vsSelectSource);
-		voFocusTdInfo.className = "tbtd_content creationTd";
 		voFocusTdInfo.textContent = "";
 		
 		var vsSource = "";
@@ -807,6 +776,7 @@
 
 		});
 		
+
 	  	
 	})
 	
@@ -945,259 +915,42 @@
 	
 	/* 스팬타이틀 Onclick */
 	fn_spanTitleOnClick = function(param) {
-		debugger;
-		var titleNum = $("#creationTable > div > span[class=\"span_title\"]").length;
+		
+	
 		if(vbTitleDragCheck == false){
 			vsCompoClickDvs = "title";
 		
-		// 더블클릭으로 변경 예정
-		/* 	var title = prompt("타이틀을 입력하시오");
+			var title = prompt("타이틀을 입력하시오");
 			if(title != null){
 				$(param).parent().css("width","1000px");
 				param.textContent = title;
 				var vnWidth = $(param).css("width");
 				$(param).parent().css("width",vnWidth);
-			} */
-			
-			var titleFocus = $(param).attr("focus");
-			
-			if(titleFocus == "false"){
-				for(var i=0; i<titleNum; i++){
-					var vsfocus = $("#span"+i+"_title").attr("focus",false);
-				}
-				$(param).attr("focus",true);
-				fn_tableFocusCancel();
-				fn_inputFocusCancel();
-				fn_buttonFocusCancel();
-				fn_selectFocusCancel();
-			}
-			else if(titleFocus == "true"){
-				$(param).attr("focus",false);
-			}
-			
-			var vmObj = {};
-			for(var i=0; i<titleNum; i++){
-				var vsfocus = $("#span"+i+"_title").attr("focus");
-				if(vsfocus == "true"){
-					vmObj = {
-							"id" : $("#span"+i+"_title").attr("id"),
-							"class" : $("#span"+i+"_title").attr("class"),
-							"name" : $("#span"+i+"_title").attr("name"),
-							"label" : $("#span"+i+"_title").attr("label"),
-							"style" : $("#span"+i+"_title").attr("style")
-					};
-				}
-			}
-			
-			var keys = Object.keys(vmObj);
-			var vsbuffer = "";
-			
-			for(var i in keys){
-				$("tr[name=buffer"+i+"]").remove();
-				if(typeof vmObj[keys[i]] == "undefined"){
-					vmObj[keys[i]]="";
-				}
-				vsbuffer +="<tr name=\"buffer"+i+"\">";
-				vsbuffer +="<td>"+keys[i]+"</td>";
-				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
-				vsbuffer +="</tr>";
-			}
-			$("#propertyTable > tbody:last").append(vsbuffer);
 		}
+	}
 	
 	
 		
 
 	}
-
-	
-	/* 인풋박스 onclick */
-	fn_InputBoxOnClick = function(param){
-		debugger;
-		if(vbInputBoxDragCheck == false){
-			vsCompoClickDvs = "inputBox";
-		}
-		
-		var inputFocusLength = $(".inputBox").length;
-		
-		var inputFocus = $(param).attr("focus");
-		
-		if(inputFocus == "false"){
-			//div 포커스 해제
-			fn_divFocusCancel();
-			//테이블 포커스 해제
-			fn_tableFocusCancel();
-			//타이틀
-			fn_titleFocusCancel();
-			//버튼
-			fn_buttonFocusCancel();
-			//셀렉트
-			fn_selectFocusCancel();
-			for(var i=0; i<inputFocusLength; i++){
-				var vsfocus = $(".inputBox").attr("focus",false);
-			}
-			$(param).attr("focus",true);
-		}
-		else if(inputFocus == "true"){
-			//div 포커스 해제
-			fn_divFocusCancel();
-			//테이블 포커스 해제
-			fn_tableFocusCancel();			
-			$(param).attr("focus",false);
-		}
-		
-		var vmObj = {};
-		for(var i=0; i<inputFocusLength; i++){
-			var vsfocus = $("input[name=value"+i+"]").attr("focus");
-			if(vsfocus == "true"){
-				vmObj = {
-						"id" : $("input[name=value"+i+"]").attr("id"),
-						"class" : $("input[name=value"+i+"]").attr("class"),
-						"name" : $("input[name=value"+i+"]").attr("name"),
-						"label" : $("input[name=value"+i+"]").attr("label"),
-						"style" : $("input[name=value"+i+"]").attr("style")
-				};
-			}
-		}
-		
-		var keys = Object.keys(vmObj);
-		var vsbuffer = "";
-		
-		for(var i in keys){
-			$("tr[name=buffer"+i+"]").remove();
-			if(typeof vmObj[keys[i]] == "undefined"){
-				vmObj[keys[i]]="";
-			}
-			vsbuffer +="<tr name=\"buffer"+i+"\">";
-			vsbuffer +="<td>"+keys[i]+"</td>";
-			vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
-			vsbuffer +="</tr>";
-		}
-		$("#propertyTable > tbody:last").append(vsbuffer);
-	
-		}
 	
 	
 	/* 버튼 Onclick */
 	fn_buttonOnClick = function(param) {
-		debugger;
+		
 		if(vbButtonDragCheck == false){
 			vsCompoClickDvs = "button";
 			
-			//더블클릭 이벤트로 예정
-			/* var buttonNm = prompt("버튼명을 입력하시오");
+			var buttonNm = prompt("버튼명을 입력하시오");
 			if(buttonNm != null && buttonNm != ""){
 				$(param).val(buttonNm);
-			} */
-			
-			var vnButtonFocus = $(param).attr("focus");
-			//버튼갯수 길이
-			var buttonLength =  $(".button").length;
-			
-			if(vnButtonFocus == "false"){
-				fn_tableFocusCancel();
-				fn_inputFocusCancel();
-				fn_titleFocusCancel();
-				fn_selectFocusCancel();
-				for(var i=0; i<buttonLength; i++){
-					var vsfocus = $("#button"+i).attr("focus",false);
-				}
-				$(param).attr("focus",true);
-				
-				
-				var vmObj = {};
-				for(var i=0; i<buttonLength; i++){
-					var vsfocus = $("#button"+i).attr("focus");
-					if(vsfocus == "true"){
-						vmObj = {
-								"id" : $("#button"+i).attr("id"),
-								"class" : $("#button"+i).attr("class"),
-								"name" : $("#button"+i).attr("name"),
-								"label" : $("#button"+i).attr("label"),
-								"style" : $("#button"+i).attr("style")
-						};
-					}
-				}
-				var keys = Object.keys(vmObj);
-				var vsbuffer = "";
-				
-				for(var i in keys){
-					$("tr[name=buffer"+i+"]").remove();
-					if(typeof vmObj[keys[i]] == "undefined"){
-						vmObj[keys[i]]="";
-					}
-					vsbuffer +="<tr name=\"buffer"+i+"\">";
-					vsbuffer +="<td>"+keys[i]+"</td>";
-					vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
-					vsbuffer +="</tr>";
-				}
-				$("#propertyTable > tbody:last").append(vsbuffer);
 			}
 		}
-			else if(vnButtonFocus =="true"){
-				for(var i=0; i<buttonLength; i++){
-					var vsfocus = $("#button"+i).attr("focus",false);
-				}
-				$(param).attr("focus",false);
-			}
-			
+		
 		vbButtonDragCheck = false;
 	}
 	
-	/*selectBox 온클릭 이벤트*/
-	fn_onclickSelectBox = function(param){debugger;
-		
-		var vnSelectBoxFocus = $(param).attr("focus");
-		
-		var SelectBoxLength = $(".selectBox").length;
-		
-		if(vnSelectBoxFocus == "false"){
-			fn_tableFocusCancel();
-			fn_inputFocusCancel();
-			fn_titleFocusCancel();
-		
-			for(var i=0; i<SelectBoxLength; i++){
-				var vsfocus = $("select[name=value"+i+"]").attr("focus",false);
-			}
-			$(param).attr("focus",true);
-			
-			var vmObj = {};
-			for(var i=0; i<SelectBoxLength; i++){
-				var vsfocus = $("select[name=value"+i+"]").attr("focus");
-				if(vsfocus == "true"){
-					vmObj = {
-							"id" : $("select[name=value"+i+"]").attr("id"),
-							"class" : $("select[name=value"+i+"]").attr("class"),
-							"name" : $("select[name=value"+i+"]").attr("name"),
-							"label" : $("select[name=value"+i+"]").attr("label"),
-							"style" : $("select[name=value"+i+"]").attr("style")
-					};
-				}
-			}
-			var keys = Object.keys(vmObj);
-			var vsbuffer = "";
-			
-			for(var i in keys){
-				$("tr[name=buffer"+i+"]").remove();
-				if(typeof vmObj[keys[i]] == "undefined"){
-					vmObj[keys[i]]="";
-				}
-				vsbuffer +="<tr name=\"buffer"+i+"\">";
-				vsbuffer +="<td>"+keys[i]+"</td>";
-				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[i]]+"\"></input></td>";
-				vsbuffer +="</tr>";
-			}
-			$("#propertyTable > tbody:last").append(vsbuffer);
-		}
-		else if(vnSelectBoxFocus =="true"){
-			for(var i=0; i<SelectBoxLength; i++){
-				var vsfocus = $("select[name=value"+i+"]").attr("focus",false);
-			}
-			$(param).attr("focus",false);
-		}
-				
-	}
-	
+
 	/* 테이블 td 온클릭 이벤트
 		포커스 주입 */
 	fn_tdOnClick = function(param) { 
@@ -1206,12 +959,8 @@
 		// td에 자식이 없을 경우에만 포커스
 		var vitdCount = $(".tableFocus").length;
 		if(shiftHold == 0){
-			if(param.children.length == 0){
 				if(vitdCount == 0){
-					if(param.className == "tbtd_content creationTd"){
-						fn_inputFocusCancel();
-						fn_titleFocusCancel();
-						fn_buttonFocusCancel();
+					if(param.className.indexOf("tbtd_content") != -1){
 						param.className = "tableFocus";
 					}
 				}else if(vitdCount >= 1){
@@ -1246,7 +995,9 @@
 				}
 					
 				$("#propertyTable > tbody:last").append(vsbuffer);	
-			}
+			
+			
+			
 			
 		} else if(shiftHold == 1){
 			if(param.children.length == 0){
@@ -1282,24 +1033,6 @@
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ click 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
-	
-	/* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 더블클릭 이벤트 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
-	fn_InputBoxOnDblClick = function(param){ //input
-		//기능 구분되면 작성
-	}
-	
-	fn_SelectBoxOnDblClick = function(param){ //select
-		// 기능구분되면 작성
-	}
-	
-	fn_titleOnDblClick = function(param){ // title
-		// 기능구분되면 작성
-	}
-	
-	fn_buttonOnDblClick = function(param){ //button
-		// 기능구분되면 작성	
-	}
-	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 더블클릭 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 
 	
 	
@@ -1322,11 +1055,13 @@
 		
 		var vnFocusCount = $(".tableFocus").length;
 		if (vnFocusCount == 0) {
-			alert("셀을 선택하여 주시기 바랍니다.")
 			return false;
+		} else{
+			return true;
 		}
 	}
-
+	
+	
 	/* div focus 해제 */
 	fn_divFocusCancel = function(){
 		if($("[focus=true]").length != 0){
@@ -1347,38 +1082,6 @@
 		}
 	}
 	
-	/*title focus 해제 */
-	fn_titleFocusCancel = function(){
-		
-		var vnTitleCount = $("#creationTable > div > span[class=\"span_title\"]").length;
-		
-		for(var i=0; i<vnTitleCount; i++){
-			$("#span"+i+"_title").attr("focus",false);
-		}
-	}
-	
-	/*inputBox focs 해제*/
-	fn_inputFocusCancel = function(){
-		var vnInputBoxCount = $("input[class=\"inputBox ui-draggable ui-draggable-handle\"]").length; //수정필요
-		for(var i=0; i<vnInputBoxCount; i++){
-			$("input[name=value"+i+"]").attr("focus",false);
-		}
-	}
-	
-	/*button focus 해제 */
-	fn_buttonFocusCancel = function(){
-		var vnButtonCount = $(".button").length;
-		for(var i=0; i<vnButtonCount; i++){
-			$("#button"+i).attr("focus",false);
-		}
-	}
-	
-	fn_selectFocusCancel = function(){
-		var vnSelectCount = $(".selectBox").length;
-		for(var i=0; i<vnSelectCount; i++){
-			$("select[name=value"+i+"]").attr("focus",false);
-		}
-	}
 	
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 포커스 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
@@ -2072,55 +1775,62 @@ function fn_tableMerge(){
 </script>
 
 </head>
- 
+
 <body>
 	<div id="mysidenav" class="sidenav">
 		<!-- <div style="width: 500px; float: left;"> -->
-				<table border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
-					<colgroup>
-						<col width="100" />
-						<col width="100" />
-						<col width="100" />
-					</colgroup>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="divCreation();">DIV영역</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="titleCreation();">TITLE</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="tableCreation();">TABLE</td>
-					</tr>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="buttonCreation();">BTN 영역</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="inputCreation();">Input Box</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="selectCreation();">Select Box</td>
-					</tr>
-					
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddUp();">위로 행 추가</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddDown();">아래 행 추가</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDel();">행 삭제</td>
-					</tr>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableMerge();">병합</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableDivision();">분할</td>
-					</tr>
-				</table>
-			<!-- </div> -->
-		<table id="propertyTable" style="display:none;">
+		<table border="1" cellpadding="0" cellspacing="0"
+			style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
+			<colgroup>
+				<col width="100" />
+				<col width="100" />
+				<col width="100" />
+			</colgroup>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="divCreation();">DIV영역</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="titleCreation();">TITLE</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="tableCreation();">TABLE</td>
+			</tr>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="buttonCreation();">BTN 영역</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="inputCreation();">Input Box</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="selectCreation();">Select Box</td>
+			</tr>
+
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColAddUp();">위로 행 추가</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColAddDown();">아래 행 추가</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColDel();">행 삭제</td>
+			</tr>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableMerge();">병합</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableDivision();">분할</td>
+			</tr>
+		</table>
+		<!-- </div> -->
+		<table id="propertyTable" style="display: none;">
 			<tr>
 				<!-- 이거로 검색. -->
 				<td><input type="text" id="Search"></input></td>
-				<td><input type="button" onclick="infoSearch();" value="검색"></input><td>
+				<td><input type="button" onclick="infoSearch();" value="검색"></input>
+				<td>
 				<td><input type="button" onclick="infoUpdate();" value="수정"></input></td>
 			</tr>
 		</table>
 	</div>
-	
-	<div style="width: 150px; float: right; display:none;">
+
+	<div style="width: 150px; float: right; display: none;">
 		<ul id="sortable">
 		</ul>
 	</div>
