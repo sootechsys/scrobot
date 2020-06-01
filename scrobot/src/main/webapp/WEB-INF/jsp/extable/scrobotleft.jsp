@@ -686,7 +686,7 @@
 			vsSource += "<br/>"
 		}
 		
-		vsSource += "<input id=\"inputBox"+vnInputCount+"\" type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
+		vsSource += "<input id=\"inputBox"+vnInputCount+"\" type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" onclick=\"fn_InputBoxOnClick(this);\"";
 		vsSource += "readonly focus=false "
 		if(!fn_tableFocusYn()){
 			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
