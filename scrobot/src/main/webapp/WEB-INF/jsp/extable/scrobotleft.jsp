@@ -109,6 +109,7 @@
   
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
+  vbInputBoxDragCheck = false;
 
   
   
