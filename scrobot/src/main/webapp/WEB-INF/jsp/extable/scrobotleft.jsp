@@ -109,6 +109,7 @@
   
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
+  vbInputBoxDragCheck = false;
 
   
   
@@ -196,7 +197,7 @@
   	  
   	  
   	$( "#creationTable" ).droppable({
-        drop: function( event, ui ) {debugger;
+        drop: function( event, ui ) {
         
         	vsDropYn = "Y";
 	        if(ui.draggable.attr("class").indexOf("div_content") == -1){
@@ -275,7 +276,7 @@
 	            if(vsParentId == "creationTable"){
 	            	
 	            	// 움직인곳이 div 안으로 이동했다면(밖->안)
-	            	if(vsDivYn == "Y"){debugger;
+	            	if(vsDivYn == "Y"){
 	            		// 도착한 div의 높이
 	        			var vnNewParentTop = Number(voContent.eq(vnDivRow).css("top").replace("px",""));
 	        			// 도착한 div의 폭
@@ -351,6 +352,7 @@
   							}
   	});
   	
+  	
   	$(".selectBox").draggable({ cancel:false,
 		    					cursor: "move",
 		      					grid: [ 10, 10 ],
@@ -359,7 +361,7 @@
   	});
   
     $( "td" ).droppable({
-        drop: function( event, ui ) {debugger;
+        drop: function( event, ui ) {
         	var vsClass = ui.draggable.attr("class");
         	if(vsClass.indexOf("inputBox") != -1 || vsClass.indexOf("selectBox") != -1){
         		ui.draggable.css("top","");
@@ -694,13 +696,15 @@
 		vsSource += "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
 		
 		if(!fn_tableFocusYn()){
-			vsSource += "style=\"text-align:left; width:100px; top:"+fn_creationPosition()+"px;\">";
+			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
 		} else {
-			vsSource += "style=\"text-align:left; width:100px; \">";
+			vsSource += "style=\"text-align:left; \">";
 		}
 		
-		vsSource += "style=\"width:100px;\""
-		vsSource += "></select>";
+		vsSource += "</select>";
+		
+		// input박스 왼쪽정렬
+		$(voFocusTdInfo).css("text-align","left");
 		
 		// table focus 여부
 		// 포커스가 없다면 body에 생성
@@ -736,6 +740,14 @@
 			}
 			// delete
 			if(e.keyCode == 46){
+				
+				var vsTdFocus = $(".tableFocus");
+				var vnTdFocusLengh = vsTdFocus.length;
+				
+				if(vnTdFocusLengh != 0){
+					vsTdFocus.parent().parent().parent().remove();
+				}
+				
 				// 현재 포커스를 가지고있는 객체를 삭제한다.
 				var voRightInfo = $("[orgId="+$("[focus=true]").attr("id")+"]");
 				if(voRightInfo.attr("level") == "1"){

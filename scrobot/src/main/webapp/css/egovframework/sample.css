@@ -208,6 +208,11 @@ body{
 	width:150px;
 	position:absolute;
 }
+
+.selectBox{
+	width:150px;
+	position:absolute;
+}
 #propertyTable{
 	width:100%; 
 	border: 1px solid #444444; 
