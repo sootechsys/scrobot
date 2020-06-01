@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
@@ -9,55 +9,56 @@
 <head>
 <meta charset="UTF-8">
 <title>scrobot_공통사이드바</title>
- 
 
-	<style>
-		/* 사이드바 스타일 */
-		.sidenav {
-			height:100%;
-			position: fixed;
-			z-index:1;
-			top: 0;
-			left: 0;
-			margin-top:50px;
-			background-color: #97d5e0;
-			overflow-x: hidden;
-			transition:0.5s ease-in-out;
-			width:320px;
-			/* padding-top: 60px; */
-		}
-		.sidenav tr {
-			padding: 10px 10px 10px 10px;
-			text-decoration: none;
-			/* font-size: 25px; */
-			color: #fff;
-			display: block;
-			transition: 0.2s ease-in-out;
-		}
-		.sidenav table{
-			/* margin:auto; */
-			width:100%;
-		}
-		
-		.sidenav table thead tr th{
-			margin:auto;
-			
-		}
-		
-		.sidenav tbody{
-			width:80%;
-		}
-		.sidenav td{
-			width:50px;
-			height:20px;
-			
-		}
-		
-		.JCLRgrip{
-			cursor:ew-resize;
-		}
-		
-		/* 미디어쿼리 적용 */
+
+<style>
+/* 사이드바 스타일 */
+.sidenav {
+	height: 100%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	margin-top: 50px;
+	background-color: #97d5e0;
+	overflow-x: hidden;
+	transition: 0.5s ease-in-out;
+	width: 320px;
+	/* padding-top: 60px; */
+}
+
+.sidenav tr {
+	padding: 10px 10px 10px 10px;
+	text-decoration: none;
+	/* font-size: 25px; */
+	color: #fff;
+	display: block;
+	transition: 0.2s ease-in-out;
+}
+
+.sidenav table {
+	/* margin:auto; */
+	width: 100%;
+}
+
+.sidenav table thead tr th {
+	margin: auto;
+}
+
+.sidenav tbody {
+	width: 80%;
+}
+
+.sidenav td {
+	width: 50px;
+	height: 20px;
+}
+
+.JCLRgrip {
+	cursor: ew-resize;
+}
+
+/* 미디어쿼리 적용 */
 
 /* #propertyTable{
 	width:100%; 
@@ -66,14 +67,9 @@
 	border-collapse: collapse;
 	background-color: white;					
 } */
-
 #propertyTable tr {
-	 border: 1px solid #444444;
+	border: 1px solid #444444;
 }
-
-
-
-
 </style>
 <script type="text/javaScript">
 
@@ -108,19 +104,12 @@
   // outline 제자리 복귀시 rownum
   vnSortNum = 0;
   
+  // drop여부
+  vsDropYn = "";
+  
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
 
-
-  $(function(){
-	  
-	  
-  	
-
-  	
-
-  });
-  
   
   
   /************************************* 
@@ -172,6 +161,8 @@
   										  
   									  }
   	  });
+  	  
+  	  
   	  $( ".div_content" ).resizable();
   	  $( ".div_content" ).droppable({
 /*         drop: function( event, ui ) {
@@ -207,6 +198,7 @@
   	$( "#creationTable" ).droppable({
         drop: function( event, ui ) {
         
+        	vsDropYn = "Y";
 	        if(ui.draggable.attr("class").indexOf("div_content") == -1){
 	        		
 	            var voContent = $(".div_content");
@@ -227,10 +219,20 @@
 	         	var vsDivYn = "N";
 	        	var vnDivRow = 0;
 	        	
-	        	
-	        	
-	        	
 	            if(vsParentClass != null){
+	            	// 출발한 곳이 테이블이라면
+	            	if(vsParentClass.indexOf("tbtd_content ") != -1){
+	            		// 출발한 div의 높이
+		            	var vnOldParentTop = Number(ui.draggable.parent().offset().top);
+		            	
+		            	// 출발한 div의 폭
+		            	var vnOldParentLeft = Number(ui.draggable.parent().offset().left);
+		            	vnCurrTop += vnOldParentTop;
+		            	vnCurrTop -= 76;
+		            	vnCurrLeft += vnOldParentLeft;
+		            	vnCurrLeft -= 337;
+	            	}
+	            	
 	            	// 출발한 곳이 안이라면
 	            	if(vsParentClass.indexOf("div_content") != -1){
 	            		// 출발한 div의 높이
@@ -242,6 +244,9 @@
 		            	vnCurrLeft += vnOldParentLeft;
 	            	}
 	            	
+	            	
+	            	
+	            	
 	            }
 	            
 	         	// div_content 개수 동안 반복
@@ -251,8 +256,6 @@
             		var left = Number(voContent.eq(i).css("left").replace("px",""));
             		var width = Number(voContent.eq(i).css("width").replace("px",""));
             		
-            		
-            		
             		// 도착한 곳이 div 안이라면(밖->안)
 	                if(vnCurrTop < top+height && vnCurrTop > top &&
 	                   vnCurrLeft < left+width && vnCurrLeft > left){
@@ -260,25 +263,16 @@
 	                	vsDivYn = "Y";
 	                }
             		
-            		
     	            if(vsDivYn == "Y"){
     	            	vnDivRow = i;
     	            	break;
     	            }
-            		
-            		
-            		
 	         	}
 	         	
-	         	
-	         	
-	            
-	         	
-	         	
+	         	ui.draggable.css("position","absloute");
 	         	
 	            // 출발한 곳이 밖이라면
 	            if(vsParentId == "creationTable"){
-	            		
 	            	
 	            	// 움직인곳이 div 안으로 이동했다면(밖->안)
 	            	if(vsDivYn == "Y"){
@@ -287,12 +281,12 @@
 	        			// 도착한 div의 폭
 	        			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
 	        			
-            			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-30)+"px")
-            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-30)+"px")
+	        			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-31)+"px")
+            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-31)+"px")
+            			
             			
             			voContent.eq(vnDivRow).append(ui.draggable);
             			
-	            	
 	            	// 움직인곳이 밖으로 이동했다면(밖->밖)
 	            	} else{
 	            		// 아무액션 필요없음
@@ -300,10 +294,6 @@
 	            
 	            // 출발한 곳이 div 안일경우
 	            } else{
-	            	
-	            	
-	            	
-            		
 	            	
             		// 도착한 곳이 div 안이라면(안->안)
 	            	if(vsDivYn == "Y"){
@@ -315,23 +305,18 @@
 	        			
             			ui.draggable.css("top",(vnCurrTop-vnNewParentTop)+"px")
             			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft)+"px")
+            			
             			voContent.eq(vnDivRow).append(ui.draggable);
 	            	
 	            	// 도착한 곳이 div 밖이라면(안->밖)
 	            	} else{
 	            		
-	            		
-	            		ui.draggable.css("top",(vnCurrTop+30)+"px")
-	            		ui.draggable.css("left",(vnCurrLeft+30)+"px")
+	            		ui.draggable.css("top",(vnCurrTop+31)+"px")
+	            		ui.draggable.css("left",(vnCurrLeft+31)+"px")
 	            		$( this ).append(ui.draggable);
 	            	}
 	            	
 	            }
-	         	
-	         	
-	            
-	        		
-	        
 	        }
         }
   	 });
@@ -339,25 +324,57 @@
    	  $( ".table" ).resizable();
   	  
   	  $( ".table" ).draggable({ cursor: "move",
-		    grid: [ 10, 10 ]
-				}); 
+		    					grid: [ 10, 10 ]
+								}
+  	  ); 
 
 	  
   	  $( ".div_title" ).draggable({ cursor: "move",
   		  						    grid: [ 10, 10 ],
   		  						    stop: function(){
   		  			                   vbTitleDragCheck = true;
-  		  			   				}});
+  		  			   				}
+  	  });
   	  
   	  $(".button").draggable({ cancel:false,
   	     					   cursor: "move",
 			    			   grid: [ 10, 10 ],
   		                       stop: function(){
 		  			               vbButtonDragCheck = true;
-		  			   		}});
-    }
+		  			   		}
+  	  });
+  	  
+  	$(".inputBox").draggable({ cancel:false,
+		   					   cursor: "move",
+		   					   grid: [ 10, 10 ],
+		   					   stop: function(event,ui){
+  							}
+  	});
+  	
+  	
+  	$(".selectBox").draggable({ cancel:false,
+		    					cursor: "move",
+		      					grid: [ 10, 10 ],
+		      					stop: function(){
+		      					}
+  	});
+  
+    $( "td" ).droppable({
+        drop: function( event, ui ) {
+        	var vsClass = ui.draggable.attr("class");
+        	if(vsClass.indexOf("inputBox") != -1 || vsClass.indexOf("selectBox") != -1){
+        		ui.draggable.css("top","");
+        		ui.draggable.css("left","");
+        		ui.draggable.css("position","relative");
+        		$(this).append(ui.draggable);
+        	}
+        
+        }
+    });
     
     $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
+    
+    };
 	
 	
 	
@@ -431,8 +448,8 @@
 		
 		if(vnFormHeight <= vnTotalSize){
 			vnFormHeight = vnTotalSize+"px";
-			$("#creationForm").css("height",vnFormHeight)
-			$("#creationTable").css("height",vnTableSize+"px")
+			$("#creationForm").css("height",vnFormHeight);
+			$("#creationTable").css("height",vnTableSize+"px");
 		}
 	}
 	
@@ -629,17 +646,35 @@
 	/* input박스 그리기 */
 	function inputCreation() {
 
-		fn_tableFocusYn();
 		voFocusTdInfo.textContent = "";
-		var vsInputSource = "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
-		vsInputSource += "readonly style=\"text-align:left\">";
-		vsInputSource += "</input>";
-
-		$(".tableFocus").append(vsInputSource);
-		voFocusTdInfo.className = "tbtd_content creationTd";
 		
+		var vsSource = "";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "<br/>"
+		}
+		
+		vsSource += "<input type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
+		vsSource += "readonly "
+		if(!fn_tableFocusYn()){
+			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
+		} else {
+			vsSource += "style=\"text-align:left; \">";
+		}
+		vsSource += "</input>";
+
 		// input박스 왼쪽정렬
 		$(voFocusTdInfo).css("text-align","left");
+		
+		
+		// table focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_tableFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 td에 생성
+		} else{
+			$(".tableFocus").append(vsSource);
+		}
 		
 		vnInputCount++;
 		
@@ -650,13 +685,34 @@
 	/* select박스 그리기 */
 	function selectCreation() {
 
-		fn_tableFocusYn();
-		var vsSelectSource = "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
-		vsSelectSource += "style=\"width:100px;\""
-		vsSelectSource += "></select>";
-
-		$(".tableFocus").append(vsSelectSource);
-		voFocusTdInfo.className = "tbtd_content creationTd";
+		voFocusTdInfo.textContent = "";
+		
+		var vsSource = "";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "<br/>"
+		}
+		vsSource += "<select class=\"selectBox\" name=\"value"+vnSelectCount+"\"";
+		
+		if(!fn_tableFocusYn()){
+			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
+		} else {
+			vsSource += "style=\"text-align:left; \">";
+		}
+		
+		vsSource += "</select>";
+		
+		// input박스 왼쪽정렬
+		$(voFocusTdInfo).css("text-align","left");
+		
+		// table focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!fn_tableFocusYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 td에 생성
+		} else{
+			$(".tableFocus").append(vsSource);
+		}
 		
 		vnSelectCount++;
 	};
@@ -683,6 +739,14 @@
 			}
 			// delete
 			if(e.keyCode == 46){
+				
+				var vsTdFocus = $(".tableFocus");
+				var vnTdFocusLengh = vsTdFocus.length;
+				
+				if(vnTdFocusLengh != 0){
+					vsTdFocus.parent().parent().parent().remove();
+				}
+				
 				// 현재 포커스를 가지고있는 객체를 삭제한다.
 				var voRightInfo = $("[orgId="+$("[focus=true]").attr("id")+"]");
 				if(voRightInfo.attr("level") == "1"){
@@ -723,6 +787,7 @@
 
 		});
 		
+
 	  	
 	})
 	
@@ -905,9 +970,8 @@
 		// td에 자식이 없을 경우에만 포커스
 		var vitdCount = $(".tableFocus").length;
 		if(shiftHold == 0){
-			if(param.children.length == 0){
 				if(vitdCount == 0){
-					if(param.className == "tbtd_content creationTd"){
+					if(param.className.indexOf("tbtd_content") != -1){
 						param.className = "tableFocus";
 					}
 				}else if(vitdCount >= 1){
@@ -942,7 +1006,6 @@
 				}
 					
 				$("#propertyTable > tbody:last").append(vsbuffer);	
-			}
 			
 			
 			
@@ -1003,8 +1066,9 @@
 		
 		var vnFocusCount = $(".tableFocus").length;
 		if (vnFocusCount == 0) {
-			alert("셀을 선택하여 주시기 바랍니다.")
 			return false;
+		} else{
+			return true;
 		}
 	}
 	
@@ -1722,55 +1786,62 @@ function fn_tableMerge(){
 </script>
 
 </head>
- 
+
 <body>
 	<div id="mysidenav" class="sidenav">
 		<!-- <div style="width: 500px; float: left;"> -->
-				<table border="1" cellpadding="0" cellspacing="0" style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
-					<colgroup>
-						<col width="100" />
-						<col width="100" />
-						<col width="100" />
-					</colgroup>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="divCreation();">DIV영역</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="titleCreation();">TITLE</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="tableCreation();">TABLE</td>
-					</tr>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="buttonCreation();">BTN 영역</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="inputCreation();">Input Box</td>
-						<td class="tbtd_content" style="cursor: pointer"
-							onclick="selectCreation();">Select Box</td>
-					</tr>
-					
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddUp();">위로 행 추가</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColAddDown();">아래 행 추가</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableColDel();">행 삭제</td>
-					</tr>
-					<tr>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableMerge();">병합</td>
-						<td class="tbtd_content" style="cursor: pointer" onclick="fn_tableDivision();">분할</td>
-					</tr>
-				</table>
-			<!-- </div> -->
-		<table id="propertyTable" style="display:none;">
+		<table border="1" cellpadding="0" cellspacing="0"
+			style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
+			<colgroup>
+				<col width="100" />
+				<col width="100" />
+				<col width="100" />
+			</colgroup>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="divCreation();">DIV영역</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="titleCreation();">TITLE</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="tableCreation();">TABLE</td>
+			</tr>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="buttonCreation();">BTN 영역</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="inputCreation();">Input Box</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="selectCreation();">Select Box</td>
+			</tr>
+
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColAddUp();">위로 행 추가</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColAddDown();">아래 행 추가</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableColDel();">행 삭제</td>
+			</tr>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableMerge();">병합</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="fn_tableDivision();">분할</td>
+			</tr>
+		</table>
+		<!-- </div> -->
+		<table id="propertyTable" style="display: none;">
 			<tr>
 				<!-- 이거로 검색. -->
 				<td><input type="text" id="Search"></input></td>
-				<td><input type="button" onclick="infoSearch();" value="검색"></input><td>
+				<td><input type="button" onclick="infoSearch();" value="검색"></input>
+				<td>
 				<td><input type="button" onclick="infoUpdate();" value="수정"></input></td>
 			</tr>
 		</table>
 	</div>
-	
-	<div style="width: 150px; float: right; display:none;">
+
+	<div style="width: 150px; float: right; display: none;">
 		<ul id="sortable">
 		</ul>
 	</div>

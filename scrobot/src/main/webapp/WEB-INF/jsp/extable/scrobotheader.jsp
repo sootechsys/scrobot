@@ -74,7 +74,7 @@
 	}
 	
 	//되돌리기
-	function fn_sourceRollBack(){ 
+	function fn_sourceRollBack(){debugger;
 		if(RollBack != null){
 			RollBack.appendTo("#creationTable");
 		}else{
