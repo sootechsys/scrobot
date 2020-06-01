@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.rte.psl.dataaccess.util.EgovMap;
 import scrobot.sourceFileGenerator.Application;
@@ -46,9 +47,9 @@ public class view010101P01Controller {
 	/**
 	 * HTML 만들기를 실행한다.
 	 */
-	@RequestMapping(value = "/retrieveWrk.do", produces = "application/text; charset=utf8" )
+	@RequestMapping(value = "/retrieveWrk.ajax", produces = "application/text; charset=utf8" )
 	@ResponseBody
-	public Map<String, Object> retrieveWrk(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
+	public ModelAndView retrieveWrk(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
 		
@@ -61,10 +62,12 @@ public class view010101P01Controller {
 		resultMap.put("wrkList", wrkList);
 		resultMap.put("wrkHistryList", wrkHistryList);
 		
-		return resultMap;
+		ModelAndView mav = new ModelAndView("jsonView");
+		
+		mav.addObject("resultMap",resultMap);
+		return mav;
 	}
 	
-
 
 
 }

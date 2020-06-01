@@ -7,7 +7,8 @@
 	    	/* retrieveWrkList */
 	    	
 			SELECT WRK_NM
-			FROM ROBOT01
+			     , SOURCE
+			FROM ROBOT02
 			WHERE USER_ID = #{userId}
 			<if test='wrkNm != "" and wrkNm != null'>
 			AND WRK_NM = #{wrkNm}    
@@ -22,7 +23,8 @@
 	    	/* retrieveWrkList */
 	    	
 			SELECT WRK_NM
-			     , CHNG_HISTRY_DTTM
+				 , SOURCE
+			     , DATE_FORMAT(CHNG_HISTRY_DTTM,'%Y-%m-%d %H:%i:%s') AS	CHNG_HISTRY_DTTM
 			FROM ROBOT02
 			WHERE USER_ID = #{userId}
 			<if test='wrkNm != "" and wrkNm != null'>

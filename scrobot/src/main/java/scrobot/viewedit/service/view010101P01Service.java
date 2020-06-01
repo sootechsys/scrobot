@@ -43,6 +43,8 @@ import egovframework.rte.psl.dataaccess.util.EgovMap;
 @Repository("view010101P01Service")
 public class view010101P01Service extends EgovAbstractMapper {
 	
+
+	
 	/**
 	 * 
 	 * @param vo - 등록할 정보가 담긴 SampleVO
