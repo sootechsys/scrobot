@@ -74,7 +74,7 @@
 	}
 	
 	//되돌리기
-	function fn_sourceRollBack(){debugger;
+	function fn_sourceRollBack(){
 		if(RollBack != null){
 			RollBack.appendTo("#creationTable");
 		}else{
@@ -92,19 +92,22 @@
 	
 	
 	
+	
 	/* 글 등록 화면 function */
 	fn_createSource = function() {
-		// html 만들기
+		
+		
+		robot.prompt("업무명을 입력하시오",["업무명"],"","","fn_createSourceCallBack");
+		
+		
+	}
+	
+	fn_createSourceCallBack = function(param){
 		var vsHtml = $("#creationTable").html();
-		//prompt로 우선 vsbusinessNm을 받는다
-		var vsbusinessNm = prompt("업무명");
-		//var vsbusinessNm = $("#businessNm").val();
 		var vsStyle = $("style").html();
 		
-		if(vsbusinessNm == null || vsbusinessNm == ""){
-			alert("업무명을 입력하시오");
-			return false;
-		}
+		var vsbusinessNm = param[0]
+
 		var vjCreationInfo = {
 				"html" : vsHtml,
 				"businessNm" : vsbusinessNm,

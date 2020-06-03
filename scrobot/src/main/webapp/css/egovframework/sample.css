@@ -243,7 +243,7 @@ body{
 /* Modal Content/Box */
 .div_pop_content {
 	background-color: #fefefe;
-	margin: 10% auto; /* 15% from the top and centered */
+	margin: 5% auto; /* 15% from the top and centered */
 	padding: 0px 0px 20px 0px;
 	border: 1px solid #888;
 	z-index: 99; /* Sit on top */
@@ -254,6 +254,30 @@ body{
 	margin-top:20px;
 }
 
+.div_retrieve_result{
+	margin-left:50px;
+
+	width:600px;
+	height:300px;
+}
+.btn_retrieve{
+	cursor:pointer;
+	height:30px;
+	width:40px;
+}
+
+.div_retrieve_result table{
+	border:2px solid black !important;
+}
+
+.div_retrieve_result table tr{
+	height:20px;
+}
+
+.div_retrieve_result table td{
+	border:1px solid grey !important;
+	font-size:12pt;
+}
 
 /* sortable css **/
 #sortable { list-style-type: none; margin: 0; padding: 0; }

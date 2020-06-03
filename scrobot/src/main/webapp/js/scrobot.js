@@ -31,23 +31,55 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 		btn2 = "취소";
 	}
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.promptOnclick("+callBack+")\"></input>";
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.promptOnclick(";
+	
+	if(typeof(ele) == "object"){
+		vsSource += "[";
+		for(var i=0; i<ele.length; i++){
+			vsSource += "'";
+			vsSource += ele[i];
+			vsSource += "'";
+			if(ele.length-1 != i){
+				vsSource += ",";
+			}
+		}
+		vsSource += "]";
+	} else if(typeof(ele) == "string"){
+		vsSource += "'"+ele+"'";
+	} else if(typeof(ele) == "number"){
+		vsSource += ele;
+	}
+	
+	vsSource += "," + callBack+")\"></input>";
 	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('',"+callBack+")\"></input>";
 	
 	var info = {"header" : "prompt"};
 	robot.openPop(info,callBack, vsSource,"tag");
 }
 
-robot.promptOnclick = function(callBack){
+robot.promptOnclick = function(ele, callBack){
 	var voClassInfo = $(".prompt_input");
 	var voClassValue = [];
+	var vsMsg = "";
+	
 	for(var i=0; i<voClassInfo.length; i++){
 		if(voClassInfo.eq(i).val() == ""){
-			robot.alert("행과 열을 올바르게 입력하여 주시기 바랍니다.");
-			return false;
+			
+			
+			if(vsMsg != ""){
+				vsMsg += ", ";
+			}
+			vsMsg += ele[i];
+			
 		}
 		voClassValue.push(voClassInfo.eq(i).val());
 	}
+	
+	if(vsMsg != ""){
+		robot.alert(vsMsg+"을(를) 올바르게 입력하여 주시기 바랍니다.");
+		return false;
+	}
+	
 	
 	robot.closePop(voClassValue, callBack);
 	
@@ -57,9 +89,10 @@ robot.promptOnclick = function(callBack){
 /* alert - alert창을 실행
  * msg : 메시지 내용(String)
  * btn : 버튼 name(String)
+ * param : 파라메터 값 (JSON)
  * callBack : callback함수(String)
  * */
-robot.alert = function(msg, btn, callBack){
+robot.alert = function(msg, btn, param, callBack){
 
 	var vsSource = "<h3>"+msg+"</h3><br><br>";
 	vsSource += "<br>"
@@ -68,7 +101,26 @@ robot.alert = function(msg, btn, callBack){
 		btn = "확인";
 	}
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn+"\" onclick=\"robot.closePop(true,"+callBack+")\"></input>";
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn+"\" onclick=\"robot.closePop(";
+	
+	if(typeof(param) == "object"){
+		vsSource += "{";
+		for(var i=0; i<Object.keys(param).length; i++){
+			vsSource += Object.keys(param)[i];
+			vsSource += ":'";
+			vsSource += param[Object.keys(param)[i]];
+			if(Object.keys(param).length-1 != i){
+				vsSource += "',";
+			}
+		}
+		vsSource += "}";
+	} else if(typeof(param) == "string"){
+		vsSource += "'"+param+"'";
+	} else if(typeof(param) == "number"){
+		vsSource += param;
+	}
+		
+	vsSource += ","+callBack+")\"></input>";
 	
 	
 	var info = {"header" : "alert"};
@@ -151,12 +203,13 @@ robot.closePop = function(param, callBack){
  * msg : 메시지 내용(String)
  * btn1 : 버튼 name(String)
  * btn2 : 버튼 name(String)
- * param : 파라메터 값 (Array)
+ * param : 파라메터 값 (JSON)
  * callBack : callback함수(String)
  * */
 robot.confirm = function(msg, btn1, btn2, param, callBack){
 	
 	var vsSource = "<h3>"+msg+"<h3><br><br>";
+
 	
 	if(btn1 == null || btn1 == ""){
 		btn1 = "확인";
@@ -165,7 +218,30 @@ robot.confirm = function(msg, btn1, btn2, param, callBack){
 		btn2 = "취소";
 	}
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop("+param+","+callBack+");\"></input>";
+	
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop(";
+	
+	if(typeof(param) == "object"){
+		vsSource += "{";
+		for(var i=0; i<Object.keys(param).length; i++){
+			vsSource += Object.keys(param)[i];
+			vsSource += ":'";
+			vsSource += param[Object.keys(param)[i]];
+			vsSource += "'";
+			if(Object.keys(param).length-1 != i){
+				vsSource += ",";
+			}
+		}
+		vsSource += "}";
+	} else if(typeof(param) == "string"){
+		vsSource += "'"+param+"'";
+	} else if(typeof(param) == "number"){
+		vsSource += param;
+	}
+	
+	
+	
+	vsSource += ","+callBack+");\"></input>";
 	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
 	
 	var info = {"header" : "confirm"};

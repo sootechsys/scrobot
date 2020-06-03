@@ -30,7 +30,7 @@
     
 
         /* 회원가입 function */
-        fn_registJoin = function () {debugger;
+        fn_registJoin = function () {
         	var vjLoginInfo = $("#joinForm").serialize();
         	
         	

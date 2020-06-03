@@ -19,7 +19,7 @@ if (!window.showModalDialog) {
 	
 	showModalDialogSupported = false;
 
-	window.showModalDialog = function(arg1, arg2, arg3, callback) {debugger;
+	window.showModalDialog = function(arg1, arg2, arg3, callback) {
 
 		var w;
 		var h;

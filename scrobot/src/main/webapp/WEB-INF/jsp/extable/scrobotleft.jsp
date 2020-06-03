@@ -119,83 +119,88 @@
    * accordion 관련 함수
    **************************************/
     fn_draggable = function(){
-  	  $( ".div_content" ).draggable({ cursor: "move",
-  									  grid: [ 10, 10 ],
-  									  stop: function( event, ui ) {/* 1188 */
-  										  
-  										var voChild = $("#creationTable").children();
-  										
-  										var vnTotalLeft = 0;
-  										var vnTotalTop = 0;
-  										for(var i=0; i<voChild.length; i++){
-  											if(voChild.eq(i).attr("id") != ""){
-  												var vnLeft = Number(voChild.eq(i).css("left").replace("px",""));
-  												var vnWidth = Number(voChild.eq(i).width());
-  												
-  												var vnTop = Number(voChild.eq(i).css("top").replace("px",""));
-  												var vnHeight = Number(voChild.eq(i).height());
-  												
-  												if(vnTotalLeft < vnLeft+vnWidth){
-  													vnTotalLeft = vnLeft+vnWidth;
-  												}
-  												
-  												if(vnTotalTop < vnTop+vnHeight){
-  													vnTotalTop = vnTop+vnHeight;
-  												}
-  											}
-  										}
-  										
-  										if(vnTotalLeft >  $("#creationForm").width()){
-  											var vsFormLeft = (ui.offset.left+500)+"px";
-    										  var vsTableLeft = (ui.offset.left+430)+"px";
-    									  	  $("#creationForm").css("width",vsFormLeft);
-    									  	  
-    									  	  $("#creationTable").css("width",vsTableLeft);
-  										}
-  										
-  										if(vnTotalTop+200 >  $("#creationForm").height()){
-  											var vsFormTop = (ui.offset.top+600)+"px";
-    										  var vsTableTop = (ui.offset.top+430)+"px";
-    									  	  $("#creationForm").css("height",vsFormTop);
-    									  	  
-    									  	  $("#creationTable").css("height",vsTableTop);
-  										}
-  										  
-  										  
-  									  }
-  	  });
-  	  
-  	  
-  	  $( ".div_content" ).resizable();
-  	  $( ".div_content" ).droppable({
+	 
+	 if($( ".div_content" ).length != 0){
+		 $( ".div_content" ).draggable({ cursor: "move",
+				  grid: [ 10, 10 ],
+				  stop: function( event, ui ) {/* 1188 */
+					  
+					var voChild = $("#creationTable").children();
+					
+					var vnTotalLeft = 0;
+					var vnTotalTop = 0;
+					for(var i=0; i<voChild.length; i++){
+						if(voChild.eq(i).attr("id") != ""){
+							var vnLeft = Number(voChild.eq(i).css("left").replace("px",""));
+							var vnWidth = Number(voChild.eq(i).width());
+							
+							var vnTop = Number(voChild.eq(i).css("top").replace("px",""));
+							var vnHeight = Number(voChild.eq(i).height());
+							
+							if(vnTotalLeft < vnLeft+vnWidth){
+								vnTotalLeft = vnLeft+vnWidth;
+							}
+							
+							if(vnTotalTop < vnTop+vnHeight){
+								vnTotalTop = vnTop+vnHeight;
+							}
+						}
+					}
+					
+					if(vnTotalLeft >  $("#creationForm").width()){
+						var vsFormLeft = (ui.offset.left+500)+"px";
+					  var vsTableLeft = (ui.offset.left+430)+"px";
+				  	  $("#creationForm").css("width",vsFormLeft);
+				  	  
+				  	  $("#creationTable").css("width",vsTableLeft);
+					}
+					
+					if(vnTotalTop+200 >  $("#creationForm").height()){
+						var vsFormTop = (ui.offset.top+600)+"px";
+					  var vsTableTop = (ui.offset.top+430)+"px";
+				  	  $("#creationForm").css("height",vsFormTop);
+				  	  
+				  	  $("#creationTable").css("height",vsTableTop);
+					}
+					  
+					  
+				  }
+});
+
+
+		$( ".div_content" ).resizable();
+		$( ".div_content" ).droppable({
 /*         drop: function( event, ui ) {
-        
-            if(ui.draggable.attr("class").indexOf("div_content") == -1){
-            	
-            	var vnTop = Number(ui.draggable.css("top").replace("px",""));
-            	var vnOldParentTop = Number(ui.draggable.parent().css("top").replace("px",""));
-    			var vnNewParentTop = Number($( this ).css("top").replace("px",""));
-    			
-            	
-        		if(ui.draggable.parent().attr("id") == "creationTable"){
-        		
-        			
-        			
-        			ui.draggable.css("top",(vnTop-vnNewParentTop-30)+"px")
 
-        		} else {
-        			
-        			ui.draggable.css("top",(vnOldParentTop-vnNewParentTop+vnTop)+"px")
-        		}
-        		
-        		$( this ).append(ui.draggable);
-        		
+if(ui.draggable.attr("class").indexOf("div_content") == -1){
 
-        		
-        	}
-        
-        } */
-      });
+var vnTop = Number(ui.draggable.css("top").replace("px",""));
+var vnOldParentTop = Number(ui.draggable.parent().css("top").replace("px",""));
+var vnNewParentTop = Number($( this ).css("top").replace("px",""));
+
+
+if(ui.draggable.parent().attr("id") == "creationTable"){
+
+
+
+ui.draggable.css("top",(vnTop-vnNewParentTop-30)+"px")
+
+} else {
+
+ui.draggable.css("top",(vnOldParentTop-vnNewParentTop+vnTop)+"px")
+}
+
+$( this ).append(ui.draggable);
+
+
+
+}
+
+} */
+});
+	 }
+	 
+  	  
   	  
   	  
   	$( "#creationTable" ).droppable({
@@ -730,12 +735,12 @@
 		if(!fn_tableFocusYn()){
 			vsSource += "<br/>"
 		}
-		vsSource += "<select id=\"selectBox"+vnSelectCount+"\" class=\"selectBox\" name=\"value"+vnSelectCount+"\" focus=false onclick=\"fn_onclickSelectBox(this)\" ondblclick=\"fn_SelectBoxOnDblClick(this);\">";
+		vsSource += "<select id=\"selectBox"+vnSelectCount+"\" class=\"selectBox\" name=\"value"+vnSelectCount+"\" focus=false onclick=\"fn_onclickSelectBox(this)\" ondblclick=\"fn_SelectBoxOnDblClick(this);\" ";
 		
 		if(!fn_tableFocusYn()){
 			vsSource += "style=\"text-align:left; top:"+fn_creationPosition()+"px;\">";
 		} else {
-			vsSource += "style=\"text-align:left; \">";
+			vsSource += "style=\"text-align:left; position:relative;\">";
 		}
 		
 		vsSource += "</select>";
@@ -812,7 +817,7 @@
 		
 		
 		$("#creationTable").click(function(e){
-
+			fn_draggable();
   			
 
   		});
@@ -970,19 +975,11 @@
 	
 	/* 스팬타이틀 Onclick */
 	fn_spanTitleOnClick = function(param) {
-		debugger;
+		
 		var titleNum = $("#creationTable > div > span[class=\"span_title\"]").length;
 		if(vbTitleDragCheck == false){
 			vsCompoClickDvs = "title";
-		
-			//더블클릭 이벤트로 변경예정
-		/* 	var title = prompt("타이틀을 입력하시오");
-			if(title != null){}
-				$(param).parent().css("width","1000px");
-				param.textContent = title;
-				var vnWidth = $(param).css("width");
-				$(param).parent().css("width",vnWidth); 
-				*/	
+			
 				var titleFocus = $(param).attr("focus");
 				
 				if(titleFocus == "false"){
@@ -1033,7 +1030,7 @@
 	
 		/* 인풋박스 onclick */
 		fn_InputBoxOnClick = function(param){
-			debugger;
+			
 			if(vbInputBoxDragCheck == false){
 				vsCompoClickDvs = "inputBox";
 			}
@@ -1103,17 +1100,10 @@
 	
 		/* 버튼 Onclick */
 		fn_buttonOnClick = function(param) {
-		debugger;
+		
 		vbButtonDragCheck = false;
 		if(vbButtonDragCheck == false){
 			vsCompoClickDvs = "button";
-			
-			//더블클릭 이벤트로 예정
-			/* var buttonNm = prompt("버튼명을 입력하시오");
-			var buttonNm = prompt("버튼명을 입력하시오");
-			if(buttonNm != null && buttonNm != ""){
-				$(param).val(buttonNm);
-			} */
 			
 			var vnButtonFocus = $(param).attr("focus");
 			//버튼갯수 길이
@@ -1171,7 +1161,7 @@
 	
 	
 	/*selectBox 온클릭 이벤트*/
-	fn_onclickSelectBox = function(param){debugger;
+	fn_onclickSelectBox = function(param){
 		
 		var vnSelectBoxFocus = $(param).attr("focus");
 		
@@ -1290,20 +1280,27 @@
 		}
 	}
 		
+	
+	voPromptObject ="";
 
 	/* 테이블 td 더블클릭 이벤트
 		라벨 설정 */
 	fn_tdDbClick = function(param) {
-		var label = prompt("라벨을 입력하시오");
+		robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_tdDbClickCallBack");
 		
-		if(label != null){
-			param.textContent = label;
-			$(".tableFocus").attr("label",label);
-		}
+		voPromptObject = param;
+
+		
+	}
+	
+	fn_tdDbClickCallBack = function(param){
+	
+		voPromptObject.textContent = param[0];
+		$(".tableFocus").attr("label",param[0]);
 		param.removeChild;
+		voPromptObject = "";
 
-		voFocusTdInfo.className = "tbtd_content creationTd";
-
+	voFocusTdInfo.className = "tbtd_content creationTd";
 		
 	}
 	
@@ -1321,12 +1318,50 @@
 		// 기능구분되면 작성
 	}
 	
+	
 	fn_titleOnDblClick = function(param){ // title
-		// 기능구분되면 작성
+		
+		robot.prompt("타이틀을 입력하시오",["타이틀"],"","","fn_titleOnDblClickCallBack");
+	
+		voPromptObject = param;
+			
 	}
 	
+	fn_titleOnDblClickCallBack = function(param){
+		
+		if(param == ""){
+			voPromptObject = "";
+			return false;
+		}
+		
+		$(voPromptObject).parent().css("width","1000px");
+		voPromptObject.textContent = param[0];
+		var vnWidth = $(voPromptObject).css("width");
+		$(voPromptObject).parent().css("width",vnWidth);
+		
+		voPromptObject = "";
+	}
+	
+	
 	fn_buttonOnDblClick = function(param){ //button
-		// 기능구분되면 작성	
+		robot.prompt("버튼명을 입력하시오",["버튼명"],"","","fn_buttonOnDblClickCallBack");
+	
+		voPromptObject = param;
+		if(buttonNm != null && buttonNm != ""){
+			$(param).val(buttonNm);
+		}
+	}
+	
+	fn_buttonOnDblClickCallBack = function(param){
+		
+		if(param == ""){
+			voPromptObject = "";
+			return false;
+		}
+		
+		$(voPromptObject).val(param[0]);
+		
+		voPromptObject = "";
 	}
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 더블클릭 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 	
@@ -1871,7 +1906,7 @@ function fn_tableMerge(){
 								vsTotal[i][j] = "c"+inputColSpan.toString();
 							}
 							else if(inputRowSpan <= 1 && inputColSpan <= 1){ // 없
-								alert("하나만 선택하면 안되요");
+								robot.alert("하나만 선택하면 안되요");
 							}
 						}
 					}
@@ -2127,7 +2162,7 @@ function fn_tableMerge(){
 			</tr>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="buttonCreation();">BTN 영역</td>
+					onclick="buttonCreation();">Button</td>
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="inputCreation();">Input Box</td>
 				<td class="tbtd_content" style="cursor: pointer"

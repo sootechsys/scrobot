@@ -8,10 +8,10 @@
 	    	
 			SELECT WRK_NM
 			     , SOURCE
-			FROM ROBOT02
+			FROM ROBOT01
 			WHERE USER_ID = #{userId}
 			<if test='wrkNm != "" and wrkNm != null'>
-			AND WRK_NM = #{wrkNm}    
+			AND WRK_NM LIKE CONCAT('%', #{wrkNm}, '%')    
 			</if>
 	</select>
 			
@@ -28,7 +28,7 @@
 			FROM ROBOT02
 			WHERE USER_ID = #{userId}
 			<if test='wrkNm != "" and wrkNm != null'>
-			AND WRK_NM = #{wrkNm}    
+			AND WRK_NM LIKE CONCAT('%', #{wrkNm}, '%')    
 			</if>
 	</select>
 
