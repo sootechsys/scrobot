@@ -44,7 +44,7 @@ public class view010101P01Controller {
 	@Resource(name = "view010101P01Service")
 	private view010101P01Service view010101P01service;
 	
-	/**
+	/***
 	 * HTML 만들기를 실행한다.
 	 */
 	@RequestMapping(value = "/retrieveWrk.ajax", produces = "application/text; charset=utf8" )

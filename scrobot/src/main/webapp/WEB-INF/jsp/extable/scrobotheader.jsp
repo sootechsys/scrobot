@@ -53,7 +53,7 @@
 	
 	/* 2020.05.04
 	상세보기 페이지를 위치시킨다.
-	*/
+	*///
 	var infoCount = 0;
 	function info(){ 
 		$("#propertyTable").show();

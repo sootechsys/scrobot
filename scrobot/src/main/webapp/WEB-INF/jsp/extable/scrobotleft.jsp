@@ -12,7 +12,7 @@
 
 
 <style>
-/* 사이드바 스타일 */
+/* 사이드바 스타일      */
 .sidenav {
 	height: 100%;
 	position: fixed;
