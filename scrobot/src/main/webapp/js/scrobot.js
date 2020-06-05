@@ -118,12 +118,66 @@ robot.alert = function(msg, btn, param, callBack){
 		vsSource += "'"+param+"'";
 	} else if(typeof(param) == "number"){
 		vsSource += param;
+	} else if(typeof(param) == "undefined"){
+		vsSource += "''";
 	}
 		
 	vsSource += ","+callBack+")\"></input>";
 	
 	
 	var info = {"header" : "alert"};
+	robot.openPop(info,callBack, vsSource,"tag");
+}
+
+
+/* confirm - confirm창을 실행
+ * msg : 메시지 내용(String)
+ * btn1 : 버튼 name(String)
+ * btn2 : 버튼 name(String)
+ * param : 파라메터 값 (JSON)
+ * callBack : callback함수(String)
+ * */
+robot.confirm = function(msg, btn1, btn2, param, callBack){
+	
+	var vsSource = "<h3>"+msg+"<h3><br><br>";
+
+	
+	if(btn1 == null || btn1 == ""){
+		btn1 = "확인";
+	}
+	if(btn2 == null || btn2 == ""){
+		btn2 = "취소";
+	}
+	
+	
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop(";
+	
+	if(typeof(param) == "object"){
+		vsSource += "{";
+		for(var i=0; i<Object.keys(param).length; i++){
+			vsSource += Object.keys(param)[i];
+			vsSource += ":'";
+			vsSource += param[Object.keys(param)[i]];
+			vsSource += "'";
+			if(Object.keys(param).length-1 != i){
+				vsSource += ",";
+			}
+		}
+		vsSource += "}";
+	} else if(typeof(param) == "string"){
+		vsSource += "'"+param+"'";
+	} else if(typeof(param) == "number"){
+		vsSource += param;
+	} else if(typeof(param) == "undefined"){
+		vsSource += "''";
+	}
+	
+	
+	
+	vsSource += ","+callBack+");\"></input>";
+	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
+	
+	var info = {"header" : "confirm"};
 	robot.openPop(info,callBack, vsSource,"tag");
 }
 
@@ -199,51 +253,85 @@ robot.closePop = function(param, callBack){
 	}
 }
 
-/* confirm - confirm창을 실행
- * msg : 메시지 내용(String)
- * btn1 : 버튼 name(String)
- * btn2 : 버튼 name(String)
- * param : 파라메터 값 (JSON)
- * callBack : callback함수(String)
- * */
-robot.confirm = function(msg, btn1, btn2, param, callBack){
-	
-	var vsSource = "<h3>"+msg+"<h3><br><br>";
-
-	
-	if(btn1 == null || btn1 == ""){
-		btn1 = "확인";
-	}
-	if(btn2 == null || btn2 == ""){
-		btn2 = "취소";
-	}
-	
-	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop(";
-	
-	if(typeof(param) == "object"){
-		vsSource += "{";
-		for(var i=0; i<Object.keys(param).length; i++){
-			vsSource += Object.keys(param)[i];
-			vsSource += ":'";
-			vsSource += param[Object.keys(param)[i]];
-			vsSource += "'";
-			if(Object.keys(param).length-1 != i){
-				vsSource += ",";
-			}
+/*
+ * getAttr(param) - 해당태그의 속성을 가져온다. 
+ * param(String) - 해당 태그가 input인지 select 인지 명시 
+ * i(int) - 반복 변수
+ */
+robot.getAttr = function(param, i){ 
+		var tagLength = 0;
+		var sentence = "";
+		var vmObj ={};		
+		
+		if(param =="div"){
+			tagLength = $("#creationTable > div").length;
+			sentence = "#div"+i;
 		}
-		vsSource += "}";
-	} else if(typeof(param) == "string"){
-		vsSource += "'"+param+"'";
-	} else if(typeof(param) == "number"){
-		vsSource += param;
-	}
+		else if(param == "input"){
+			tagLength = $(".inputBox").length;
+			sentence = "input[name=value"+i+"]";
+		}
+		else if(param == "button"){
+			tagLength =  $(".button").length;
+			sentence = "#button"+i;
+		}
+		else if(param == "title"){
+			tagLength = $("#creationTable > div > span[class=\"span_title\"]").length;
+			sentence = "#span"+i+"_title";
+		}
+		else if(param == "td"){
+			sentence = ".tableFocus";
+		}
+		else if(param == "select"){
+			tagLength = $(".selectBox").length;
+			sentence ="select[name=value"+i+"]";
+		}
+		
+		var focusYn = "";
+		
+		if(sentence == ".tableFocus"){
+			focusYn = "true";
+		}
+		else{
+			focusYn = $(sentence).attr("focus");
+		}
+			
+		if(focusYn == "true"){
+			vmObj = {
+					"id" : $(sentence).attr("id"),
+					"class" : $(sentence).attr("class"),
+					"name" : $(sentence).attr("name"),
+					"label" : $(sentence).attr("label"),
+					"style" : $(sentence).attr("style"),
+					"value" : $(sentence).attr("value")
+			};
+			
+			var keys = Object.keys(vmObj);
+			var vsbuffer = "";
+			
+			for(var j in keys){
+				$("tr[name=buffer"+j+"]").remove();
+				if(typeof vmObj[keys[j]] == "undefined"){
+					vmObj[keys[j]]="";
+				}
+				vsbuffer +="<tr name=\"buffer"+j+"\">";
+				vsbuffer +="<td>"+keys[j]+"</td>";
+				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[j]]+"\"></input></td>";
+				vsbuffer +="</tr>";
+			}
+			
+			$("#propertyTable > tbody:last").append(vsbuffer);
+		}
 	
 	
-	
-	vsSource += ","+callBack+");\"></input>";
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
-	
-	var info = {"header" : "confirm"};
-	robot.openPop(info,callBack, vsSource,"tag");
 }
+	
+	
+	
+	
+
+
+
+
+
+

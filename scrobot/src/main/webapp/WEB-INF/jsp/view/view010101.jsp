@@ -47,7 +47,7 @@
 
 	<form:form id="creationForm" name="creationForm" method="post">
 		<div id="div_creationForm">
-			<div id="creationTable">
+			<div id="creationTable" onclick="fn_creationClick()">
 			</div>
 			
 		</div>

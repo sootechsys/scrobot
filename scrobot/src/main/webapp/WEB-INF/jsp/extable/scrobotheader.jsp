@@ -43,6 +43,9 @@
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="./js/scrobot.js" ></script> 
+<script type="text/javascript" src="./js/onclick.js" ></script> 
+<script type="text/javascript" src="./js/focusOut.js" ></script> 
+<script type="text/javascript" src="./js/table.js" ></script> 
 <script src ="./js/colResizable-1.6.js"></script>
 <script src ="./js/colResizable-1.6.min.js"></script>
 <head>

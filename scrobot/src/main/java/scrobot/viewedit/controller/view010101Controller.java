@@ -60,7 +60,7 @@ public class view010101Controller {
 	 */
 	@RequestMapping(value = "/creationHTML.do", produces = "application/text; charset=utf8" )
 	public void creationHTML(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
-		paramMap = Application.creationHTML(paramMap);
+		//paramMap = Application.creationHTML(paramMap);
 		
 		
 		HttpSession session = request.getSession();
