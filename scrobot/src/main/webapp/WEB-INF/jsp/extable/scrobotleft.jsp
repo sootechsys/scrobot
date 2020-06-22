@@ -576,8 +576,8 @@
 		tableEdit.addDown();
 	}
 
-	fn_tableColDel = function(){
-		tableEdit.ColDelete();
+	fn_deleter = function(){
+		tableEdit.deleteNode();
 	}
 
 	fn_tableRowAddLeft = function(){
@@ -775,15 +775,13 @@
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableColAddDown();">아래 행 추가</td>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableColDel();">행 삭제</td>
+					onclick="fn_deleter();">삭제</td>
 			</tr>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableRowAddLeft();">좌측 열 추가</td>
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableRowAddRight();">우측 열 추가</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_fn_tableRowDel();">열 삭제</td>
 			</tr>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"

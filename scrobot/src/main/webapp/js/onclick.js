@@ -1,69 +1,67 @@
+/**/
 
-//
 onclick = {};
 
 /* focus = 클릭된 태그에 포커스를 주기 위한 분기처리 메소드
  * param(int) = shift 눌림 여부
- * vsClassNm = 선택된 클래스 이름
+ * classNm = 선택된 클래스 이름
  * */
 onclick.focus = function(param,e){
 	
-	var vsCompoDvs = $(e.target).attr("compoDvs");
-	var vsClassNm = e.target.className;
+	var classNm = e.target.className;
 	
 	if(param != 1){ //shift 눌리지 않음
-		//
-		if(vsCompoDvs == "td"){
-			var vitdCount = $(".tableFocus").length;
+		focusOut.All();
+		if(classNm.indexOf("tbtd_content creationTd") != -1){
+			var vitdCount = $(".creationTd[focus=true]").length;
 			if(vitdCount == 0){
-				if(vsClassNm.indexOf("creationTd") != -1){
-					e.target.className = "tableFocus";
+				if($(e.target).attr("focus") == "false"){
+					$(e.target).attr("focus","true");
+					var vnRecountTd = $(".creationTd[focus=true]").length;
+					for(var i=0; i<vnRecountTd; i++){
+						robot.getAttr("td", i);
+					}
 				}
 			}
 			else if(vitdCount >= 1){
 				focusOut.td();
-				e.target.className = "tableFocus";
+				$(e.target).attr("focus","true");
 			}
-				robot.getAttr("td");
 			
-		} else if(vsCompoDvs == "div_content"){
+			
+		}
+		else if(classNm.indexOf("div_content") != -1){
 			if($(e.target).attr("focus") == "true"){
-				
 				$(e.target).attr("focus","false"); 
 				$(e.target).attr("mainFocus","false"); 
-				
-			} else if($(e.target).attr("focus") == "false"){
-				
+			}
+			else if($(e.target).attr("focus") == "false"){
 				$(e.target).attr("focus","true"); 
 				$(e.target).attr("mainFocus","true");
 				var divNum = $("#creationTable > div").length;
-				
 				for(var i=0; i<divNum; i++){
 					robot.getAttr("div", i);
 				}
 			}
-			
-		} else if(vsCompoDvs == "button"){
-			
+		}
+		else if(classNm.indexOf("button") != -1){
 			if($(e.target).attr("focus") == "true"){
 				$(e.target).attr("focus","false"); 
-				
-			} else if($(e.target).attr("focus") == "false"){
-				
+			}
+			else if($(e.target).attr("focus") == "false"){
 				$(e.target).attr("focus","true"); 
 				var buttonLength =  $(".button").length;
 				for(var i=0; i<buttonLength; i++){
 					robot.getAttr("button",i);
 				}
 			}
-			
-		} else if(vsCompoDvs == "selectBox"){
+		}
+		else if(classNm.indexOf("selectBox") != -1){
 			
 			if($(e.target).attr("focus") == "true"){
 				$(e.target).attr("focus","false"); 
-				
-			} else if($(e.target).attr("focus") == "false"){
-				
+			}
+			else if($(e.target).attr("focus") == "false"){
 				$(e.target).attr("focus","true"); 
 				var SelectBoxLength = $(".selectBox").length;
 				for(var i=0; i<SelectBoxLength; i++){
@@ -71,14 +69,12 @@ onclick.focus = function(param,e){
 					robot.getAttr("select",i);
 				}
 			}
-			
-		} else if(vsCompoDvs == "inputBox"){
-			
+		}
+		else if(classNm.indexOf("inputBox") != -1){
 			if($(e.target).attr("focus") == "true"){
 				$(e.target).attr("focus","false"); 
-				
-			} else if($(e.target).attr("focus") == "false"){
-				
+			}
+			else if($(e.target).attr("focus") == "false"){
 				$(e.target).attr("focus","true"); 
 				var inputFocusLength = $(".inputBox").length;
 				for(var i=0; i<inputFocusLength; i++){
@@ -86,14 +82,13 @@ onclick.focus = function(param,e){
 					robot.getAttr("input",i);
 				}
 			}
-			
-		} else if(vsCompoDvs == "span_title"){
+		}
+		else if(classNm.indexOf("span_title") != -1){
 			
 			if($(e.target).attr("focus") == "true"){
 				$(e.target).attr("focus","false"); 
-				
-			} else if($(e.target).attr("focus") == "false"){
-				
+			}
+			else if($(e.target).attr("focus") == "false"){
 				$(e.target).attr("focus","true"); 
 				var titleNum = $("#creationTable > div > span[class=\"span_title\"]").length;
 				for(var i=0; i<titleNum; i++){
@@ -102,14 +97,12 @@ onclick.focus = function(param,e){
 				
 			}
 		}
-		
-	} else if(param == 1){
-		
-		if (vsClassNm.indexOf("tableFocus") != -1) {
-			e.target.className = "tbtd_content creationTd";
-			
-		} else if(vsClassNm.indexOf("tbtd_content") != -1){
-			e.target.className = "tableFocus";
+	}
+	else if(param == 1){
+		if ($(e.target).attr("focus") == "true") {
+			$(e.target).attr("focus","false");
+		} else {
+			$(e.target).attr("focus","true");
 		}
 	}
 }
@@ -214,7 +207,7 @@ onclick.draw = function(tagName, param){
 	if(tagName == "div"){
 		// 전체 div 시작
 		var vsSource = "<div id=\"div" + vnDivContentCount + "\"";
-		vsSource += " class=\"div_content\" focus=false mainfocus=false compoDvs=\"div_content\" ";
+		vsSource += " class=\"div_content\" focus=false mainfocus=false";
 		vsSource += " style=\"top:"+onclick.fn_creationPosition("content")+"px;\"";
 		//vsSource += " onclick=\"fn_divOnClick(this)\"";
 		vsSource += " >";
@@ -240,7 +233,7 @@ onclick.draw = function(tagName, param){
 		//var width = $(voFocusDivInfo).css("width");
 		// 타이틀 div 시작
 		var vsSource = "  <div id=\"div" + vnTitleCount + "_title\"";
-		vsSource += "   class=\"div_title\" compoDvs=\"div_title\" ";
+		vsSource += "   class=\"div_title\"";
 		
 		vsSource += "   style=\"top:"+onclick.fn_creationPosition()+"px;\"";
 
@@ -250,7 +243,7 @@ onclick.draw = function(tagName, param){
 	
 		// 타이틀 span
 		vsSource += "  <span id=\"span" + vnTitleCount +"_title\" focus=false";
-		vsSource += "  class=\"span_title\" compoDvs=\"span_title\" "
+		vsSource += "  class=\"span_title\" "
 		vsSource += "  ondblclick=\"fn_titleOnDblClick(this);\"> Title "   // onclick=\"fn_spanTitleOnClick(this)\"
 		vsSource += "  </span>";
 		vsSource += "  </div>";
@@ -283,7 +276,7 @@ onclick.draw = function(tagName, param){
 		
 		vsSource += "<input id=\"inputBox"+vnInputCount+"\" type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
 		//onclick=\"fn_InputBoxOnClick(this);\"
-		vsSource += "readonly focus=false compoDvs=\"inputBox\" "
+		vsSource += "readonly focus=false "
 		if(!focusOut.tableYn()){
 			vsSource += "style=\"text-align:left; top:"+onclick.fn_creationPosition()+"px;\">";
 		} else {
@@ -313,7 +306,7 @@ onclick.draw = function(tagName, param){
 		vnInputCount++;
 		
 	}
-	else if(tagName == "select"){debugger;
+	else if(tagName == "select"){
 		
 		//voFocusTdInfo.textContent = "";
 		
@@ -322,8 +315,7 @@ onclick.draw = function(tagName, param){
 		if(!focusOut.tableYn()){
 			vsSource += "<br/>"
 		}
-		vsSource += "<select id=\"selectBox"+vnSelectCount+"\" class=\"selectBox\" name=\"value"+vnSelectCount+"\" ";
-		vsSource += "focus=false  ondblclick=\"fn_SelectBoxOnDblClick(this);\" compoDvs=\"selectBox\" ";
+		vsSource += "<select id=\"selectBox"+vnSelectCount+"\" class=\"selectBox\" name=\"value"+vnSelectCount+"\" focus=false  ondblclick=\"fn_SelectBoxOnDblClick(this);\">";
 		//onclick=\"fn_onclickSelectBox(this)\"
 		if(!focusOut.tableYn()){
 			vsSource += "style=\"text-align:left; top:"+onclick.fn_creationPosition()+"px;\">";
@@ -361,7 +353,7 @@ onclick.draw = function(tagName, param){
 		var vsSource = "  <input type=\"button\" id=\"button" + vnButtonCount+"\"";
 		vsSource += "  class=\"button\" "
 		vsSource += "  value=\"button\" "
-		vsSource += "  focus=false compoDvs=\"button\" "
+		vsSource += "  focus=false "
 		vsSource += "  style=\"top:"+onclick.fn_creationPosition()+"px;\"";
 		vsSource += "  ondblclick=\"fn_buttonOnDblClick(this);\">"; // onclick=\"fn_buttonOnClick(this)\" 
 		vsSource += "  </input>";
@@ -394,7 +386,7 @@ onclick.draw = function(tagName, param){
 		// table 시작
 		var vsSource = "<table id=\"table" + vnTableCount + "\"";;
 		vsSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
-		vsSource += " style=\"top:"+onclick.fn_creationPosition()+"px;\" compoDvs=\"table\" ";
+		vsSource += " style=\"top:"+onclick.fn_creationPosition()+"px;\"";
 		vsSource += "\n <colgroup>";
 
 		for (var i = 0; i < param[0]; i++) {
@@ -413,12 +405,12 @@ onclick.draw = function(tagName, param){
 		vsSource += "\n <tbody>"
 
 		for (var i = 0; i < param[1]; i++) {
-			vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" >";
+			vsSource += "\n <tr name=\"tr\" row=\""+i+"\">";
 			for (var j = 0; j < param[0]; j++) {
 				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
-				vsSource += "shell=\""+j+"\" ";
-				vsSource += "compoDvs=\"td\" ";
+				vsSource += "shell=\""+j+"\" focus=false ";
 				vsSource += "style=\"height:30px;\" "
+				//vsSource += "onclick=\"fn_tdOnClick(this)\" "
 				vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
 				vsSource += "</td>";
 			}
