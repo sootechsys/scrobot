@@ -20,7 +20,7 @@
 	top: 0;
 	left: 0;
 	margin-top: 50px;
-	background-color: #97d5e0;
+	background-color: #ccb68d;
 	overflow-x: hidden;
 	transition: 0.5s ease-in-out;
 	width: 320px;
@@ -70,6 +70,8 @@
 #propertyTable tr {
 	border: 1px solid #444444;
 }
+
+
 </style>
 <script type="text/javaScript">
 
@@ -86,6 +88,12 @@
   vbTitleDragCheck = false;
   vbButtonDragCheck = false;
   vbInputBoxDragCheck = false;
+  
+  // 마우스다운 여부
+  vsMouseDownYn = "N";
+  
+  // 테이블위의 라벨 더블클릭시 여부
+  vsLabelYn = "N";
 
   
   
@@ -93,6 +101,7 @@
   fn_creationTableResize = function(ui){
 	  
 	  var voChild = $("#creationTable").children();
+	  var voGrandChild = voChild.children();
 		
 		var vnTotalLeft = 0;
 		var vnTotalTop = 0;
@@ -111,6 +120,25 @@
 				if(vnTotalTop < vnTop+vnHeight){
 					vnTotalTop = vnTop+vnHeight;
 				}
+				
+				for(var j=0; j<voGrandChild.length; j++){
+					if(voGrandChild.eq(j).attr("id") != ""){
+						vnLeft = Number(voGrandChild.eq(j).css("left").replace("px",""));
+						vnWidth = Number(voGrandChild.eq(j).width());
+						
+						vnTop = Number(voGrandChild.eq(j).css("top").replace("px",""));
+						vnHeight = Number(voGrandChild.eq(j).height());
+						
+						if(vnTotalLeft < vnLeft+vnWidth){
+							vnTotalLeft = vnLeft+vnWidth;
+						}
+						
+						if(vnTotalTop < vnTop+vnHeight){
+							vnTotalTop = vnTop+vnHeight;
+						}
+					}
+				}
+				
 			}
 		}
 		
@@ -120,15 +148,18 @@
 	  	  $("#creationForm").css("width",vsFormLeft);
 	  	  
 	  	  $("#creationTable").css("width",vsTableLeft);
+	  	  
 		}
 		
 		if(vnTotalTop+200 >  $("#creationForm").height()){
-			var vsFormTop = (ui.offset.top+600)+"px";
+		  var vsFormTop = (ui.offset.top+600)+"px";
 		  var vsTableTop = (ui.offset.top+430)+"px";
 	  	  $("#creationForm").css("height",vsFormTop);
 	  	  
 	  	  $("#creationTable").css("height",vsTableTop);
+	  	  fn_saveClone();
 		}
+		
 	  
   }
 
@@ -137,69 +168,283 @@
    **************************************/
     fn_draggable = function(){
 	 
-	 if($( ".div_content" ).length != 0){
-		 $( ".div_content" ).draggable(
+	 
+	 
+	 if($( "[compoDvs=div_content]" ).length != 0){
+		 $( "[compoDvs=div_content]" ).draggable(
 			{cursor: "move",
+			 cancel:"[compoDvs=div_table]",
 		     grid: [ 10, 10 ],
-			 stop: function( event, ui ) {/* 1188 */
+			 stop: function( event, ui ) {
 					  fn_creationTableResize(ui);
 			}
 		});
 		 
-		$( ".div_content" ).resizable();
+		$( "[compoDvs=div_content]" ).resizable({
+			stop: function( event, ui ) {
+				fn_saveClone();
+			}
+		});
 	 }
 	 
-	 $( ".table" ).draggable({ cursor: "move",
-			grid: [ 10, 10 ],
-			stop: function( event, ui ) {/* 1188 */
-				  fn_creationTableResize(ui);
-		}
-		}); 
-
-
-  $( ".div_title" ).draggable({ cursor: "move",
-  					    grid: [ 10, 10 ],
-  					    stop: function( event, ui ){
-  		                   vbTitleDragCheck = true;
-  		                  fn_creationTableResize(ui);
-  		   				}
-  });
-  
-  $(".button").draggable({ cancel:false,
-  			   cursor: "move",
-  			   grid: [ 10, 10 ],
-                stop: function( event, ui ){
-  	               vbButtonDragCheck = true;
-  	              fn_creationTableResize(ui);
-  	   		}
-  });
-  
-  $(".inputBox").draggable({ cancel:false,
-  			   cursor: "move",
-  			   grid: [ 10, 10 ],
-  			   stop: function(event,ui){
-  				  fn_creationTableResize(ui);
-  			}
-  });
-  
-  
-  $(".selectBox").draggable({ cancel:false,
-  				cursor: "move",
-  				grid: [ 10, 10 ],
-  				stop: function( event, ui ){
-  					fn_creationTableResize(ui);
+	 
+	 if($( ".div_table" ).length != 0){
+		 $( ".div_table" ).draggable({ cursor: "move",
+				grid: [ 10, 10 ],
+				cancel: "table",
+				stop: function( event, ui ) {
+					  fn_creationTableResize(ui);
+			}
+			});
+		 
+		 
+		 $( "[compoDvs=div_table]" ).resizable(
+	    			{helper: "ui-resizable-helper",
+	    			start: function(event,ui){
+	    				vsMouseDownYn = "N";
+		    			
+	    				var vnLeft = Number($(ui.helper).css("left").replace("px",""));
+	    				var vnTop = Number($(ui.helper).css("top").replace("px",""));
+	    				
+	    				$(ui.helper).css("left",(vnLeft+10)+"px");
+	    				$(ui.helper).css("top",(vnTop+10)+"px");
+	    			},
+	    			stop: function( event, ui ) {
+	    			
+	    				var voTr = $("#"+ui.element.attr("id")+" tr");
+	    				var vnTrLen = voTr.length;
+	    				
+	    				
+	    				for(var i=0; i<vnTrLen; i++){
+	    					var vnTdLen =voTr.eq(i).children().length;
+	    					
+	    					for(var j=0; j<vnTdLen; j++){
+	    						var vnItmLen = voTr.eq(i).children().eq(j).children().length;
+	    						
+	    						for(var k=0; k<vnItmLen; k++){
+	    							$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).children().eq(k).css("display","none");
+	    						}
+	    						
+	    						
+	    						$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).css("height","0px");
+	    						$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).css("width","0px");
+	    						
+		    				}
+	    					
+	    					$("#"+ui.element.attr("id")+" tr").eq(i).css("height","0px");
+	    				}
+	    			
+	    				ui.element.height(ui.element.height()+20)
+	    				ui.element.width(ui.element.width()+20)
+	    				
+	    				ui.element.children().eq(0).height(ui.helper.height()-2);
+	    				ui.element.children().eq(0).width(ui.helper.width()-3);
+	    				
+	    				var vnTrSize = [];
+	    				var vnTdSize = [];
+	    				for(var i=0; i<vnTrLen; i++){
+	    					vnTrSize.push($("#"+ui.element.attr("id")+" tr").eq(i).css("height"));
+	    					for(var j=0; j<vnTdLen; j++){
+	    						vnTdSize.push($("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).css("width"));
+	    						
+		    				}
+	    				}
+	    				
+	    				for(var i=0; i<vnTrLen; i++){
+    						vnTrSize.push($("#"+ui.element.attr("id")+" tr").eq(i).css("height"),vnTrSize[i]);
+    						var vnTdLen =voTr.eq(i).children().length;
+    						for(var j=0; j<vnTdLen; j++){
+    							$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).css("height",vnTrSize[i]);
+    							$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).css("width",vnTdSize[j]);
+    						
+    							var vnItmLen = voTr.eq(i).children().eq(j).children().length;
+    							for(var k=0; k<vnItmLen; k++){
+        							$("#"+ui.element.attr("id")+" tr").eq(i).children().eq(j).children().eq(k).css("display","block");
+        						
+    	    					}
+	    					}
+    						
+    						
+    					}
+	    				
+	    				
+	    				
+	    				fn_saveClone();
+	    				}
+	    			}
+	    	
+	    );
+	 }
+	 
+	 if($( ".div_title" ).length != 0){
+		$( ".div_title" ).draggable({
+				cancel:"[compoDvs=span_title]",
+				cursor: "move",
+			    grid: [ 10, 10 ],
+			    stop: function( event, ui ){
+                  vbTitleDragCheck = true;
+                 fn_creationTableResize(ui);
   				}
-  });
+		});
+		
+		 
+	 }
+	 
+	 if($( ".div_label" ).length != 0){
+			$( ".div_label" ).draggable({
+					cancel:"[compoDvs=span_label]",
+					cursor: "move",
+				    grid: [ 10, 10 ],
+				    start:function(event,ui){
+				    	vsMouseDownYn = "N";
+				    },
+				    stop: function( event, ui ){
+	                  vbTitleDragCheck = true;
+	                 fn_creationTableResize(ui);
+	  				}
+			});
+			 
+		 }
+	 
+	 if($( ".div_button" ).length != 0){
+		 $(".div_button").draggable({cursor: "move",
+			   grid: [ 10, 10 ],
+			   start:function(event,ui){
+			    	vsMouseDownYn = "N";
+			    },
+              stop: function( event, ui ){
+	               vbButtonDragCheck = true;
+	              fn_creationTableResize(ui);
+	   		}
+		});
+		 
+		 
+		 $( "[compoDvs=div_button]" ).resizable(
+	    			{helper: "ui-resizable-helper",
+	    			start: function(event,ui){
+	    				vsMouseDownYn = "N";
+		    			
+	    				var vnLeft = Number($(ui.helper).css("left").replace("px",""));
+	    				var vnTop = Number($(ui.helper).css("top").replace("px",""));
+	    				
+	    				$(ui.helper).css("left",(vnLeft+10)+"px");
+	    				$(ui.helper).css("top",(vnTop+10)+"px");
+	    			},
+	    			stop: function( event, ui ) {
+	    				ui.element.width(ui.element.width()+30)
+	    				ui.element.height(ui.element.height()+30)
+	    			
+	    				ui.element.children().eq(0).width(ui.helper.width()-3);
+	    				ui.element.children().eq(0).height(ui.helper.height()-2);
+	    				fn_saveClone();
+	    				}
+	    			}
+	    	
+	    );
+		 
+		 
+		
+
+	 }
+	 
+	 
+
+	 if($( "[compoDvs=div_inputBox]" ).length != 0){
+		 $("[compoDvs=div_inputBox]").draggable({cursor: "move",
+			   grid: [ 10, 10 ],
+			   start:function(event,ui){
+			    	vsMouseDownYn = "N";
+			    },
+			   stop: function(event,ui){
+				  fn_creationTableResize(ui);
+				}
+		});
+		 
+		 
+ 		 $( "[compoDvs=div_inputBox]" ).resizable(
+	    			{helper: "ui-resizable-helper",
+	    			start: function(event,ui){
+	    				vsMouseDownYn = "N";
+		    			
+	    				var vnLeft = Number($(ui.helper).css("left").replace("px",""));
+	    				var vnTop = Number($(ui.helper).css("top").replace("px",""));
+	    				
+	    				$(ui.helper).css("left",(vnLeft+10)+"px");
+	    				$(ui.helper).css("top",(vnTop+10)+"px");
+	    			},
+	    			stop: function( event, ui ) {
+	    				ui.element.width(ui.element.width()+25)
+	    				ui.element.height(ui.element.height()+25)
+	    			
+	    				ui.element.children().eq(0).width(ui.helper.width()-3);
+	    				ui.element.children().eq(0).height(ui.helper.height()-2);
+	    				fn_saveClone();
+	    				}
+	    			}
+	    	
+	    );
+		 
+	 }
+	 
+	if($( "[compoDvs=div_selectBox]" ).length != 0){
+		$("[compoDvs=div_selectBox]").draggable({cursor: "move",
+				grid: [ 10, 10 ],
+				start:function(event,ui){
+			    	vsMouseDownYn = "N";
+			    },
+				stop: function( event, ui ){
+					fn_creationTableResize(ui);
+				}
+		});
+		
+		
+		$( "[compoDvs=div_selectBox]" ).resizable(
+    			{helper: "ui-resizable-helper",
+    			start: function(event,ui){
+    				vsMouseDownYn = "N";
+	    			
+    				var vnLeft = Number($(ui.helper).css("left").replace("px",""));
+    				var vnTop = Number($(ui.helper).css("top").replace("px",""));
+    				
+    				$(ui.helper).css("left",(vnLeft+10)+"px");
+    				$(ui.helper).css("top",(vnTop+10)+"px");
+    			},
+    			stop: function( event, ui ) {
+    				ui.element.width(ui.element.width()+20)
+    				ui.element.height(ui.element.height()+20)
+    			
+    				ui.element.children().eq(0).width(ui.helper.width()-3);
+    				ui.element.children().eq(0).height(ui.helper.height()-2);
+    				fn_saveClone();
+    				}
+    			}
+    	
+    );
+	 
+	 }
+	 
+
+	 
+
+
+ 
+  
+  
+  
+  
+  
+  
+  
   	  
   	  
   	  
   	$( "#creationTable" ).droppable({
-        drop: function( event, ui ) {debugger;
+        drop: function( event, ui ) {
         
         	vsDropYn = "Y";
 	        if(ui.draggable.attr("compoDvs") != "div_content"){
 	        		
-	            var voContent = $(".div_content");
+	            var voContent = $("[compoDvs=div_content]");
 	            var vnContLength = voContent.length;
 	            
 	            // 부모 아이디
@@ -346,26 +591,41 @@
 	            	
 	            }
 	        }
+	        
+	        fn_saveClone();
         }
-  	 });
   	
-   	  $( ".table" ).resizable();
-  	  
+  	 });
   
-    $( "td" ).droppable({
-        drop: function( event, ui ) {
-        	var vsCompoDvs = ui.draggable.attr("compoDvs");
-        	if(vsCompoDvs == "inputBox" || vsCompoDvs == "selectBox"){
-        		ui.draggable.css("top","");
-        		ui.draggable.css("left","");
-        		ui.draggable.css("position","relative");
-        		$(this).append(ui.draggable);
-        	}
-        
-        }
-    });
-    
-    $( "#sortable" ).on( "sortupdate", function( event, ui ) {} );
+	    $( "td" ).droppable({
+	        drop: function( event, ui ) {
+	        	var vsCompoDvs = ui.draggable.attr("compoDvs");
+	        	if(["div_inputBox","div_selectBox","div_button","div_label"].indexOf(vsCompoDvs) != -1){
+	        		ui.draggable.css("top","");
+	        		ui.draggable.css("left","");
+	        		ui.draggable.css("position","relative");
+	        		ui.draggable.css("margin","0");
+	        		$(this).append(ui.draggable);
+	        		
+	        		fn_saveClone("td");
+	        		vsMouseDownYn = "N";
+	        	}
+	        
+	        }
+	    });
+	    
+	    var vnResizeLen = $(".ui-resizable-handle").length;
+	    for(var i=0; i<vnResizeLen; i++){
+	    	var vnHandleLen = $(".ui-resizable-handle").eq(i).parent().children('.ui-resizable-handle').length;
+	    	if(vnHandleLen > 3){
+	    		for(var j=3; j<vnHandleLen; j++){
+	    			$(".ui-resizable-handle").eq(i).parent().children('.ui-resizable-handle').eq(3).remove();
+	    		}
+	    	}
+	    }
+	    
+	    
+	    
     
     };
 	
@@ -385,6 +645,12 @@
 	function titleCreation() {
 		
 		onclick.draw("title");
+	}
+	
+	/* Label 만들기 */
+	function labelCreation() {
+		
+		onclick.draw("label");
 	}
 	
 	/* button 만들기 */
@@ -419,42 +685,94 @@
 	var shiftHold = 0;
 	$(document).ready(function(){
 		
-		
+
 		$("body").keydown(function(e){ // 키누를떄
-			if(e.keyCode == 16){ //shift 
+			if(e.keyCode == 17){ //ctrl 
 				shiftHold = 1;
 			}
 		
-			if(e.keyCode == 46){
-				var vsTdFocus = $(".tableFocus");
-				var vnTdFocusLengh = vsTdFocus.length;
-				if(vnTdFocusLengh != 0){ vsTdFocus.parent().parent().parent().remove(); }
-				// 현재 포커스를 가지고있는 객체를 삭제한다.
-				var voRightInfo = $("[orgId="+$("[focus=true]").attr("id")+"]");
-				if(voRightInfo.attr("level") == "1"){ $("[parent="+voRightInfo.attr("id")+"]").remove(); voRightInfo.remove();}
-				else{ voRightInfo.remove(); }
-				$("[focus=true]").remove();
+			else if(e.keyCode == 46){ // delete
+				if($(document.activeElement).attr("id") == null){
+					var vsTdFocus = $(".tableFocus");
+					var vnTdFocusLengh = vsTdFocus.length;
+					
+					if(vnTdFocusLengh != 0){
+						vsTdFocus.parent().parent().parent().parent().remove();
+						fn_saveClone();
+					}
+
+					var voFocusInfo = $("[focus=true]");
+					var vsCompoDvs = voFocusInfo.attr("compoDvs");
+					
+					if(["inputBox","button","selectBox","span_title","span_label"].indexOf(vsCompoDvs) != -1){
+						voFocusInfo.parent().remove();
+						fn_saveClone();
+					} else{
+						$("[focus=true]").remove();
+						fn_saveClone();
+					}
+				}
+				
+				
 			}
+			
+			
+			// enter 클릭시
+			else if(e.keyCode == 13){
+			
+				var vsFocusID = $(document.activeElement).attr("id");
+				var vsFocusClass = $(document.activeElement).attr("class");
+				
+				if($("#btn_infoUpdate").css("display") != "none"){
+					if(vsFocusID != null){
+						var vsFocusIDSplit = vsFocusID.substr(0,17);
+						
+						if(vsFocusIDSplit == "ibx_propertyTable"){
+							infoUpdate();
+							$(document.activeElement).blur();
+						}
+					}
+					
+				}
+				
+				if(vsFocusClass == "prompt_input"){
+					$("#btn_promptSave").click();
+				}
+			}
+			
+			
+			// esc 클릭시
+			else if(e.keyCode == 27){
+				$(".div_pop").last().remove()
+			}
+				
 		});
 		
 		$("body").keyup(function (e){ // 키뗄떼
-			if(e.keyCode == 16){
+			if(e.keyCode == 17){
 				shiftHold = 0;
 			}
 		});
 	});
 	
+	
 	fn_creationClick = function(){
 		
 		
-		if(shiftHold == 0){
+/* 		if(shiftHold == 0 && vsMouseDownYn == "N"){
+			
 			focusOut.All();
 		}
+		
+		vsMouseDownYn = "N"; */
 		
 	}
 	
 	
-	
+	vsMouseDownInfo = {
+			"row" : "",
+			"col" : ""
+	};
 	
  	$(document).click(function(e){
 		
@@ -464,6 +782,65 @@
 		}
 		
 	});
+ 	
+ 	
+ 	fn_tdMouseDown = function(e){
+ 		focusOut.All();	
+ 	
+ 		vsMouseDownYn = "Y";
+ 		
+		e.className = "tableFocus";
+		vsMouseDownInfo.row = $(e.parentElement).attr("row");
+		vsMouseDownInfo.col = $(e).attr("shell");
+	}
+ 	
+ 	fn_tdMouseUp = function(e){
+ 	
+ 		vsMouseDownYn = "N";
+ 		
+	}
+
+	fn_tdMouseOver = function(e){
+		if(vsMouseDownYn == "Y"){
+			var vnRow = $(e.parentElement).attr("row");
+			var vnCol = $(e).attr("shell");
+			
+			var vnStartRow = vsMouseDownInfo.row;
+			var vnStartCol = vsMouseDownInfo.col;
+			var vnChange = 0;
+			
+			focusOut.All();	
+			
+			if(vnStartRow > vnRow){
+				vnChange = vnRow;
+				vnRow = vnStartRow;
+				vnStartRow = vnChange;
+			}
+			
+			if(vnStartCol > vnCol){
+				vnChange = vnCol;
+				vnCol = vnStartCol;
+				vnStartCol = vnChange;
+			}
+			
+			for(var i=vnStartRow; i<=vnRow; i++){
+				for(var j=vnStartCol; j<=vnCol; j++){
+					
+					var vsTableID = $(e).parent().parent().parent().attr("id");
+					
+					if($("#"+vsTableID+" [row="+i+"] [shell="+j+"]").css("display") == "none"){
+						continue;
+					}
+					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").removeClass("creationTd tbtd_content");
+					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").addClass("tableFocus");
+				}
+			}
+			
+		}
+		
+
+	
+	}
 	
 	
 	
@@ -488,6 +865,16 @@
 			
 	}
 	
+	fn_labelOnDblClick = function(param){
+		
+		robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_titleOnDblClickCallBack");
+	
+		voPromptObject = param;
+		
+		vsLabelYn = "Y"
+			
+	}
+	
 	fn_titleOnDblClickCallBack = function(param){
 		
 		if(param == ""){
@@ -497,18 +884,30 @@
 		
 		$(voPromptObject).parent().css("width","1000px");
 		voPromptObject.textContent = param[0];
-		var vnWidth = $(voPromptObject).css("width");
-		$(voPromptObject).parent().css("width",vnWidth);
+		$(voPromptObject).attr("value",param[0]);
 		
+		var vnWidth = Number($(voPromptObject).css("width").replace("px",""));
+		var vnHeight = Number($(voPromptObject).css("height").replace("px",""));
+		$(voPromptObject).parent().css("width",(vnWidth+30)+"px");
+		$(voPromptObject).parent().css("height",(vnHeight+20)+"px");
+		
+		robot.getAttr(voPromptObject);
 		voPromptObject = "";
+		vsLabelYn = "N";
 	}
 	
 	/* 테이블 td 더블클릭 이벤트
 	라벨 설정 */
     fn_tdDbClick = function(param) {
-    	robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_tdDbClickCallBack");
     	
-    	voPromptObject = param;
+    	if(vsLabelYn != "Y"){
+    		robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_tdDbClickCallBack");
+        	
+        	voPromptObject = param;
+    	}
+    	
+    	vsLabelYn = "N";
+    	
     
     	
     }
@@ -520,12 +919,13 @@
 			return false;
 		}
     	voPromptObject.textContent = param[0];
-    	$(".tableFocus").attr("label",param[0]);
+    	$(".tableFocus").attr("value",param[0]);
+    	
+    	robot.getAttr(voPromptObject);
+    	
     	param.removeChild;
     	voPromptObject = "";
     
-    voFocusTdInfo.className = "tbtd_content creationTd";
-    	
     }
 	
 	
@@ -533,9 +933,7 @@
 		robot.prompt("버튼명을 입력하시오",["버튼명"],"","","fn_buttonOnDblClickCallBack");
 	
 		voPromptObject = param;
-		if(buttonNm != null && buttonNm != ""){
-			$(param).val(buttonNm);
-		}
+
 	}
 	
 	fn_buttonOnDblClickCallBack = function(param){
@@ -547,6 +945,7 @@
 		
 		$(voPromptObject).val(param[0]);
 		
+		robot.getAttr(voPromptObject);
 		voPromptObject = "";
 	}
 	/* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 더블클릭 이벤트 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
@@ -561,10 +960,11 @@
 			var table = $ (e.currentTarget);
 		 };
 		
-			$ ("#table0").colResizable({
+			$ (".table").colResizable({
 			 	liveDrag : true , 
 			    gripInnerHtml : "<div class = 'grip'> </ div>" ,  
-			    draggingClass : "dragging" ,  
+			    draggingClass : "dragging" ,
+			    resizeMode:'overflow',
 			    onResize : onSampleResized
 		  });
 		}
@@ -607,78 +1007,116 @@
 	 수정  프로세스 
 	***********************************/
 	function infoUpdate(){
+
 		
-		var vsTrnum = $("#propertyTable tbody tr").length;
-			vsTrnum --;
 		
-		var vmObj = {};
-		//jsonArray에 변경정보 담기
-		for(var i=0; i<vsTrnum; i++){
-			var vsKey = $("tr[name=buffer"+i+"] > td:first").text();
-			var vsValue = $("tr[name=buffer"+i+"] > td:last > input[type=text]").val();
-			
-			if(vsKey != null && vsValue != null){
-				if(vsKey == "id"){
-					vmObj["id"] = vsValue;	
-				}
-				if(vsKey == "class"){
-					vmObj["class"] = vsValue;	
-				}
-				if(vsKey == "name"){
-					vmObj["name"] = vsValue;	
-				}
-				if(vsKey == "label"){
-					vmObj["label"] = vsValue;	
-				}
-				if(vsKey == "style"){
-					vmObj["style"] = vsValue;	
-				}
-				if(vsKey == "value"){
-					vmObj["value"] = vsValue;	
-				}
+		var vsCompoId = $("#ibx_propertyTable_id").val();
+		var vsCompoClass = $("#ibx_propertyTable_class").val();
+		var vsCompoName = $("#ibx_propertyTable_name").val();
+		var vsCompoLabel = $("#ibx_propertyTable_label").val();
+		var vsCompoStyle = $("#ibx_propertyTable_style").val();
+		var vsCompoValue = $("#ibx_propertyTable_value").val();
+		var vsCompoDvs = $("#ibx_propertyTable_compoDvs").val();
+		var vsCompoRealId = $("#ibx_propertyTable_realId").val();
+		
+		var vsDvsValue = "";
+		
+		if(vsCompoRealId == ""){
+			if($("[focus=true]").length == 0){
+				vsDvsValue = ".tableFocus"
+			} else{
+				vsDvsValue = "[focus=true]";
 			}
+		} else{
+			vsDvsValue = "#"+vsCompoRealId;
 		}
-		//key값 셋팅
-		var keys = Object.keys(vmObj);
 		
-		//key와 value를 가져와 해당 component에 입력
-		var check = $(".tableFocus").length;
+		if(vsCompoDvs == "div_content"){
+			vsCompoClass += " ui-draggable ui-draggable-handle ui-resizable";
+		} else if(["div_table","inputBox","selectBox"].indexOf(vsCompoDvs) != -1){
+			vsCompoClass += " ui-draggable ui-draggable-handle";
+		}
 		
-		if(check == 0){
-			var inputCheck = $(".inputBox[focus=true]").length;
-			var selectCheck = $(".selectBox[focus=true]").length;
-			var buttonCheck = $(".button[focus=true]").length;
-			var titleCheck = $(".span_title[focus=true]").length;
+		if(vsCompoDvs == "td"){
+			var vsTableStyle = vsCompoStyle.substr(13,vsCompoStyle.length);
+			vsTableStyle = vsTableStyle.substr(13,vsCompoStyle.length);
+			$(vsDvsValue).attr("style",vsTableStyle);
+		} else{
+			$(vsDvsValue).attr("style",vsCompoStyle);
+		}
+		
+		$(vsDvsValue).attr("class",vsCompoClass);
+		$(vsDvsValue).attr("name",vsCompoName);
+		$(vsDvsValue).attr("label",vsCompoLabel);
+		$(vsDvsValue).attr("value",vsCompoValue);
+		
+		
+			
+		if(["td","span_title","span_label"].indexOf(vsCompoDvs) != -1){
+			$(vsDvsValue).text(vsCompoValue);
+		}
+		
+		$(vsDvsValue).attr("id",vsCompoId);
+		
+		if(vsCompoDvs == "td"){
+			var vsTrInfo = $(vsDvsValue).parent();
+			var vsTableId = vsTrInfo.parent().parent().attr("id");
+			
+			var vsShell = $(vsDvsValue).attr("shell");
+			var vsRow = $(vsDvsValue).attr("row");
+			var vnTrChildCount = $("#"+vsTableId+" tr").length
+			var vnTdChildCount = vsTrInfo.children().length
+			
+			var vnStyleLen = vsCompoStyle.length;
+			
+			var vnWidthStart = vsCompoStyle.indexOf("width")+6
+			var vsWidthSub = vsCompoStyle.substr(vnWidthStart,vnStyleLen)
+			var vnWidth = vsWidthSub.substr(0,vsWidthSub.indexOf("px;")+2);
+			
+			var vnHeightStart = vsCompoStyle.indexOf("height")+7
+			var vsHeightSub = vsCompoStyle.substr(vnHeightStart,vnStyleLen)
+			var vnHeight = vsHeightSub.substr(0,vsHeightSub.indexOf("px;")+2);
+			
+			var voheight = [];
+			var vowidth = [];
+			
+			for(var i=0; i<vnTrChildCount; i++){
+				voheight.push($("#"+vsTableId+" tr").eq(i).css("height"));
+			}
+			
+			for(var j=0; j<vnTdChildCount; j++){
+				vowidth.push(vsTrInfo.children().eq(j).css('width'));
+			}
+			
+			$("#"+vsTableId).css("height","0px");
+			$("#"+vsTableId).css("width","0px");
 			
 			
-			if(inputCheck != 0){
-				for(var i in keys){
-					$(".inputBox[focus=true]").attr(keys[i],vmObj[keys[i]]);
+			for(var i=0; i<vnTrChildCount; i++){
+				for(var j=0; j<$("#"+vsTableId+" tr").eq(i).children().length; j++){
+					$("#"+vsTableId+" tr").eq(i).children().eq(j).css("height",voheight[i]);
+					$("#"+vsTableId+" tr").eq(i).children().eq(j).css("width",vowidth[j]);
 				}
+				
 			}
-			else if(selectCheck != 0){
-				for(var i in keys){
-					$(".selectBox[focus=true]").attr(keys[i],vmObj[keys[i]]);
-				}
+			
+			for(var i=0; i<vnTdChildCount; i++){
+				vsTrInfo.children().eq(i).css('height', vnHeight);
 			}
-			else if(buttonCheck != 0){
-				for(var i in keys){
-					$(".button[focus=true]").attr(keys[i],vmObj[keys[i]]);
-				}
+			vsTrInfo.css("height",vnHeight);
+			
+			for(var i=0; i<vnTrChildCount; i++){
+				$("#"+vsTableId+" [shell="+vsShell+"]").eq(i).css("width",vnWidth);
 			}
-			else if(titleCheck != 0){
-				for(var i in keys){
-					$(".span_title[focus=true]").attr(keys[i],vmObj[keys[i]]);
-				}
-			}
+			
+			vsTrInfo.parent().parent().parent().height(vsTrInfo.parent().parent().height()+30)
+			vsTrInfo.parent().parent().parent().width(vsTrInfo.parent().parent().width()+30)
+			
+			
+			
 		}
-		else if(check !=0){
-			for(var i in keys){
-				$(".tableFocus").attr(keys[i],vmObj[keys[i]]);
-			}
-			//focus 된 td의 textContent 바꿔주기
-			 $(".tableFocus").text(vmObj["label"]);
-		}
+		
+
 		 
 	}//수정 프로세스 end
 	
@@ -736,7 +1174,212 @@
 			
 		}		
 	}//검색 프로세스 end
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/* 테이블그리기 */
+	function test() {
+		testCallBack([4,2])
+	}
+	
+	/* 테이블그리기 CallBack */
+	testCallBack = function(param) {
+		if(param == "" || param == null){
+			return false;
+		}
+		
+		// 부모 가로크기
+		//var width = $(voFocusDivInfo).css("width");
 
+		// table 시작
+		var vsSource = "<div id=\"div_table"+vnTableCount+"\"";
+		vsSource += " class=\"div_table\" focus=false";
+		vsSource += " style=\"top:"+onclick.fn_creationPosition()+"px;\" compoDvs=\"div_table\" ";
+		vsSource += ">";
+		vsSource += "<table id=\"table" + vnTableCount + "\"";;
+		vsSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
+		vsSource += " compoDvs=\"table\" ";
+		vsSource += "\n <colgroup>";
+
+		for (var i = 0; i < param[0]; i++) {
+			//짝수 셀
+			if(i % 2 == 0){
+				vsSource += "\n  <col width=\"100\"/>";
+			// 홀수 셀
+			} else{
+				vsSource += "\n  <col width=\"225\"/>";
+			}
+			
+		}
+		vsSource += "\n </colgroup>";
+		
+		//tbody 추가
+		vsSource += "\n <tbody>"
+
+		for (var i = 0; i < param[1]; i++) {
+			vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" >";
+			for (var j = 0; j < param[0]; j++) {
+				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
+				vsSource += "shell=\""+j+"\" ";
+				vsSource += "compoDvs=\"td\" ";
+				vsSource += "colspan=\"1\" ";
+				vsSource += "rowspan=\"1\" ";
+				vsSource += "style=\"height:30px;\" "
+					
+				vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
+				vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
+					
+				vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
+				vsSource += "</td>";
+			}
+			vsSource += "\n </tr>";
+		}
+		
+		//tbody 추가
+		vsSource += "\n </tbody>"
+
+		vsSource += "</table>";
+		vsSource += "</div>";
+		
+		// div focus 여부
+		// 포커스가 없다면 body에 생성
+		if(!focusOut.divYn()){
+			$("#creationTable").append(vsSource);
+		// 포커스가 있다면 포커스잡힌 div에 생성
+		} else{
+			$("[compoDvs=div_content][mainfocus=true]").append(vsSource);
+		}
+
+		vnTableCount++;
+		
+		// form 크기 동적조정
+		onclick.fn_setformSize();
+	}
+	
+	testMerge = function(){
+		
+	}
+	
+	testColDivision = function(){
+		
+	}
+	
+	testRowDivision = function(){
+		robot.prompt("몇개로?", ["몇개"],"생성","취소","testRowDivisionCallBack");
+		
+		
+		
+		
+	}
+	
+	testRowDivisionCallBack = function(param){
+	
+		var vsSource = "";
+		var a = param[0];
+		var focus = $(".tableFocus");
+		var focusRowSpan = focus.attr("rowSpan");
+		
+		
+		var tr = focus.parent();
+		
+		var totalTd = tr.children();
+		
+		var tdCount = totalTd.length;
+		
+		
+		// 포커스잡힌 셀의 rowspan이 1 이상이면
+		if(focusRowSpan != 1){
+			
+			// 분할할 셀이 포커스잡힌 rowspan보다 작거나 같다면 그냥분할 후 td추가
+			if(a <= focusRowSpan){
+				var rowSpan = focusRowSpan/a;
+				var seconde = focusRowSpan/a;
+				var trRow = tr.parent().children().index(tr);
+				
+				$("#table0 tbody").children().eq(trRow).attr("rowSpan")
+				for (var i=0; i<a-1; i++){
+					
+					
+					vsSource += "\n  <td class=\"tbtd_content creationTd\" "
+					vsSource += "shell=\""+j+"\" ";
+					vsSource += "compoDvs=\"td\" ";
+					vsSource += "colspan=\"1\" ";
+					vsSource += "rowspan=\"1\" ";
+					vsSource += "style=\"height:30px;\" "
+						
+					vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
+					vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
+						
+					vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
+					vsSource += "</td>";
+					$("#table0 tbody").children().eq(1+trRow).append(vsSource);
+					
+				}
+			} else{
+				
+			}
+			
+		// 포커스잡힌 셀의 rowspan이 1일경우
+		} else{
+			for(var k=0; k<tdCount; k++){
+				if(totalTd.eq(k).attr("class").indexOf("tableFocus") == -1){
+					
+					
+					if(totalTd.eq(k).attr("rowSpan") == 1){
+						totalTd.eq(k).attr("rowSpan",a)
+					} else{
+						totalTd.eq(k).attr("rowSpan",totalTd.eq(i).attr("rowSpan")+a)
+					}
+					
+					var count = focus.length;
+				}
+			}
+			
+			for (var i = 0; i < a-1; i++) {
+				vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" >";
+				for (var j = 0; j < count; j++) {
+					vsSource += "\n  <td class=\"tbtd_content creationTd\" "
+					vsSource += "shell=\""+j+"\" ";
+					vsSource += "compoDvs=\"td\" ";
+					vsSource += "colspan=\"1\" ";
+					vsSource += "rowspan=\"1\" ";
+					vsSource += "style=\"height:30px;\" "
+						
+					vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
+					vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
+						
+					vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
+					vsSource += "</td>";
+				}
+				vsSource += "\n </tr>";
+			}
+				
+					
+					
+					
+					
+			$(".tableFocus").parent().after(vsSource);
+		}
+		
+		
+		
+		
+		
+		
+	}
+
+	
 	
 </script>
 
@@ -754,22 +1397,28 @@
 			</colgroup>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="divCreation();">DIV영역</td>
+					onclick="divCreation();">DIV</td>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="titleCreation();">TITLE</td>
+					onclick="titleCreation();">Title</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="labelCreation();">Label</td>
+				
+			</tr>
+			<tr>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="inputCreation();">Text</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="selectCreation();">Select</td>
+				<td class="tbtd_content" style="cursor: pointer"
+					onclick="buttonCreation();">Button</td>
+			</tr>
+
+			<tr>
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="tableCreation();">TABLE</td>
 			</tr>
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="buttonCreation();">Button</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="inputCreation();">Input Box</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="selectCreation();">Select Box</td>
-			</tr>
-
-			<tr>
+			   
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableColAddUp();">위로 행 추가</td>
 				<td class="tbtd_content" style="cursor: pointer"
@@ -790,17 +1439,46 @@
 					onclick="fn_tableMerge();">병합</td>
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableDivision();">분할</td>
+
 			</tr>
 		</table>
 		<!-- </div> -->
-		<table id="propertyTable" style="display: none;">
-			<tr>
-				<!-- 이거로 검색. -->
-				<td><input type="text" id="Search"></input></td>
-				<td><input type="button" onclick="infoSearch();" value="검색"></input>
-				<td>
-				<td><input type="button" onclick="infoUpdate();" value="수정"></input></td>
-			</tr>
+		<table id="propertyTable"">
+			<thead>
+			</thead>
+			<tbody>
+				<tr>
+					<td>id</td>
+					<td><input type=text id="ibx_propertyTable_id" value="" ></input></td>
+				</tr>
+				<tr>
+					<td>class</td>
+					<td><input type=text id="ibx_propertyTable_class" value=""></input></td>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td><input type=text id="ibx_propertyTable_name" value=""></input></td>
+				</tr>
+				<tr>
+					<td>label</td>
+					<td><input type=text id="ibx_propertyTable_label" value=""></input></td>
+				</tr>
+				<tr>
+					<td>style</td>
+					<td><input type=text id="ibx_propertyTable_style" value=""></input></td>
+				</tr>
+				<tr>
+					<td>value</td>
+					<td><input type=text id="ibx_propertyTable_value" value=""></input></td>
+					<td><input type="button" id="btn_infoUpdate" onclick="infoUpdate();" value="수정" style="margin-left:20px; display:none;"></input></td>
+				</tr>
+				<tr style="display:none;">
+					<td><input type=hidden id="ibx_propertyTable_compoDvs" value=""></input></td>
+					<td><input type=hidden id="ibx_propertyTable_realId" value=""></input></td>
+					
+				</tr>
+			</tbody>
+			
 		</table>
 	</div>
 

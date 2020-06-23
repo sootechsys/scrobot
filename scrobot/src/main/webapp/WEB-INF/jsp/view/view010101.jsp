@@ -24,8 +24,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><spring:message code="title.sample" /></title>
-<link type="text/css" rel="stylesheet"
-	href="<c:url value='/css/egovframework/sample.css'/>" />
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <style>
 
@@ -39,13 +37,13 @@
 </script>
 </head>
 
-<body>
+<body onselectstart="return false">
 	<jsp:include page="../extable/scrobotheader.jsp" />
 	<jsp:include page="../extable/scrobotleft.jsp" flush="false"/>
 
 
 
-	<form:form id="creationForm" name="creationForm" method="post">
+	<form:form id="creationForm" name="creationForm" onsubmit ="return false;">
 		<div id="div_creationForm">
 			<div id="creationTable" onclick="fn_creationClick()">
 			</div>

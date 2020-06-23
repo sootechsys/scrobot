@@ -32,7 +32,7 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 		btn2 = "취소";
 	}
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.promptOnclick(";
+	vsSource += "<input type=\"button\" id=\"btn_promptSave\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.promptOnclick(";
 	
 	if(typeof(ele) == "object"){
 		vsSource += "[";
@@ -54,8 +54,9 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 	vsSource += "," + callBack+")\"></input>";
 	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('',"+callBack+")\"></input>";
 	
-	var info = {"header" : "prompt"};
-	robot.openPop(info,callBack, vsSource,"tag");
+	var info = {"header" : "prompt",
+			    "callBack" : callBack};
+	robot.openPop(info, vsSource,"tag");
 }
 
 robot.promptOnclick = function(ele, callBack){
@@ -126,8 +127,9 @@ robot.alert = function(msg, btn, param, callBack){
 	vsSource += ","+callBack+")\"></input>";
 	
 	
-	var info = {"header" : "alert"};
-	robot.openPop(info,callBack, vsSource,"tag");
+	var info = {"header" : "prompt",
+		        "callBack" : callBack};
+	robot.openPop(info, vsSource,"tag");
 }
 
 
@@ -178,24 +180,26 @@ robot.confirm = function(msg, btn1, btn2, param, callBack){
 	vsSource += ","+callBack+");\"></input>";
 	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
 	
-	var info = {"header" : "confirm"};
-	robot.openPop(info,callBack, vsSource,"tag");
+	var info = {"header" : "prompt",
+		        "callBack" : callBack};
+	robot.openPop(info, vsSource,"tag");
 }
 
 
 
 /* openPop - 팝업을 오픈한다.
  * info : header헤더에 표시될 내용(string)
- * ele : prompt 요소(arrary)
  * url : 팝업에 표시될 url내용(String)
  * urlDvs : jsp를 호출할지 tag를 직접입력할지 여부(String)
  *        - tag경우에 append, url인경우 load
  * */
-robot.openPop = function(info,callBack, url, urlDvs){
+robot.openPop = function(info, url, urlDvs){
 
-	var header = info.hedaer;
+	var header = info.header;
 	var width = info.width;
 	var height = info.height;
+	var vsCallBack = info.callBack;
+	var vjParam = info.param;
 	
 	if(typeof(header) == "undefined"){
 		header = "popUp";
@@ -213,15 +217,44 @@ robot.openPop = function(info,callBack, url, urlDvs){
 		height += "px";
 	}
 	
+	if(typeof(vsCallBack) == "undefined"){
+		vsCallBack = "''";
+	}
+
+	
 	
 	var div_popCount = $(".div_pop").length;
 
 	var info= "<div id=\"div_pop"+div_popCount+"\" class=\"div_pop\" style=>";
+	
+	info += " <input id=\"param\" type=\"hidden\" value=";
+	
+	if(typeof(vjParam) == "object"){
+		info += "{";
+		for(var i=0; i<Object.keys(vjParam).length; i++){
+			info += "\"";
+			info += Object.keys(vjParam)[i];
+			
+			info += "\":\"";
+			info += vjParam[Object.keys(vjParam)[i]];
+			info += "\"";
+			if(Object.keys(vjParam).length-1 != i){
+				info += ",";
+			}
+		}
+		info += "}";
+	}
+	
+	info += "></input>";
+	
+	info += " <input id=\"callBack\" type=\"hidden\" value=\""+vsCallBack+"\"></input>";
+	
+	
 	info += "    <div id=\"div_pop_content"+div_popCount+"\" class=\"div_pop_content\" style=\"width:"+width+"; height:"+height+"\">";
-	info += "      <div style=\"height:30px; background-color:#6666CC; text-align:left; \">";
+	info += "      <div style=\"height:30px; background-color:#ccb68d; text-align:left; \">";
 	info += "      <span style=\"font-size:15pt; color:black; font-weight:bold; height:30px;\">"+header+"</span>";
-	info += "      <input type=\"button\" value=\"X\" style=\"float:right; background-color:#6666CC; height:100%; width:30px; font-size:15pt;\"";
-	info += "      onclick=\"robot.closePop('',"+callBack+");\">";
+	info += "      <input type=\"button\" value=\"X\" style=\"float:right; background-color:#ccb68d; height:100%; width:30px; font-size:15pt; font-weight:bold;\"";
+	info += "      onclick=\"robot.closePop('',"+vsCallBack+");\">";
 	info += "      </div>";
 	info += "      <div id=\"pop_content"+div_popCount+"\" class=\"pop_content\">";
 	info += "      </div>";
@@ -234,6 +267,9 @@ robot.openPop = function(info,callBack, url, urlDvs){
 	
 	if(urlDvs == "tag"){
 		$("#pop_content"+div_popCount).append(url);
+		if(header == "prompt"){
+			$(".prompt_input").eq(0).focus();
+		}
 	} else {
 		$("#pop_content"+div_popCount).load("./ws/pop/"+url);
 	}
@@ -252,6 +288,10 @@ robot.closePop = function(param, callBack){
 	if(callBack != null && callBack != "" && typeof(callBack) == "function"){
 		callBack(param);
 	}
+	
+	if(typeof(callBack) == "string" && callBack != ""){
+		eval(callBack)(param);
+	}
 }
 
 /*
@@ -259,69 +299,97 @@ robot.closePop = function(param, callBack){
  * param(String) - 해당 태그가 input인지 select 인지 명시 
  * i(int) - 반복 변수
  */
-robot.getAttr = function(param, i){ 
-		var tagLength = 0;
-		var sentence = "";
-		var vmObj ={};		
+robot.getAttr = function(param, i){
+
+		var focusYn = $(param).attr("focus");
 		
-		if(param =="div"){
-			tagLength = $("#creationTable > div").length;
-			sentence = "#div"+i;
-		}
-		else if(param == "input"){
-			tagLength = $(".inputBox").length;
-			sentence = "input[name=value"+i+"]";
-		}
-		else if(param == "button"){
-			tagLength =  $(".button").length;
-			sentence = "#button"+i;
-		}
-		else if(param == "title"){
-			tagLength = $("#creationTable > div > span[class=\"span_title\"]").length;
-			sentence = "#span"+i+"_title";
-		}
-		else if(param == "td"){
-			sentence = ".tableFocus";
-		}
-		else if(param == "select"){
-			tagLength = $(".selectBox").length;
-			sentence ="select[name=value"+i+"]";
-		}
-		
-		var focusYn = "";
-		
-		if(sentence == ".tableFocus"){
+		if($(".tableFocus").length != 0){
 			focusYn = "true";
 		}
-		else{
-			focusYn = $(sentence).attr("focus");
+		
+		var vmObj = {
+				"id" : $(param).attr("id"),
+				"class" : $(param).attr("class"),
+				"name" : $(param).attr("name"),
+				"label" : $(param).attr("label"),
+				"style" : $(param).attr("style"),
+				"value" : $(param).attr("value"),
+				"compoDvs" : $(param).attr("compoDvs"),
+				"realId" : $(param).attr("id")
+		};
+		
+		if(vmObj.compoDvs == "td"){
+		
+			
+			
+			if(vmObj.style == null){
+				vmObj.style = "";
+				vmObj.style = vmObj.style+"height:"+$(param).parent().css("height")+"; "
+				vmObj.style = vmObj.style+"width:"+$(param).css("width")+"; "
+				
+			} else {
+				var vnStyleLen = vmObj.style.length;
+				if(vmObj.style.indexOf("height") == -1){
+					vmObj.style = "height:"+$(param).css("height")+"; "+vmObj.style
+				} else{
+					var vnHeightStart = vmObj.style.indexOf("height")+7
+					var vsHeightSub = vmObj.style.substr(vnHeightStart,vnStyleLen)
+					var vnHeight = vsHeightSub.substr(0,vsHeightSub.indexOf("px;")+2);
+					vmObj.style = vmObj.style.replace("height:"+vnHeight,"height:"+$(param).css("height"));
+				}
+				
+				if(vmObj.style.indexOf("width") == -1){
+					vmObj.style = vmObj.style+"width:"+$(param).css("width")+"; "
+				} else{
+					var vnWidthStart = vmObj.style.indexOf("width")+6
+					var vsWidthSub = vmObj.style.substr(vnWidthStart,vnStyleLen)
+					var vnWidth = vsWidthSub.substr(0,vsWidthSub.indexOf("px;")+2);
+					vmObj.style = vmObj.style.replace("width:"+vnWidth,"width:"+$(param).css("width"));
+				}
+				
+				
+			}
+				
+			
+			
 		}
+		
+		if(vmObj.compoDvs == "div_content"){
+			vmObj.class = vmObj.class.split(" ui-draggable ui-draggable-handle ui-resizable").join("");
+		} else if(["div_table","inputBox","selectBox"].indexOf(vmObj.compoDvs) != -1){
+			vmObj.class = vmObj.class.split(" ui-draggable ui-draggable-handle").join("");
+		}
+		
+		
+
+		var keys = Object.keys(vmObj);
 			
 		if(focusYn == "true"){
-			vmObj = {
-					"id" : $(sentence).attr("id"),
-					"class" : $(sentence).attr("class"),
-					"name" : $(sentence).attr("name"),
-					"label" : $(sentence).attr("label"),
-					"style" : $(sentence).attr("style"),
-					"value" : $(sentence).attr("value")
-			};
-			
-			var keys = Object.keys(vmObj);
-			var vsbuffer = "";
 			
 			for(var j in keys){
-				$("tr[name=buffer"+j+"]").remove();
-				if(typeof vmObj[keys[j]] == "undefined"){
-					vmObj[keys[j]]="";
+
+				if(vmObj[keys[j]] == null){
+					vmObj[keys[j]] = "";
 				}
-				vsbuffer +="<tr name=\"buffer"+j+"\">";
-				vsbuffer +="<td>"+keys[j]+"</td>";
-				vsbuffer +="<td><input type=\"text\" value=\""+vmObj[keys[j]]+"\"></input></td>";
-				vsbuffer +="</tr>";
+				
+				
+				$("#ibx_propertyTable_"+keys[j]).val(vmObj[keys[j]])
+					
 			}
 			
-			$("#propertyTable > tbody:last").append(vsbuffer);
+			$("#btn_infoUpdate").show();
+			
+		} else{
+			for(var j in keys){
+				
+				if(vmObj[keys[j]] == null){
+					vmObj[keys[j]] = "";
+				}
+				
+				$("#ibx_propertyTable_"+keys[j]).val("")
+			}
+			
+			$("#btn_infoUpdate").hide();
 		}
 	
 	
