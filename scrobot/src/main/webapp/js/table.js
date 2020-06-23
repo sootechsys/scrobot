@@ -1,169 +1,28 @@
-//
-
 tableEdit = {};
 
-
-
-tableEdit.addUp = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
-	
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	
-	var buffer = "<tr name=\"tr\" row=\"\">";
-	for(var i=0; i<currentTdNum; i++){
-		buffer += "\n  <td class=\"tbtd_content creationTd\""
-		buffer += "shell = \""+i+"\"";
-		buffer += "style=\"height:30px; cursor:pointer\" "
-		buffer += "compoDvs=\"td\" "
-		buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
-		buffer += "</td>"
-	}
-	buffer += "\n </tr>";
-	
-	if(vsFocusTrRow ==0){ //가장 위 선택 시 
-		$("#"+vsTableId+"> tbody > tr:first").before(buffer);
-	}else if(vsFocusTrRow !=0){ // 다른곳 선택 시 
-		for(var a=0; a<currentTdNum; a++){ // td갯수만큼 반복
-			var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow-1)+"] > td[shell="+a+"]").attr("rowSpan");// 각td마다 rowSpan을 가져온다
-			if(typeof rowSpan != "undefined" || rowSpan != null){// rowSpan이 있으면
-				viRowSpan = parseInt(rowSpan);
-				viRowSpan += 1;
-				$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow-1+"] > td[shell="+a+"]").attr("rowSpan",viRowSpan);
-			}
-		}
-		$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").before(buffer);
-	}
-		
-	
-	//다 끝나고 나면 tr row 정비
-	// row를 다시 1번부터 매겨줌
+/* 	
+ * trReset : tr row reset
+ * 	
+ * @parameter
+ * 	- vsTableId : 테이블 id
+ * */
+tableEdit.trReset = function(vsTableId){
 	var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
 	for(var i=1; i<=resetTrNum; i++){
 		$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
 		}
-	
-	
 }
 
-
-
-tableEdit.addDown = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
-	
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	
-	var buffer = "<tr name=\"tr\" row=\"\">";
-	for(var i=0; i<currentTdNum; i++){
-		buffer += "\n  <td class=\"tbtd_content creationTd\""
-		buffer += "shell = \""+i+"\"";
-		buffer += "style=\"height:30px; cursor:pointer\" "
-		buffer += "compoDvs=\"td\" "
-		buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
-		buffer += "</td>"
-	}
-	buffer += "\n </tr>";
-	
-	for(var a=0; a<currentTdNum; a++){ // td갯수만큼 반복
-		
-    	var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+1)+"] > td[shell="+a+"]").attr("rowSpan");// 각td마다 rowSpan을 가져온다
-    	
-    	if(typeof rowSpan != "undefined" || rowSpan != null){// rowSpan이 있으면
-    		
-    		viRowSpan = parseInt(rowSpan);
-    		viRowSpan += 1;
-    		$("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+1)+"] > td[shell="+a+"]").attr("rowspan",viRowSpan);
-    	}
-    }
-    	$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").after(buffer);
-	
-	//다 끝나고 나면 tr row 정비
-	// row를 다시 1번부터 매겨줌
-	var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
-	for(var i=1; i<=resetTrNum; i++){
-		$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
-		}
-	
-	
-}
-
-
-
-
-tableEdit.ColDelete = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row");// focus tr row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	
-	
-		
-	for(var i=0; i<currentTdNum; i++){
-		var rowSpan = $("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"] > td[shell="+i+"]").attr("rowspan");// 각td마다 rowSpan을 가져온다	
-		if(typeof rowSpan != "undefined" || rowSpan != null){ // rowSpan 있을떄
-			var viRowSpan = parseInt(rowSpan);	
-			
-			var buffer = "<td class=\"tbtd_content creationTd\""
-				buffer += "shell = \""+i+"\"";
-				buffer += "style=\"height:30px; cursor:pointer\" "
-				buffer += "compoDvs=\"td\" "
-				buffer += "ondblclick=\"fn_tdDbClick(this)\"> "
-				buffer += "</td>"
-		
-			$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").remove();
-				
-			for(var j=1; j<viRowSpan; j++){
-				$("#"+vsTableId+"> tbody > tr[row="+(vsFocusTrRow+j)+"] > td[shell="+i+"]").after(buffer);
-			}
-			
-		}
-		else if(typeof rowSpan == "undefined" || rowSpan == null){ //rowSpan 없을떄
-			$("#"+vsTableId+"> tbody > tr[row="+vsFocusTrRow+"]").remove();
-		}
-		
-		//다 끝나고 나면 tr row 정비
-		// row를 다시 1번부터 매겨줌
-		var resetTrNum = $("#"+vsTableId+"> tbody > tr").length;
-		for(var i=1; i<=resetTrNum; i++){
-			$("#"+vsTableId+"> tbody > tr:nth-child("+i+")").attr("row",i-1);
-			}
-}
-}
-
-
-tableEdit.addLeft = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
-	
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	
-	// 각 라인에 td 하나씩 넣어야한다.
-	var buffer = "";
-		buffer += "\n  <td class=\"tbtd_content creationTd\"";
-		buffer += "shell = \""+vsFocusTdShell+"\"";
-		buffer += "style=\"height:30px; cursor:pointer\" ";
-		buffer += "compoDvs=\"td\" ";
-		buffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
-		buffer += "</td>";
-		
-	for(var i=0; i<currentTrNum; i++){
-		$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").before(buffer);
-	}
-	
+/* 	
+ * tdReset : td shell reset
+ * 	
+ * @parameter
+ * 	- vsTableId : 테이블 id
+ *  - vnCurrentTrNum : tr row
+ * */
+tableEdit.tdReset = function(vsTableId, vnCurrentTrNum){
 	var resetTdNum = $("#"+vsTableId+"> tbody > tr > td").length;
-	for(var i=0; i<currentTrNum; i++){
+	for(var i=0; i<vnCurrentTrNum; i++){
 		for(var j=1; j<=resetTdNum; j++){
 			$("#"+vsTableId+"> tbody > tr[row="+i+"] > td:nth-child("+j+")").attr("shell",j-1);
 		}
@@ -171,242 +30,223 @@ tableEdit.addLeft = function(){
 }
 
 
-
-tableEdit.addRight = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
+/*
+ * startInfo : focus table 정보를 가져온다
+ * 
+ * @parameter
+ * 	- param : tableId
+ * 
+ * @return
+ * 	- voTableArray(Array) : voTableArray = [tableId, vnCurrentTrNum, vnCurrentTdNum, vnFocusTrRow, vnFocusTdShell]
+ * */
+tableEdit.startInfo = function(param){
 	
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row"); //focus row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	
-	
-	var buffer = "";
-	buffer += "\n  <td class=\"tbtd_content creationTd\"";
-	buffer += "shell = \""+vsFocusTdShell+"\"";
-	buffer += "style=\"height:30px; cursor:pointer\" ";
-	buffer += "compoDvs=\"td\" ";
-	buffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
-	buffer += "</td>";
-
-	for(var i=0; i<currentTrNum; i++){
-		var ColCheck = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").attr("colSpan");
-		var RowCheck = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").attr("rowSpan");
+	if(typeof param =="undefined" || param == null){
+		var voTableArray = [];
 		
-		if(typeof ColCheck == "undefined" || ColCheck == null){
-			// colSpan이 없다는 것 따라서 추가바로 하면 된다.
-			$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").after(buffer);
-		}
-		else if(ColCheck >= 2){
-				var viColCheck = parseInt(ColCheck);
-				viColCheck += 1;
-				$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").attr("colSpan",viColCheck);
-				
-				if(typeof RowCheck != "undefined" || RowCheck != null){
-					var viRowCheck = parseInt(RowCheck);
-					viRowCheck -=1;
-					i += viRowCheck;
-				}
-				
-		}
-			
+		var vsTableId = $("td[tableFocus=true]").parent().parent().parent().attr("id"); //현재 table
+		var vnCurrentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var vnCurrentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		vnCurrentTdNum = vnCurrentTdNum / vnCurrentTrNum; // table td길이
+		var vnFocusTrRow = parseInt($("td[tableFocus=true]").parent().attr("row")); //focus row
+		var vnFocusTdShell = parseInt($("td[tableFocus=true]").attr("shell")); //focs td shell
+		
+		
+		
+		voTableArray[0] = vsTableId;
+		voTableArray[1] = vnCurrentTrNum;
+		voTableArray[2] = vnCurrentTdNum;
+		voTableArray[3] = vnFocusTrRow;
+		voTableArray[4] = vnFocusTdShell;
+		
+		return voTableArray;
 	}
-	
-	var resetTdNum = $("#"+vsTableId+"> tbody > tr > td").length;
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=1; j<=resetTdNum; j++){
-			$("#"+vsTableId+"> tbody > tr[row="+i+"] > td:nth-child("+j+")").attr("shell",j-1);
-		}
+	else{
+		
+		var voTableArray = [];
+		
+		var vsTableId = param; //현재 table
+		var vnCurrentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
+		var vnCurrentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
+		vnCurrentTdNum = vnCurrentTdNum / vnCurrentTrNum; // table td길이
+		//var vnFocusTrRow = parseInt($("td[tableFocus=true]").parent().attr("row")); //focus row
+		//var vnFocusTdShell = parseInt($("td[tableFocus=true]").attr("shell")); //focs td shell
+		
+		
+		
+		voTableArray[0] = vsTableId;
+		voTableArray[1] = vnCurrentTrNum;
+		voTableArray[2] = vnCurrentTdNum;
+		//voTableArray[3] = vnFocusTrRow;
+		//voTableArray[4] = vnFocusTdShell;
+		
+		return voTableArray;
 	}
 }
 
 
-
-tableEdit.RowDelete = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); //현재 table
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; // table td길이
-	var vsFocusTrRow = $(".tableFocus").parent().attr("row");// focus tr row
-	var vsFocusTdShell = $(".tableFocus").attr("shell"); //focs td shell
-	var delCount = 0;
-	//각 tr마다 focus 된 라인이 colSpan 범위에 들어가는지 파악 후 colSpan -1을 할지 셀을 지울지 결정한다. 단 -1하면 hide된 셀도 지워야함
-	for(var i=0; i<currentTrNum; i++){
-		var Check = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").attr("colSpan");
-		
-		if(typeof Check == "undefined" || Check == null){ //스스로 colSpan 가지지 않을때
-			
-			for(var j=0; j<currentTdNum; j++){ // 1. colSpan 가질때 - focus가 포함될때 안될떄 /안가질때 - focs셀일때
-				var ColCheck = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colSpan");	
-				
-				if(typeof ColCheck == "undefined" || ColCheck == null){ // colSpan 안가질때
-					if(j == vsFocusTdShell){
-						$("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+j+"]").remove();
-						break;
-					}
-					else if(j != vsFocusTdShell){
-						continue;
-					}
-				}
-				else if(typeof ColCheck != "undefined" || ColCheck != null){ // colSpan 가질때
-					var viColCheck = parseInt(ColCheck);
-					viColCheck += j;
-					viColCheck -= 1;
-					if(viColCheck >= vsFocusTdShell){ // col이 2이면 아예삭제해야함
-						var colSpan = parseInt(ColCheck);
-						if(colSpan > 2){
-							colSpan -= 1;
-							$("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colSpan",colSpan);
-							$("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").remove();
-							break;
-						}
-						else if(colSpan <= 2){
-							$("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colSpan");
-							$("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").remove();
-							break;
-						}
-					}
-					else if(viColCheck < vsFocusTdShell){
-						continue;
-					}
-				}
-				
-			}
-			
-		}
-		else if(typeof Check != "undefined" || Check != null){ // 스스로 colSpan 가질떄
-			for(var j=vsFocusTdShell; j<Check+vsFocusTdShell; j++){
-				 $("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+j+"]").show();
-			}
-			 $("#"+vsTableId+" > tbody > tr[row="+i+"] > td[shell="+vsFocusTdShell+"]").remove();
-		}
-	}
+/*
+ * ColBuffer : table tr 추가 Buffer
+ * 
+ * @parameter
+ * 	- voTableArray(Array) = [tableId, vnCurrentTrNum, vnCurrentTdNum, vnFocusTrRow, vnFocusTdShell]
+ * 
+ * @Return
+ * 	- vsBuffer : String 
+ * */
+tableEdit.ColBuffer = function(voTableArray){
 	
-	var resetTdNum = $("#"+vsTableId+"> tbody > tr > td").length;
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=1; j<=resetTdNum; j++){
-			$("#"+vsTableId+"> tbody > tr[row="+i+"] > td:nth-child("+j+")").attr("shell",j-1);
-		}
+	var vsBuffer = "<tr name=\"tr\" row=\"\" compoDvs=\"tr\" height=\"40\">";
+	
+	for(var i=0; i<voTableArray[2]; i++){
+		vsBuffer += "\n  <td class=\"td\" "
+		vsBuffer += "shell = \""+i+"\" tableFocus=false ";
+		vsBuffer += "style=\"height:30px; cursor:pointer\" "
+		vsBuffer += "compoDvs=\"td\" "
+			
+		vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+		vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+		vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+		
+		vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> "
+		vsBuffer += "</td>"
 	}
+	vsBuffer += "\n </tr>";
+	
+	return vsBuffer;
 }
 
 
-
-tableEdit.Merge = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id"); // 테이블 아이디
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; //현재 tr 갯수
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; //현재 td 갯수
+/*
+ * RowBuffer : table td 추가 Buffer / 반복문 활용하여 사용해야함.
+ * 
+ * @parameter
+ * 	- voTableArray(Array) = [tableId, vnCurrentTrNum, vnCurrentTdNum, vnFocusTrRow, vnFocusTdShell]
+ * 
+ * @Return
+ * 	- vsBuffer : String 
+ * */
+tableEdit.RowBuffer = function(voTableArray){ //반복문 사용해서 추가해야한다.
 	
-	//rowSpan 탐색
-	var vsRow = new Array(currentTdNum);
-		for(var i=0; i<currentTrNum; i++){
-			vsRow[i] = new Array(currentTrNum);
-		}
+	var vsBuffer = "";
+		vsBuffer += "<td class=\"td\" ";
+		vsBuffer += "shell=\"\" tableFocus=false ";
+		vsBuffer += "style=\"height:30px; cursor:pointer\" ";
+		vsBuffer += "compoDvs=\"td\" ";
+		
+		vsBuffer += "width=\"100\" ";
+		vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+		vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+		vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+		
+		vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
+		vsBuffer += "</td>";
+		
+		return vsBuffer;
+}
 
-	for(var i=0; i<currentTrNum; i++){//tr갯수만큼 반복
-		var viTdLength = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td").length;
-		for(var j=0; j<currentTdNum; j++){//td갯수만큼 반복
-			var rowSpan = $("#"+vsTableId+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("rowspan");
+
+/*
+ * SpanInfo : Table Span 값을 배열로 반환한다
+ * 
+ * @parameter
+ * 	- voTableArray
+ * 
+ * @return
+ * 	- voTotal : Array
+ * */
+tableEdit.SpanInfo = function(voTableArray){
+	//rowSpan check
+	var voRow = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voRow[i] = new Array();
+	}
+	//colSpan check
+	var voCol = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voCol[i] = new Array();
+	}
+	
+	// rowSpan check Process
+	for(var i=0; i<voTableArray[1]; i++){//tr갯수만큼 반복
+		//var vnTdLength = $("#"+voTableArray[0]+" > tbody > tr[row="+i+"] > td").length;
+		for(var j=0; j<voTableArray[2]; j++){//td갯수만큼 반복
+			var rowSpan = $("#"+voTableArray[0]+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("rowspan");
 				if(typeof rowSpan != "undefined" || rowSpan != null){
-					vsRow[i][j] = rowSpan;
+					voRow[i][j] = rowSpan;
 				}
 				else{
-					vsRow[i][j] = 1;
+					voRow[i][j] = 1;
 				}
-		}
-	}
+	}}
 	
-
-	
-	//colSpan 탐색
-	var vsCol = new Array(currentTdNum);
-		for(var i=0; i<currentTrNum; i++){
-			vsCol[i] = new Array(currentTrNum);
-		}
-		
-	for(var i=0; i<currentTrNum; i++){//tr갯수만큼 반복
-		var viTdLength = $("#"+vsTableId+" > tbody > tr[row="+i+"] > td").length;
-		for(var j=0; j<currentTdNum; j++){//td갯수만큼 반복
-			var colSpan = $("#"+vsTableId+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("colspan");
+	//colSpan check Process
+	for(var i=0; i<voTableArray[1]; i++){
+		var vnTdLength = $("#"+voTableArray[0]+" > tbody > tr[row="+i+"] > td").length;
+		for(var j=0; j<voTableArray[2]; j++){
+			var colSpan = $("#"+voTableArray[0]+" > tbody >  tr[row="+i+"]  > td[shell="+j+"]").attr("colspan");
 				if(typeof colSpan != "undefined" || colSpan != null){
-					vsCol[i][j] = colSpan;
+					voCol[i][j] = colSpan;
 				}
 				else{
-					vsCol[i][j] = 1;
+					voCol[i][j] = 1;
 				}
-		}	
+	}}
+	
+	// sum
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
 	}
 	
 	
-	//text 탐색
-	var vsText = new Array(currentTdNum);
-		for(var i=0; i<currentTrNum; i++){
-			vsText[i] = new Array(currentTrNum);
-		}
-		
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=0; j<currentTdNum; j++){
-			vsText[i][j] = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").text();
-		}
-	}
-	
-	
-	
-	//row / col 세이브
-	var vsTotal = new Array(currentTdNum);
-	for(var i=0; i<currentTrNum; i++){
-		vsTotal[i] = new Array(currentTrNum);
-	}
-	
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=0; j<currentTdNum; j++){
-			var rowSpan = vsRow[i][j];
-			var colSpan = vsCol[i][j];
+	for(var i=0; i<voTableArray[1]; i++){	
+		for(var j=0; j<voTableArray[2]; j++){
+			var rowSpan = voRow[i][j];
+			var colSpan = voCol[i][j];
 			// 분기처리 - 1. xx 2. xy 3. yx 4. yy
 			// 1. xx 둘다 없다
 			if(rowSpan == "1" && colSpan == "1"){
-				if(vsTotal[i][j]=="c0" || vsTotal[i][j]=="r0"){ // row&col에 먹힌거면
+				if(voTotal[i][j]=="c0" || voTotal[i][j]=="r0"){ // row&col에 먹힌거면
 					continue;
 				}else{
-					vsTotal[i][j] = "1";
+					voTotal[i][j] = "1";
 				}
 			}
 			// 2. row는 있고 col은 없다
 			else if(rowSpan != "1" && colSpan == "1"){
-				var virowSpan = parseInt(rowSpan);
-				for (var a=1; a<virowSpan; a++){
-					if(i+a > currentTrNum){
+				var vnRowSpan = parseInt(rowSpan);
+				for (var a=1; a<vnRowSpan; a++){
+					if(i+a > voTableArray[1]){
 						break;
 					}
-					vsTotal[i+a][j] = "r0";
-					vsTotal[i][j] = "r"+rowSpan;
+					voTotal[i+a][j] = "r0";
+					voTotal[i][j] = "r"+rowSpan;
 				}
 			}
 			// 3. row는 없고 col은 있다
 			else if(rowSpan == "1" && colSpan != "1"){
-				var viColSpan = parseInt(colSpan);
-				for (var a=1; a<viColSpan; a++){
-					if(j+a > currentTdNum){
+				var vnColSpan = parseInt(colSpan);
+				for (var a=1; a<vnColSpan; a++){
+					if(j+a > voTableArray[2]){
 						break;
 					}
-					vsTotal[i][j+a] = "c0";
-					vsTotal[i][j] = "c"+colSpan;
+					voTotal[i][j+a] = "c0";
+					voTotal[i][j] = "c"+colSpan;
 				}
 			}
 			// 4. yy 둘다 있다 i=tr j=td
 			else if(rowSpan != "1" && colSpan != "1"){
-				var virowSpan = parseInt(rowSpan);
-				var viColSpan = parseInt(colSpan);
-				for (var a=i; a<virowSpan+i; a++){
-					for(var b=j; b<viColSpan+j; b++){
+				var vnRowSpan = parseInt(rowSpan);
+				var vnColSpan = parseInt(colSpan);
+				for (var a=i; a<vnRowSpan+i; a++){
+					for(var b=j; b<vnColSpan+j; b++){
 						if(a == i && b == j){
-							vsTotal[a][b]= rowSpan+":"+colSpan;
+							voTotal[a][b]= "r"+rowSpan+":"+"c"+colSpan;
 						}else if(a == i){
-							vsTotal[a][b]="c0";
+							voTotal[a][b]="c0";
 						}else if(a!=i){
-							vsTotal[a][b]="r0";
+							voTotal[a][b]="r0";
 						}
 					}
 				}
@@ -414,287 +254,1650 @@ tableEdit.Merge = function(){
 		}
 	}
 	
-	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑ 상단까지 배열로 col / row 가져오기 실시함 / text ↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-		
-	// focus 된 td들의 위치를 정확히 파악해서 그곳에다가 attr해줌. 0인경우 remove(); || hide(); 
-	var vsTalbeFocus = new Array(currentTdNum);
-	for(var i=0; i<currentTrNum; i++){
-		vsTalbeFocus[i] = new Array(currentTrNum);
-	}
+	return voTotal;
+}
+
+
+/*
+ *	Vector : 배열로 colSpan / rowSpan / hide / show 배치 
+ *
+ *	@parameter 
+ *  - vsTableId : 테이블 id
+ *  - voTotal : 해당 테이블 배열
+ */
+tableEdit.Vector = function(vsTableId, voTotal){
 	
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=0; j<currentTdNum; j++){
-			vsTalbeFocus[i][j] = $("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("class");
+	var voTableArray = tableEdit.startInfo(vsTableId);
+	
+	for(var i=0; i<voTableArray[1]; i++){
+		for(var j=0; j<voTableArray[2]; j++){
+			
+			var InputSpan = voTotal[i][j];
+			
+			if(InputSpan == "c0" || InputSpan == "r0" ){ //포함되는 셀 hide();
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").hide(); // h
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("rowspan");
+			} 
+			else if(InputSpan == "1"){
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").show();
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("rowspan");
+			}
+			else if(InputSpan.indexOf(":") != -1){ // row:col // row나 col이 0일 수 있음 분기처리.
+				var vaCheck = InputSpan.split(":");
+				var vsRNum = vaCheck[0];
+				var vsCNum = vaCheck[1];
+				var viRNum = vsRNum.replace("r",""); //r 값
+				var viCNum = vsCNum.replace("c",""); //c 값
+				
+				if(viRNum == "0" && viCNum != "0"){
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("rowspan");
+				}
+				else if(viCNum == "0" && viRNum != "0"){
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
+				}
+				else if(viCNum != "0" && viRNum != "0"){
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+				}
+			}
+			else if(InputSpan.indexOf("c") != -1){ // col
+				var viStup2 = parseInt(InputSpan.replace("c",""));
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viStup2);
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("rowspan");
+			}
+			else if(InputSpan.indexOf("r") != -1){ // row
+				var viStup1 = parseInt(InputSpan.replace("r",""));
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viStup1);
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
+			}
 		}
 	}
+	
+}
 
+
+/* == * * * * *  * * * * *  * * * * *  * * * * * 테이블 관련 기능  * * * * *  * * * * *  * * * * *  * * * * * ==*/
+
+
+
+/*
+ * addUp : 선택된 셀 상단에 행을 추가한다
+ * 
+ * */
+tableEdit.addUp = function(){
 	
 	
-	var tableFocusRowNumber = $(".tableFocus").parent().attr("row");
+	
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var vsBuffer = tableEdit.ColBuffer(voTableArray);
+	
+	if(voTableArray[3] == 0){ //focus top
+		$("#"+voTableArray[0]+"> tbody > tr:first").before(vsBuffer);
+		
+		tableEdit.trReset(voTableArray[0]);
+	}
+	else{
+
+		//원래 가지고 있는 테이블 양상
+		var voTotal = new Array();
+		for(var i=0; i<voTableArray[1]; i++){
+			voTotal[i] = new Array();
+		}
+			
+		voTotal = tableEdit.SpanInfo(voTableArray);
+		
+		console.log(voTotal);
+		
+		var adderArray = [];
+		
+	
+	for(var i=0; i<voTableArray[2]; i++){ // i for start
+		
+		var cell = voTotal[voTableArray[3]-1][i]; // focus 이전 tr
+		
+		if(cell.indexOf(":") != -1){
+			var check = cell.split(":");
+			var vsRNum = check[0];
+			var vsCNum = check[1];
+				vsRNum = vsRNum.replace("r","");
+				vsCNum = vsRNum.replace("c","");
+			var	vnCNum = parseInt(vsCNum);
+			var vnRNum = parseInt(vsRNum);
+				vnRNum += 1;
+				voTotal[voTableArray[3]-1][i] = "r"+vnRNum+":"+check[1];
+				for(var k=i; k<i+vnCNum; k++){
+					adderArray[k] = "r0";
+				}
+				i = i+vnCNum - 1 ;
+		}
+		else if(cell.indexOf("r0") != -1){
+			for(var j=0; j<voTableArray[1]; j++){
+				var vsRowChecker = voTotal[j][i];
+				
+				if(vsRowChecker.indexOf(":") != -1){ // 해당 열에 : 있을떄
+					var check = vsRowChecker.split(":");
+					var vsRNum = check[0];
+					var vsCNum = check[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+					var vnRNum = parseInt(vsRNum);
+					var vnCNum = parseInt(vsCNum);
+					if(vnRNum+j-1 >=voTableArray[3]){
+						vnRNum += 1;
+						voTotal[j][i] = "r"+vnRNum+":"+check[1];
+						for(var k=i; k<i+vnCNum; k++){
+							adderArray[k] = "r0";
+						}
+						break;
+					}
+				}else if(vsRowChecker.indexOf("r") != -1){
+					if(vsRowChecker.indexOf("r0") != -1){
+						continue; 
+					}
+					else{
+						var vsRNum = vsRowChecker.replace("r","");
+						var vnRNum = parseInt(vsRNum);
+						if(vnRNum+j-1 >= voTableArray[3]){
+							if(j == voTableArray[3]){
+								adderArray[k] = "r0";
+							}
+							else{
+								vnRNum += 1;
+								voTotal[voTableArray[3]-1][i] = "r"+vnRNum;
+								adderArray[i] = "r0";
+							}
+							break;
+						}
+					} 
+				}
+			}
+		}
+		else if(cell.indexOf("r") != -1){
+			var vsRNum = cell.replace("r","");
+			var vnRNum = parseInt(vsRNum);
+			if(vnRNum == 0){
+				continue;
+			}
+			else if(vnRNum > 0){
+				vnRNum += 1;
+				voTotal[voTableArray[3]-1][i] = "r"+vnRNum;
+				adderArray[i] = "r0";
+			}
+		}
+		else if(cell.indexOf("c0") != -1){
+			
+		}
+		else if(cell.indexOf("1") != -1){
+			adderArray[i] = "1";
+		}
+		
+	}// i for end
+	
+	
+	
+	voTotal.splice(voTableArray[3],0,adderArray);
+	
+	//테이블 리셋
+	$("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"]").before(vsBuffer);
+	
+	tableEdit.trReset(voTableArray[0]);
+	
+	var voTableArray2 = tableEdit.startInfo();
+	
+	tableEdit.Vector(voTableArray2[0],voTotal);
+
+}
+}
+
+
+
+/*
+ * addDown : 선택된 셀하단에 행을 추가한다.
+ * */
+tableEdit.addDown = function(){
+	
+	
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var vsBuffer = tableEdit.ColBuffer(voTableArray);
+	
+	if(voTableArray[3] == voTableArray[1]-1){ // bottom if start
+		// 최 하단 찍은것,
+		$("#"+voTableArray[0]+"> tbody > tr:last").after(vsBuffer);	
+		tableEdit.trReset(voTableArray[0]);
+	}
+	else{
+		
+		var voTotal = new Array();
+		for(var i=0; i<voTableArray[1]; i++){
+			voTotal[i] = new Array();
+		}
+			
+		voTotal = tableEdit.SpanInfo(voTableArray);
+		
+		console.log(voTotal);
+		
+		var adderArray = [];
+		
+		for(var i=0; i<voTableArray[2]; i++){
+			
+			var cell = voTotal[voTableArray[3]][i];
+			
+			if(cell.indexOf(":") != -1){
+				var check = cell.split(":");
+				var vsRNum = check[0];
+				var vsCNum = check[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+				var	vnCNum = parseInt(vsCNum);
+				var vnRNum = parseInt(vsRNum);
+					vnRNum += 1;
+					voTotal[voTableArray[3]][i] = "r"+vnRNum+":"+check[1];
+					for(var k=i; k<i+vnCNum; k++){
+						adderArray[k] = "r0";
+					}
+					i = i+vnCNum - 1 ;
+			}
+			else if(cell.indexOf("r0") != -1){
+				for(var j=0; j<voTableArray[1]; j++){
+					var vsRowChecker = voTotal[j][i];
+					
+					if(vsRowChecker.indexOf(":") != -1){
+						var check = vsRowChecker.split(":");
+						var vsRNum = check[0];
+						var vsCNum = check[1];
+						vsRNum = vsRNum.replace("r","");
+						vsCNum = vsRNum.replace("c","");
+						var vnRNum = parseInt(vsRNum);
+						var vnCNum = parseInt(vsCNum);
+						if(vnRNum+j-1 >=voTableArray[3]){
+							vnRNum += 1;
+							voTotal[j][i] = "r"+vnRNum+":"+check[1];
+							for(var k=i; k<i+vnCNum; k++){
+								adderArray[k] = "r0";
+							}
+							break;
+						}
+					}
+					else if(vsRowChecker.indexOf("r") != -1){
+						if(vsRowChecker.indexOf("r0") != -1){
+							continue;
+						}
+						else{
+							var vsRNum = vsRowChecker.replace("r","");
+							var vnRNum = parseInt(vsRNum);
+							if(vnRNum+j-1 >= voTableArray[3]){
+								vnRNum += 1;
+								voTotal[j][i] = "r"+vnRNum;
+								adderArray[i] = "r0"; 
+							}
+							else if(vnRNum+j-1 < voTableArray[3]){
+								continue;
+							}
+						}
+					}
+					
+				}
+			}
+			else if(cell.indexOf("r") != -1){
+				var vsRNum = cell.replace("r","");
+				var vnRNum = parseInt(vsRNum);
+				if(vnRNum == 0){
+					continue;
+				}
+				else if(vnRNum > 0){
+					vnRNum += 1;
+					voTotal[voTableArray[3]][i] = "r"+vnRNum;
+					adderArray[i] = "r0";
+				}
+			}
+			else if(cell.indexOf("c0") != -1){
+				continue;
+			}
+			else if(cell.indexOf("1") != -1){
+				adderArray[i] = "1";
+			}
+		}
+	
+	voTotal.splice(voTableArray[3]+1,0,adderArray);
+	
+	console.log(voTotal);
+	
+	//테이블 리셋
+	$("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"]").after(vsBuffer);
+	
+	
+	tableEdit.trReset(voTableArray[0]);
+	
+	var voTableArray2 = tableEdit.startInfo(voTableArray[0]);
+	
+	tableEdit.Vector(voTableArray2[0],voTotal);
+
+	}
+}
+
+
+
+/*
+ * addLeft = 포커스된 행의 좌측으로 열을 추가한다.
+ * */
+tableEdit.addLeft = function(){
+	
+	
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var vsBuffer = tableEdit.RowBuffer(voTableArray);
+	
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
+	}
+		
+	voTotal = tableEdit.SpanInfo(voTableArray);
+	
+	console.log(voTotal);
+	
+	var adderArray = [];
+	
+	if(voTableArray[4] == 0){
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td:first").before(vsBuffer);
+		}
+		tableEdit.trReset(voTableArray[0]);
+	}
+	else if(voTableArray[4] != 0){
+		for(var i=0; i<voTableArray[1]; i++){
+			var cell = voTotal[i][voTableArray[4]-1];
+		
+		if(cell.indexOf(":") != -1){
+			var check = cell.split(":");
+			var vsRNum = check[0];
+			var vsCNum = check[1];
+				vsRNum = vsRNum.replace("r","");
+				vsCNum = vsRNum.replace("c","");
+			var	vnCNum = parseInt(vsCNum);
+			var vnRNum = parseInt(vsRNum);
+				vnCNum += 1;
+				voTotal[i][voTableArray[4]-1] = vsRNum + ":" + "c" + vnCNum;
+				for(var k=i; k<i+vnRNum; k++){
+					if(k == i){
+						adderArray[k] = "c0";
+					}
+					else{
+						adderArray[k] = "r0";
+					}
+					
+				}
+				i = i+vnRNum -1;
+		}
+		else if(cell.indexOf("r0") != -1){
+			continue;
+		}
+		else if(cell.indexOf("r") != -1){
+			adderArray[k]= "1";
+		}
+		else if(cell.indexOf("c0") != -1){
+			for(var j=0; j<voTableArray[2]; j++){
+				var vsColChecker = voTotal[i][j];
+				if(vsColChecker.indexOf(":") != -1){
+					var check = vsColChecker.split(":");
+					var vsRNum = check[0];
+					var vsCNum = check[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+					var vnRNum = parseInt(vsRNum);
+					var vnCNum = parseInt(vsCNum);
+					
+					if(vnCNum+j-1 >= voTableArray[4]){
+						vnCNum += 1;
+						voTotal[i][j] = vsRNum+":"+"c"+vnCNum;
+						for(var k=i; k<i+vnRNum; k++){
+							if(k == i){
+								adderArray[k] = "c0";
+							}
+							else{
+								adderArray[k] = "r0";
+							}
+						}
+						break;
+					}
+					else if(vnCNum +j -1 < voTableArray[4]){
+						if(j+1 == voTableArray[4]){
+							adderArray[i]="1";
+						}
+					}
+					
+				}
+				else if(vsColChecker.indexOf("c") != -1){
+					if(vsColChecker.indexOf("c0") != -1){
+						continue;
+					}
+				}
+			}
+			
+		}
+		else if(cell.indexOf("c") != -1){
+			var vsCNum = cell.replace("c","");
+			var vnCNum = parseInt(vsCNum);
+			if(vnCNum == 0){
+				continue;
+			}
+			else if(vnCNum > 0){
+				vnCNum += 1;
+				voTotal[i][voTableArray[4]-1] = "c"+vnCNum;
+				adderArray[i] = "c0";
+			}
+		}
+		else if(cell.indexOf("1") != -1){
+			adderArray[i] = "1";
+		}
+		
+		}
+	
+	
+	for(var i=0; i<voTableArray[1]; i++){
+		$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").before(vsBuffer);
+		voTotal[i].splice(voTableArray[4],0,adderArray[i]);
+	}
+	
+	
+	tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+	
+	var voTableArray2 = tableEdit.startInfo(voTableArray[0]);
+	
+	tableEdit.Vector(voTableArray2[0],voTotal);
+	
+	}
+	
+	tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+}
+
+
+
+
+
+
+/*
+ * addRight = 포커스된 행의 우측으로 열을 추가한다.
+ * */
+tableEdit.addRight = function(){
+	
+	
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var vsBuffer = tableEdit.RowBuffer(voTableArray);
+	
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
+	}
+		
+	voTotal = tableEdit.SpanInfo(voTableArray);
+	
+	console.log(voTotal);
+	
+	var adderArray = [];
+	
+	if(voTableArray[4] == voTableArray[2]-1){
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td:last").after(vsBuffer);
+		}
+		tableEdit.trReset(voTableArray[0]);
+	}
+	else if(voTableArray[4] != voTableArray[2]-1){
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			var cell = voTotal[i][voTableArray[4]];
+			
+			if(cell.indexOf(":") != -1){
+				var check = cell.split(":");
+				var vsRNum = check[0];
+				var vsCNum = check[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+				var	vnCNum = parseInt(vsCNum);
+				var vnRNum = parseInt(vsRNum);
+					vnCNum += 1;
+					voTotal[i][voTableArray[4]] = vsRNum + ":" + "c" + vnCNum;
+					for(var k=i; k<i+vnRNum; k++){
+						if(k == i){
+							adderArray[k] = "c0";
+						}
+						else{
+							adderArray[k] = "r0";
+						}
+						
+					}
+					i = i+vnRNum -1;
+			}
+			else if(cell.indexOf("r0") != -1){
+				continue;
+			}
+			else if(cell.indexOf("r") != -1){
+				adderArray[k]= "1";
+			}
+			else if(cell.indexOf("c0") != -1){
+				for(var j=0; j<voTableArray[2]; j++){
+					var vsColChecker = voTotal[i][j];
+					if(vsColChecker.indexOf(":") != -1){
+						var check = vsColChecker.split(":");
+						var vsRNum = check[0];
+						var vsCNum = check[1];
+						vsRNum = vsRNum.replace("r","");
+						vsCNum = vsRNum.replace("c","");
+						var vnRNum = parseInt(vsRNum);
+						var vnCNum = parseInt(vsCNum);
+						
+						if(vnCNum+j-1 >= voTableArray[4]){
+							vnCNum += 1;
+							voTotal[i][j] = vsRNum+":"+"c"+vnCNum;
+							for(var k=i; k<i+vnRNum; k++){
+								if(k == i){
+									adderArray[k] = "c0";
+								}
+								else{
+									adderArray[k] = "r0";
+								}
+							}
+							break;
+						}
+						else if(vnCNum +j -1 < voTableArray[4]){
+							if(j+1 == voTableArray[4]){
+								adderArray[i]="1";
+							}
+						}
+						
+					}
+					else if(vsColChecker.indexOf("c") != -1){
+						if(vsColChecker.indexOf("c0") != -1){
+							continue;
+						}
+					}
+				}
+			}
+			else if(cell.indexOf("c") != -1){
+				var vsCNum = cell.replace("c","");
+				var vnCNum = parseInt(vsCNum);
+				if(vnCNum == 0){
+					continue;
+				}
+				else if(vnCNum > 0){
+					vnCNum += 1;
+					voTotal[i][voTableArray[4]] = "c"+vnCNum;
+					adderArray[i] = "c0";
+				}
+			}
+			else if(cell.indexOf("1") != -1){
+				adderArray[i] = "1";
+			}
+		}
+	
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").after(vsBuffer);
+			voTotal[i].splice(voTableArray[4]+1,0,adderArray[i]);
+		}
+		
+		
+		
+		
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		
+		var voTableArray2 = tableEdit.startInfo(voTableArray[0]);
+		
+		tableEdit.Vector(voTableArray2[0],voTotal);
+		
+		}
+		
+		tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+}
+
+
+
+/*
+ * deleteNode = 삭제 메소드 분기 호출 
+ * */
+
+tableEdit.deleteNode = function(param){
+	
+	
+	var voTableArray = tableEdit.startInfo();
+		
+	var focusLength = $("#"+voTableArray[0]+" > tbody > tr > td[tableFocus=true]").length; // focus 갯수
+
+	var check = param;
+	
+	if(focusLength == 1){ // 단일선택
+		
+		var focusRow = $("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").attr("rowSpan");
+		var focusCol = $("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").attr("colSpan");
+		
+		if(typeof focusRow == "undefined" && typeof focusCol == "undefined"){ // 둘다 없다면 그냥 단일
+			tableEdit.oneDelete(check);
+		}
+		else if(typeof focusRow != "undefined" && typeof focusCol == "undefined"){ // rowSpan 보유
+			tableEdit.rowSpanDelete(check,focusRow);
+		}
+		else if(typeof focusRow == "undefined" && typeof focusCol != "undefined"){ // colSpan 보유
+			tableEdit.colSpanDelete(check,focusCol);
+		}
+		else if(typeof focusRow != "undefined" && typeof focusCol != "undefined"){ // rowSpan & colSpan 보유
+			tableEdit.SpanDelete(check, focusCol, focusRow);
+		}
+		
+	}
+	else if(focusLength > 1){ // 다중 선택 2차.
+		
+	}
+}
+
+
+
+
+/*
+ * oneDelete = col x / row x
+ * 
+ * colSpanDelete = col o / row x
+ * 
+ * rowSpanDelete = col x / row o
+ * 
+ * SpanDelete = col o / row o  
+ * 
+ * */
+
+
+/*
+ * oneDelete : 단칸 셀 지정으로 행 / 열 삭제
+ * 
+ * @parameter
+ * 	- check : 행 or 열
+ * 
+ * */
+tableEdit.oneDelete = function(check){
+var voTableArray = tableEdit.startInfo();
+	
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
+	}
+	
+	voTotal = tableEdit.SpanInfo(voTableArray);	
+	
+	if(check == 1){ // 행삭제
+		
+		for(var i=0; i<voTableArray[2]; i++){ // 모든 td
+			
+			var vsChecker = voTotal[voTableArray[3]][i]; // focus tr Line td
+			
+			if(vsChecker.indexOf(":") != -1){ //
+				
+				var checker = vsChecker.split(":");
+				var vsRNum = checker[0];
+				var vsCNum = checker[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+				var	vnCNum = parseInt(vsCNum);
+				var vnRNum = parseInt(vsRNum);
+				for(var j=voTableArray[3]; j<voTableArray[3]+vnRNum; j++){
+					for(var n=i; n<i+vnCNum; n++){
+						voTotal[j][n] = "1";
+					}
+				}
+				
+			}
+			else if(vsChecker.indexOf("c0") != -1){ //
+				continue;
+			}
+			else if(vsChecker.indexOf("r0") != -1){ //
+				
+				for(var k=0; k<voTableArray[1]; k++){
+					
+					var vsRowChecker = voTotal[k][i];
+					
+					if(vsRowChecker.indexOf("r0") != -1){
+						continue;
+					}
+					else if(vsRowChecker.indexOf(":") != -1){
+						var checker = vsChecker.split(":");
+						var vsRNum = checker[0];
+						var vsCNum = checker[1];
+							vsRNum = vsRNum.replace("r","");
+							vsCNum = vsRNum.replace("c","");
+						var	vnCNum = parseInt(vsCNum);
+						var vnRNum = parseInt(vsRNum);
+						
+						if(vnRNum + k -1 >= voTableArray[3]){
+							
+							if(vnRNum == 2){
+								voTotal[k][i] = vsRNum;
+								break;
+							}
+							else{
+								vnRNum = vnRNum-1;
+								
+								voTotal[k][i] = "r"+vnRNum+":"+"c"+vnCNum;
+								break;
+							}
+							
+						}
+						
+					}
+					else if(vsRowChecker.indexOf("r") != -1){
+						var vsRNum = vsRowChecker.replace("r","");
+						var vnRNum = parseInt(vsRNum);
+						// 값이 focus tr 넘어가지 않도록
+						if(vnRNum + k -1 >= voTableArray[3]){
+							if(vnRNum == 2){
+								voTotal[k][i] = "1";
+								voTotal[k+1][i] = "1";
+								break;
+							}
+							else{
+								vnRNum = vnRNum-1;
+								voTotal[k][i] = "r"+vnRNum;
+								break;
+							}
+						}
+					}
+				}
+				
+			}
+			else if(vsChecker.indexOf("c") != -1){ //
+				continue;
+			}
+			else if(vsChecker.indexOf("r") != -1){ //
+				var vsRNum = vsChecker.replace("r","");
+				var vnRNum = parseInt(vsRNum);
+				if(vnRNum == 2){
+					voTotal[voTableArray[3]][i] = "1";
+					voTotal[voTableArray[3]+1][i] = "1";
+				}
+				else if(vnRNum >= 2){
+					var minusRNum = vnRNum-1;
+					voTotal[voTableArray[3]][i] = "r"+minusRNum;
+					for(var k=voTableArray[3]+1; k<voTableArray[3]+vnRNum; k++){
+						if( k == voTableArray[3]){ continue; }
+						else{
+							voTotal[k][voTableArray[4]]="1";
+						}
+						
+					}
+				}
+			}
+			else if(vsChecker.indexOf("1") != -1){ //
+				continue;
+			}
+		}
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+	}
+	else if(check == 2){ // 열삭제 
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			
+			var vsChecker = voTotal[i][voTableArray[4]];
+			
+			if(vsChecker.indexOf(":") != -1){//
+				// 열 삭제 중 :가 껴있을떄 .....
+			}
+			else if(vsChecker.indexOf("r0") != -1){//
+				continue;
+			}
+			else if(vsChecker.indexOf("c0") != -1){// 
+				for(var j=0; j<voTableArray[2]; j++){ // focus td까지 검토
+					var checker = voTotal[i][j];
+					
+					if(checker.indexOf(":") != -1){ // 문제있음
+						var vsCheck = checker.split(":");
+						var vsRNum = vsCheck[0];
+						var vsCNum = vsCheck[1];
+							vsRNum = vsRNum.replace("r","");
+							vsCNum = vsRNum.replace("c","");
+						var	vnCNum = parseInt(vsCNum);
+						var vnRNum = parseInt(vsRNum);
+						
+						if(vnCNum + j - 1 >= voTableArray[4]){
+							var minVnCNum = vnCNum-1;
+							voTotal[i][j] = vnRNum+":c"+minVnCNum;
+							
+							for(var m=i; m<i+vnRNum; m++){
+								for(var n=j; n<j+vnCNum; n++){
+									if(m==i && n==j){
+										continue;
+									}
+									else{
+										voTotal[m][n] = "1";
+									}
+								}
+							}
+							
+						}
+					}
+					else if(checker.indexOf("r0") != -1){
+						continue;
+					}
+					else if(checker.indexOf("c0") != -1){
+						continue;
+					}
+					else if(checker.indexOf("r") != -1){
+						continue;
+					}
+					else if(checker.indexOf("c") != -1){
+						var vsCheck = checker.replace("c","");
+						var vnCNum = parseInt(vsCheck);
+							if(vnCNum == 2){
+								voTotal[i][j] = "1";
+								voTotal[i][j+1] = "1";
+							}
+							else if(vnCNum != 2){
+								vnCNum -= 1;
+								voTotal[i][j] = "c"+vnCNum;
+								for(var k=j; k<j+vnCNum; k++){
+								if(k == j){
+									continue;
+								}
+								else{
+									voTotal[i][k]="1";
+								}
+							}
+						}
+					
+					}
+					else if(checker.indexOf("1") != -1){
+						continue;
+					}
+				}
+			}
+			else if(vsChecker.indexOf("c") != -1){//
+				var checker = vsChecker.replace("c","");
+				var vnCNum = parseInt(check);
+				if(vnCNum == 2){
+					voTotal[i][voTableArray[4]] = "1";
+					voTotal[i][voTableArray[4]+1] = "1";
+				}
+				else if(vmCNum != 2){
+					var minVnCNum = vnCNum - 1;
+					voTotal[i][voTableArray[4]] = "c"+minVnCNum;
+					
+					for(var k=voTableArray[4]; k<voTableArray[4]+vnCNum; k++){
+						if(k == voTableArray[4]){continue}
+						else{
+							voTotal[i][k] ="1";
+						}
+					}
+				}
+			}
+			else if(vsChecker.indexOf("r") != -1){//
+				continue;
+			}
+			else if(vsChecker.indexOf("1") != -1){
+				continue;
+			}
+			
+			
+		}
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
+		}
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+	}
+}
+
+tableEdit.colSpanDelete = function(check , focusCol){
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[i]; i++){
+		voTotal[i] = new Array();
+	}
+	
+	voTotal = tableEdit.SpanInfo(voTableArray);
+	
+	if(check == 1){// 행 => colSpan 보유한 행 삭제 인디			
+	
+		for(var i=0; i<voTableArray[2]; i++){ // 모든 td
+					
+			var vsChecker = voTotal[voTableArray[3]][i]; // focus tr Line td
+					
+			if(vsChecker.indexOf(":") != -1){ //
+				
+				var checker = vsChecker.split(":");
+				var vsRNum = checker[0];
+				var vsCNum = checker[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+				var	vnCNum = parseInt(vsCNum);
+				var vnRNum = parseInt(vsRNum);
+				
+				for(var j=voTableArray[3]; j<voTableArray[3]+vnRNum; j++){
+					for(var n=i; n<i+vnCNum; n++){
+						voTotal[j][n] = "1";
+					}
+				}
+					
+			}
+			else if(vsChecker.indexOf("c0") != -1){ //
+				continue;
+			}
+			else if(vsChecker.indexOf("r0") != -1){ //
+						
+				for(var k=0; k<voTableArray[1]; k++){
+							
+					var vsRowChecker = voTotal[k][i];
+							
+					if(vsRowChecker.indexOf("r0") != -1){
+						continue;
+					}
+					else if(vsRowChecker.indexOf(":") != -1){
+						var checker = vsChecker.split(":");
+						var vsRNum = checker[0];
+						var vsCNum = checker[1];
+							vsRNum = vsRNum.replace("r","");
+							vsCNum = vsRNum.replace("c","");
+						var	vnCNum = parseInt(vsCNum);
+						var vnRNum = parseInt(vsRNum);
+				
+						if(vnRNum + k -1 >= voTableArray[3]){
+									
+							if(vnRNum == 2){
+								voTotal[k][i] = vsRNum;
+								break;
+							}
+							else{
+								vnRNum = vnRNum-1;
+										
+								voTotal[k][i] = "r"+vnRNum+":"+"c"+vnCNum;
+								break;
+							}
+								
+						}
+								
+					}
+					else if(vsRowChecker.indexOf("r") != -1){
+						var vsRNum = vsRowChecker.replace("r","");
+						var vnRNum = parseInt(vsRNum);
+						// 값이 focus tr 넘어가지 않도록
+						if(vnRNum + k -1 >= voTableArray[3]){
+							if(vnRNum == 2){
+								voTotal[k][i] = "1";
+								voTotal[k+1][i] = "1";
+								break;
+							}
+							else{
+								vnRNum = vnRNum-1;
+								voTotal[k][i] = "r"+vnRNum;
+								break;
+							}
+						}
+					}
+				}
+					
+				}
+				else if(vsChecker.indexOf("c") != -1){ //
+					continue;
+				}
+				else if(vsChecker.indexOf("r") != -1){ //
+					var vsRNum = vsChecker.replace("r","");
+					var vnRNum = parseInt(vsRNum);
+					if(vnRNum == 2){
+						voTotal[voTableArray[3]][i] = "1";
+						voTotal[voTableArray[3]+1][i] = "1";
+					}
+					else if(vnRNum >= 2){
+						var minusRNum = vnRNum-1;
+						voTotal[voTableArray[3]][i] = "r"+minusRNum;
+						for(var k=voTableArray[3]+1; k<voTableArray[3]+vnRNum; k++){
+							if( k == voTableArray[3]){ continue; }
+							else{
+								voTotal[k][voTableArray[4]]="1";
+							}
+							
+						}
+					}
+				}
+				else if(vsChecker.indexOf("1") != -1){ //
+					continue;
+				}
+			}
+						
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		
+		
+	}
+	else if(check == 2){ // 열  
+		
+		
+		
+		
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
+		}
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		
+	}
+	
+	
+}
+
+
+tableEdit.rowSpanDelete = function(check, focusRow){
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
+	}
+	
+	voTotal = tableEdit.SpanInfo(voTableArray);	
+	
+	if(check == 1){ // 행
+		/////////////////////
+		
+		
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+	}
+	else if(check == 2){ // 열
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			
+			var vsChecker = voTotal[i][voTableArray[4]];
+			
+			if(vsChecker.indexOf(":") != -1){//
+				var checker = vsChecker.split(":");
+				var vsRNum = checker[0];
+				var vsCNum = checker[1];
+					vsRNum = vsRNum.replace("r","");
+					vsCNum = vsRNum.replace("c","");
+				var	vnCNum = parseInt(vsCNum);
+				var vnRNum = parseInt(vsRNum);
+				///////////////보류
+
+			}
+			else if(vsChecker.indexOf("r0") != -1){//
+				continue;
+			}
+			else if(vsChecker.indexOf("c0") != -1){//
+				for(var j=0; j<voTableArray[2]; j++){ // focus td까지 검토
+					var checker = voTotal[i][j];
+					
+					if(checker.indexOf(":") != -1){
+						
+					}
+					else if(checker.indexOf("r0") != -1){
+						continue;
+					}
+					else if(checker.indexOf("c0") != -1){
+						continue;
+					}
+					else if(checker.indexOf("r") != -1){
+						continue;
+					}
+					else if(checker.indexOf("c") != -1){
+						var vsCheck = checker.replace("c","");
+						var vnCNum = parseInt(vsCheck);
+						if(j+vnCNum-1 >= voTableArray[4]){
+							if(vnCNum == 2){
+								voTotal[i][j] = "1";
+								voTotal[i][j+1] = "1";
+							}
+							else if(vnCNum != 2){
+								vnCNum -= 1;
+								voTotal[i][j] = "c"+vnCNum;
+							}
+							
+						}						
+					}
+					else if(checker.indexOf("1") != -1){
+						continue;
+					}
+				}	
+			}
+			else if(vsChecker.indexOf("r") != -1){//
+				continue;
+			}
+			else if(vsChecker.indexOf("c") != -1){//
+				var checker = vsChecker.replace("c","");
+				var vnCNum = parseInt(check);
+				if(vnCNum == 2){
+					voTotal[i][j]= "1";
+					voTotal[i][j+1] = "1";
+				}
+				else if(vmCNum != 2){
+					var minVnCNum = vnCNum - 1;
+					voTotal[i][j] = "c"+minVnCNum;
+					
+					for(var k=j; k<j+vnCNum; k++){
+						if(k == j){continue}
+						else{
+							voTotal[i][k] ="1";
+						}
+					}
+				}
+			}
+			else if(vsChecker.indexOf("1") != -1){//
+				continue;
+			}
+		}
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
+		}
+		
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+	}
+
+}
+
+
+tableEdit.SpanDelete = function(check, focusCol, focusRow){
+	////////////
+}
+
+
+
+
+
+
+
+/*
+ * Merge = 테이블 병합
+ * 
+ * */
+tableEdit.Merge = function(){
+	// tableInfo
+	var voTableArray = tableEdit.startInfo();
+	
+	// table SpanInfo
+	var voTotal = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTotal[i] = new Array();
+	}
+	
+	// Span total
+	voTotal = tableEdit.SpanInfo(voTableArray);
+	
+	//focus cell check
+	var voTableFocus = new Array();
+	for(var i=0; i<voTableArray[1]; i++){
+		voTableFocus[i] = new Array();
+	}
+	
+	//focus cell check Process
+	for(var i=0; i<voTableArray[1]; i++){
+		for(var j=0; j<voTableArray[2]; j++){
+			voTableFocus[i][j] = $("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("tableFocus");
+		}
+	}
+	
+	var tableFocusRowNumber = $("td[tableFocus=true]").parent().attr("row"); //focus cell top row
 	var stub = parseInt(tableFocusRowNumber);
-	var tableFocusShellNumber = $(".tableFocus").attr("shell"); //tablefocus 좌상단
+	var tableFocusShellNumber = $("td[tableFocus=true]").attr("shell"); //focus cell top shell
 	var stub2 = parseInt(tableFocusShellNumber);
 	
-	var Span = [];
+	var Span = []; // Span check
 	
-	//rowSpan의 갯수는 각 tr당 r이 속해있는 것 중 
+	var vnInputRowSpan = 0; // final rowSpan
+	var vnInputColSpan = 0; // final colSpan
 	
-	var inputRowSpan = 0; // 최종 row
-	var inputColSpan = 0; // 최종 col
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=0; j<currentTdNum; j++){
-			var check = vsTotal[i][j];
-			var classCheck = vsTalbeFocus[i][j];
-			// 유형 = tf-c / tf-r / tf-cr / tf-1 / tf-0
+	for(var i=0; i<voTableArray[1]; i++){
+		for(var j=0; j<voTableArray[2]; j++){
+			var check = voTotal[i][j];
+			var classCheck = voTableFocus[i][j];
+			//span배열 초기화
 			if(typeof Span[i] == "undefined" && Span[i] == null){
 				Span[i]=0;
 			}
-			if(classCheck == "tableFocus"){
-				if(check.indexOf(":") != -1){ // tf-cr
+			/* classCheck == true > focus cell 고려할 셀 : c~ / 1 / r:c
+			 * classCheck == false > none focus cell / 고려할 셀 : c0 / r0
+			 * */
+			if(classCheck == "true"){
+				if(check.indexOf(":") != -1){
 					var vaCheck = check.split(":");
-					var viRNum = parseInt(vaCheck[0]);
-					var viCNum = parseInt(vaCheck[1]);
+					var viRNum = vaCheck[0];
+					var viCNum = vaCheck[1];
+					viRNum = viRNum.replace("r","");
+					viCNum = viCNum.replace("c","");
+					var vnRNum = parseInt(viRNum);
+					var vnCNum = parseInt(viCNum);
 					var colSize = Span[i];
-					Span[i] = colSize+viCNum;
+					Span[i] = colSize+vnCNum;
+				}
+				else if(check.indexOf("c0") != -1){
+					continue;
 				}
 				else if(check.indexOf("c") != -1){
-					var viStup2 = parseInt(check.replace("c",""));
+					var vnStup2 = parseInt(check.replace("c",""));
 					var colSize = Span[i];
-					Span[i] = colSize+viStup2;
+					Span[i] = colSize+vnStup2;
+				}
+				else if(check.indexOf("r0") != -1){
+					continue;
 				}
 				else if(check.indexOf("r") != -1){
 					var colSize = Span[i];
 					Span[i] = colSize+1;					
 				}
-				else if(check == "1"){
-					var colSize = Span[i];
-					Span[i] = colSize+1;
+				else if(check.indexOf("1") != -1){
+					var colSize = Span[i]
+					colSize += 1;
+					Span[i] = colSize;
 				}
-			}
-
-		}
-	}
-	
-	
-	inputColSpan = Span[stub]; //colSpan 길이
-	
-	//rowSpan 길이
-	var viFocusRow = new Array(currentTdNum);
-	for(var i=0; i<currentTrNum; i++){
-		viFocusRow[i] = new Array(currentTrNum);
-	}
-	
-	
-	for(var i=0; i<currentTrNum; i++){
-		for(var j=0; j<currentTdNum; j++){
-			var check = vsTotal[i][j];
-			var classCheck = vsTalbeFocus[i][j];
-			if(classCheck == "tableFocus"){
-				if(check.indexOf(":") != -1){
-					var vaCheck = check.split(":");
-					var viRNum = parseInt(vaCheck[0]);
-					viFocusRow[i][j] = viRNum;
-				}
-				else if(check.indexOf("r") != -1){
-					var viStup1 = parseInt(check.replace("r",""));
-					var viRNum = parseInt(viStup1);
-					viFocusRow[i][j] = viRNum;
-					
-				}
-				else if(check.indexOf("c") != -1){
-					viFocusRow[i][j] = 1;
-				}
-				else if(check == 1){
-					viFocusRow[i][j] = 1;
-				}
-			}
-			else if(classCheck != "tableFocus"){
-				viFocusRow[i][j] = 0;
 			}
 			
-		}
-	}
+		}}
 	
-	var total = [];
-	for(var i=0; i<currentTdNum; i++){
-		for(var j=0; j<currentTrNum; j++){
-			var adder = viFocusRow[j][i];
-			if(typeof total[i] =="undefined"){
-				total[i]=0;
-			}
-			if(adder == 0){
-				continue;
-			}
-			else if(adder != 0){
-				var current = total[i];
-				total[i] = current + adder;
-			}
-		}
-	}
-	
-	// inputRowSpan에 값 설정.
-	for(var i=0; i<total.length; i++){
-		var check = total[i];
-		if(inputRowSpan <= check){
-			inputRowSpan = check;
-		}		
-	}
-
-	
-	
-	
-
+		//colSpan 
+		vnInputColSpan = Span[stub];
 		
-		//col row 재분배함
-		// 좌측 상단에만 줘야함, 나머지는 0으로 바꿔줘야함.
-		var first=0;
-		for(var i=0; i<currentTrNum; i++){
-			for(var j=0; j<currentTdNum; j++){
-				var check = vsTotal[i][j];
-				var classCheck = vsTalbeFocus[i][j];
+		//rowSpan
+		var voFocusRow = new Array();
+		for(var i=0; i<voTableArray[1]; i++){
+			voFocusRow[i] = new Array();
+		}
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			for(var j=0; j<voTableArray[2]; j++){
+				var check = voTotal[i][j];
+				var classCheck = voTableFocus[i][j];
+				if(classCheck == "true"){
+					if(check.indexOf(":") != -1){
+						var vaCheck = check.split(":");
+						var vsRNum = vaCheck[0];
+						var viRNum = vsRNum.replace("r","");
+						var vnRNum = parseInt(viRNum);
+						voFocusRow[i][j] = vnRNum;
+					}
+					else if(check.indexOf("r") != -1){
+						var vsStup1 = parseInt(check.replace("r",""));
+						var vnRNum = parseInt(vsStup1);
+						voFocusRow[i][j] = vnRNum;
+						
+					}
+					else if(check.indexOf("c") != -1){
+						voFocusRow[i][j] = 1;
+					}
+					else if(check == 1){
+						voFocusRow[i][j] = 1;
+					}
+				}
+				else if(classCheck != "true"){
+					voFocusRow[i][j] = 0;
+				}
 				
-				if(classCheck == "tableFocus"){
+			}
+		}
+		
+		var total = [];
+		for(var i=0; i<voTableArray[2]; i++){
+			for(var j=0; j<voTableArray[1]; j++){
+				var adder = voFocusRow[j][i];
+				if(typeof total[i] =="undefined"){
+					total[i]=0;
+				}
+				if(adder == 0){
+					continue;
+				}
+				else if(adder != 0){
+					var current = total[i];
+					total[i] = current + adder;
+				}
+			}
+		}
+		
+		// inputRowSpan에 값 설정.
+		for(var i=0; i<total.length; i++){
+			var check = total[i];
+			if(vnInputRowSpan <= check){
+				vnInputRowSpan = check;
+			}		
+		}
+		
+		var first=0;
+		for(var i=0; i<voTableArray[1]; i++){
+			for(var j=0; j<voTableArray[2]; j++){
+				var check = voTotal[i][j];
+				var classCheck = voTableFocus[i][j];
+				if(classCheck == "true"){
 					if(check != "0"){
-						if(first == 0){
+						if(first == 0){ // 1 time 
 							first += 1;
-							if(inputRowSpan > 1 && inputColSpan > 1){ // r:c
-								// 여기서 줄인다..?
-								for(var a=stub; a<inputRowSpan+stub; a++){
-									for(var b=stub2; b<inputColSpan+stub2; b++){
+							if(vnInputRowSpan > 1 && vnInputColSpan > 1){
+								for(var a=stub; a<vnInputRowSpan+stub; a++){
+									for(var b=stub2; b<vnInputColSpan+stub2; b++){
 										if(a == stub && b == stub2){
 											continue;
 										}
 										
 										if(a == stub){
-											vsTotal[a][b] = "c0";
+											voTotal[a][b] = "c0";
 										}
 										else if(a != stub){
-											vsTotal[a][b] = "r0";
+											voTotal[a][b] = "r0";
 										}
 										
 									}
 								}
-								vsTotal[i][j] = inputRowSpan.toString()+":"+inputColSpan.toString();	
+								voTotal[i][j] = vnInputRowSpan.toString()+":"+vnInputColSpan.toString();	
 							}
-							else if(inputRowSpan > 1 && inputColSpan <= 1){ // r
-								for(var a=stub; a<inputRowSpan+stub; a++){
+							else if(vnInputRowSpan > 1 && vnInputColSpan <= 1){
+								for(var a=stub; a<vnInputRowSpan+stub; a++){
 									if(a == stub){
 										continue;
 									}
-									vsTotal[a][j] = "r0"
+									voTotal[a][j] = "r0"
 								}
-								vsTotal[i][j] = "r"+ inputRowSpan.toString()
+								voTotal[i][j] = "r"+ vnInputRowSpan.toString()
 							}
-							else if(inputRowSpan <= 1 && inputColSpan > 1){ // c
-								for(var b=stub2; b<inputColSpan+stub2; b++){
+							else if(vnInputRowSpan <= 1 && vnInputColSpan > 1){
+								for(var b=stub2; b<vnInputColSpan+stub2; b++){
 									if(b == stub2){
 										continue;
 									}
-									vsTotal[i][b] = "c0"
+									voTotal[i][b] = "c0"
 								}
-								vsTotal[i][j] = "c"+inputColSpan.toString();
+								voTotal[i][j] = "c"+vnInputColSpan.toString();
 							}
-							else if(inputRowSpan <= 1 && inputColSpan <= 1){ // 없
-								robot.alert("하나만 선택하면 안되요");
+							else if(vnInputRowSpan <= 1 && vnInputColSpan <= 1){
+								
 							}
 						}
 					}
 				}
 			}
-		}
+		}	
 		
+		tableEdit.Vector(voTableArray[0], voTotal);
 		
-		for(var i=0; i<currentTrNum; i++){
-			for(var j=0; j<currentTdNum; j++){
-				var InputSpan = vsTotal[i][j];
-				// 0 / 1 / c / r / r:c
-				if(InputSpan == "c0" || InputSpan == "r0" ){ //포함되는 셀 hide();
-					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").hide(); // h
-				} 
-				else if(InputSpan == "1"){
-					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").show();
+		tableEdit.trReset(voTableArray[0]);
+		tableEdit.tdReset(voTableArray[1],voTableArray[1]);
+}
+
+
+
+
+/*
+ * Divide = 테이블을 분할한다.
+ * */
+tableEdit.Divide = function(){
+	
+	var voTableArray = tableEdit.startInfo();
+	
+	var vsCheckColSpan = $("td[tableFocus=true]").attr("colspan");
+ 	if(typeof vsCheckColSpan == "undefined"){
+ 		vsCheckColSpan = 0;
+ 	}
+ 	var vnfocusShellCol = parseInt(vsCheckColSpan);
+ 
+ 	var vsCheckRowSpan = $("td[tableFocus=true]").attr("rowspan");
+ 	if(typeof vsCheckRowSpan == "undefined"){
+ 		vsCheckRowSpan = 0;
+ 	}
+ 	
+ 	var vnfocusShellRow = parseInt(vsCheckRowSpan);
+ 	
+ 	 if(vnfocusShellCol == 0 && vnfocusShellRow != 0){// col이 없을떄
+ 		$("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").removeAttr("rowSpan");
+ 		
+ 	 	for(var a=voTableArray[3]+1; a<voTableArray[3]+vnfocusShellRow; a++){
+ 			$("#"+voTableArray[0]+"> tbody > tr[row="+a+"] > td[shell="+voTableArray[4]+"]").show();
+ 		}
+ 	 }
+ 	 else if(vnfocusShellCol != 0 && vnfocusShellRow == 0){ // row가 없을때
+ 		 $("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").removeAttr("colSpan");
+
+ 		 for(var a=voTableArray[4]+1; a<voTableArray[4]+vnfocusShellCol; a++){
+ 			$("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+a+"]").show();
+ 		}
+ 	 }
+ 	 else if(vnfocusShellCol != 0 && vnfocusShellRow != 0){ // 둘다 있으면
+ 		 $("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").removeAttr("rowSpan");
+ 		 $("#"+voTableArray[0]+"> tbody > tr[row="+voTableArray[3]+"] > td[shell="+voTableArray[4]+"]").removeAttr("colSpan");
+ 		 
+ 		 for(var a=voTableArray[3]; a<voTableArray[3]+vnfocusShellRow; a++){
+ 			 for(var b=voTableArray[4]; b<voTableArray[4]+vnfocusShellCol; b++){
+ 				 if(a==voTableArray[3] && b==voTableArray[4]){
+ 					 continue;
+ 				 }
+ 				 else{
+ 					 $("#"+voTableArray[0]+"> tbody > tr[row="+a+"] > td[shell="+b+"]").show();
+ 				 }
+ 			 }
+ 		 }
+ 	 }
+ 	 else if(vnfocusShellCol == 0 && vnfocusShellRow == 0){ 
+ 		 //단일셀 분할
+ 		/* 1. 분할셀이 단일일때
+		  * 2. after해서 한줄 추가
+		  * 3. 재배열 
+		  * 4. 배열로 다시 hide show 먹이기?  -> focusTr 위치 상단에 
+		  * voTableArray[0] = vsTableId;
+			voTableArray[1] = currentTrNum;
+			voTableArray[2] = currentTdNum;
+			voTableArray[3] = vsFocusTrRow;
+			voTableArray[4] = vsFocusTdShell;
+		
+		  * */
+ 		 	// 2번
+			var vsBuffer = "";
+				vsBuffer += "\n  <td class=\"td\"";
+				vsBuffer += "shell = \""+voTableArray[4]+"\"";
+				vsBuffer += "style=\"height:30px; cursor:pointer\" tableFocus=false ";
+				vsBuffer += "compoDvs=\"td\" ";
+				vsBuffer += "width=\"100\" ";
+				vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+				vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+				vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+				
+				vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
+				vsBuffer += "</td>";
+	
+			for(var i=0; i<voTableArray[1]; i++){
+				if(i != voTableArray[3]){
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").after(vsBuffer);
 				}
-				else if(InputSpan.indexOf(":") != -1){ // row:col // row나 col이 0일 수 있음 분기처리.
-					var vaCheck = InputSpan.split(":");
-					var vsRNum = vaCheck[0];
-					var vsCNum = vaCheck[1];
-					var viRNum = vsRNum.replace("r",""); //r 값
-					var viCNum = vsCNum.replace("c",""); //c 값
-					
-					if(viRNum == "0" && viCNum != "0"){
-						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
-					}
-					else if(viCNum == "0" && viRNum != "0"){
-						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
-					}
-					else if(viCNum != "0" && viRNum != "0"){
-						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
-						$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
-					}
-				}
-				else if(InputSpan.indexOf("c") != -1){ // col
-					var viStup2 = parseInt(InputSpan.replace("c",""));
-					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viStup2);
-				}
-				else if(InputSpan.indexOf("r") != -1){ // row
-					var viStup1 = parseInt(InputSpan.replace("r",""));
-					$("#"+vsTableId+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viStup1);
+				else if(i == voTableArray[3]){
+					$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").after(vsBuffer);
 				}
 			}
-		}
+			// 3번
+			tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+			tableEdit.trReset(voTableArray[0]);
+			
+			var voTableArrayStart2 = tableEdit.startInfo();
+			
+			var voTotal = new Array(voTableArrayStart2[2]);
+			for(var i=0; i<voTableArray[1]; i++){
+				voTotal[i] = new Array(voTableArrayStart2[1]);
+			}
+			
+			// 4. 배열로 데이터 가져오기 
+			voTotal = tableEdit.SpanInfo(voTableArrayStart2);
+			
+			// 5. 가져온 것에 원래 focus된 td 상단을 확인해서 c0이면 c0을 포함한 친구에게 col+1 / col=2  추가한 셀들은 hide
+			// c0 이면 col+1 아니면 c=2
+			for(var i=0; i<voTableArrayStart2[1]; i++){
+				if(i == voTableArrayStart2[3]){
+					continue;
+				}
+				var check = voTotal[i][voTableArrayStart2[4]];
+				// 있을 수 있는 것, c0 r0 r~ c~ r:c 1 분기 처리
+				if(check.indexOf(":") != -1){
+					var vaCheck = check.split(":");
+					var vsCNum = vaCheck[1];
+					var vsRNum = vaCheck[0];
+					var viCNum = vsCNum.replace("c",""); //c 값
+					var viRNum = vsRNum.replace("r","");
+					var vnCNum = parseInt(viCNum);
+					var vnRNum = parseInt(viRNum);
+					vnCNum += 1;
+					for(var k=voTableArrayStart2[4]+1; k<=voTableArrayStart2[4]+vnCNum; k++){
+						voTotal[i][k]="c0";
+					}
+					for(var m=i+1; m<i+vnRNum; m++){
+						for(var n=voTableArrayStart2[4]; n<voTableArrayStart2[4]+vnCNum; n++){
+							voTotal[m][n]="r0";
+						}
+					}
+					vsCNum = "c"+vnCNum;
+					vsCNum = "r"+vsRNum+":"+vsCNum;
+					voTotal[i][voTableArrayStart2[4]] = vsCNum;
+					//voTotal[i][voTableArrayStart2[4]+1] = "c0";
+				}
+				else if(check.indexOf("c0") != -1){
+					for(var j=0; j<voTableArrayStart2[2]; j++){
+						// td갯수만큼 반복
+						var vsCheckC0 = voTotal[i][j];
+						if(vsCheckC0.indexOf(":") != -1){
+							var vaCheck = vsCheckC0.split(":");
+							var vsCNum = vaCheck[1];
+							var vsRNum = vaCheck[0];
+							var viCNum = vsCNum.replace("c",""); //c 값
+							var viRNum = vsRNum.replace("r","");
+							var vnCNum = parseInt(viCNum);
+							var vnRNum = parseInt(viRNum);
+							vnCNum += 1;
+							for(var k=j; k<j+vnCNum; k++){
+								if(k==j){continue;}
+								voTotal[i][k]="c0";
+							}
+							for(var m=i+1; m<i+vnRNum; m++){
+								for(var n=j; n<j+vnCNum; n++){
+									voTotal[m][n]="r0";
+								}
+							}
+							
+							vsCNum = "c"+vnCNum;
+							vsCNum = "r"+vsRNum+":"+vsCNum;
+							voTotal[i][j] = vsCNum;
+							break;
+						}
+						else if(vsCheckC0.indexOf("c") != -1){
+							var viCNum = vsCheckC0.replace("c","");
+							var vnCNum = parseInt(viCNum);
+							if(vnCNum != 0){ //0이면 오류생김..
+								if(j+vnCNum >= voTableArrayStart2[4]){
+									vnCNum += 1;
+									for(var k=j; k<=vnCNum; k++){
+										if(k == j){continue;}
+										voTotal[i][k]="c0";
+									}
+									viCNum = "c"+vnCNum;
+									voTotal[i][j] = viCNum;
+									break;
+								}
+								else if(j+vnCNum < voTableArrayStart2[4]){
+									continue;
+								}
+							}
+							
+						}
+					}
+				}
+				else if(check.indexOf("r0") != -1){
+					continue;				
+				}
+				else if(check.indexOf("c") != -1){// c~ 구간임 c +1;
+					var vsCNum = check.replace("c","");
+					var vnCNum = parseInt(vsCNum);
+					vnCNum += 1;
+					for(var k=voTableArrayStart2[4]+1; k<=vnCNum; k++){
+						voTotal[i][k]="c0";
+					}
+					vsCNum = "c"+vnCNum;
+					voTotal[i][voTableArrayStart2[4]] = vsCNum;
+					
+				}
+				else if(check.indexOf("r") != -1){
+					continue;
+				}
+				else if(check.indexOf("1") != -1){
+					check = "c2";
+					voTotal[i][voTableArrayStart2[4]] = check;
+					voTotal[i][voTableArrayStart2[4]+1] = "c0";
+				}
+			}
+			
+			
+			for(var i=0; i<voTableArrayStart2[1]; i++){
+				for(var j=0; j<voTableArrayStart2[2]; j++){
+					var InputSpan = voTotal[i][j];
+					// 0 / 1 / c / r / r:c
+					if(InputSpan == "c0" || InputSpan == "r0" ){ //포함되는 셀 hide();
+						$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").hide(); // h
+					} 
+					else if(InputSpan == "1"){
+						$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").show();
+					}
+					else if(InputSpan.indexOf(":") != -1){ // row:col // row나 col이 0일 수 있음 분기처리.
+						var vaCheck = InputSpan.split(":");
+						var vsRNum = vaCheck[0];
+						var vsCNum = vaCheck[1];
+						var viRNum = vsRNum.replace("r",""); //r 값
+						var viCNum = vsCNum.replace("c",""); //c 값
+						
+						if(viRNum == "0" && viCNum != "0"){
+							$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+						}
+						else if(viCNum == "0" && viRNum != "0"){
+							$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+						}
+						else if(viCNum != "0" && viRNum != "0"){
+							$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viCNum);
+							$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viRNum);
+						}
+					}
+					else if(InputSpan.indexOf("c") != -1){ // col
+						var viStup2 = parseInt(InputSpan.replace("c",""));
+						$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("colspan",viStup2);
+					}
+					else if(InputSpan.indexOf("r") != -1){ // row
+						var viStup1 = parseInt(InputSpan.replace("r",""));
+						$("#"+voTableArrayStart2[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viStup1);
+					}
+				}
+			}
+ 	 }
 }
 
 
 
-tableEdit.Divide = function(){
-	var vsTableId = $(".tableFocus").parent().parent().parent().attr("id");
-	var focusTr = parseInt($(".tableFocus").parent().attr("row"));
-	var focusTd = parseInt($(".tableFocus").attr("shell"));
-	var currentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
-	var currentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
-	currentTdNum = currentTdNum / currentTrNum; 
-	
-	 var checkColSpan = $(".tableFocus").attr("colspan");
-	 	if(typeof checkColSpan == "undefined"){
-	 		checkColSpan = 0;
-	 	}
-	 var focusShellCol = parseInt(checkColSpan);
-	 
-	 var checkRowSpan = $(".tableFocus").attr("rowspan");
-	 	if(typeof checkRowSpan == "undefined"){
-	 		checkRowSpan = 0;
-	 	}
-	 var focusShellRow = parseInt(checkRowSpan);
-	 
-	 if(focusShellCol == 0 && focusShellRow != 0){// col이 없을떄
-		$("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("rowSpan");
-		
-	 	for(var a=focusTr+1; a<focusTr+focusShellRow; a++){
-			$("#"+vsTableId+"> tbody > tr[row="+a+"] > td[shell="+focusTd+"]").show();
-		}
-	 }
-	 else if(focusShellCol != 0 && focusShellRow == 0){ // row가 없을때
-		 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("colSpan");
-
-		 for(var a=focusTd+1; a<focusTd+focusShellCol; a++){
-			$("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+a+"]").show();
-		}
-	 }
-	 else if(focusShellCol != 0 && focusShellRow != 0){ // 둘다 있으면
-		 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("rowSpan");
-		 $("#"+vsTableId+"> tbody > tr[row="+focusTr+"] > td[shell="+focusTd+"]").removeAttr("colSpan");
-		 
-		 for(var a=focusTr; a<focusTr+focusShellRow; a++){
-			 for(var b=focusTd; b<focusTd+focusShellCol; b++){
-				 if(a==focusTr && b==focusTd){
-					 continue;
-				 }
-				 else{
-					 $("#"+vsTableId+"> tbody > tr[row="+a+"] > td[shell="+b+"]").show();
-				 }
-			 }
-		 }
-	 }
-	 else if(focusShellCol == 0 && focusShellRow == 0){ 			
-	}
-}

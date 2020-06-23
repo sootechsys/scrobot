@@ -16,7 +16,7 @@ focusOut.title = function(){
 	var vnTitleCount = $("#creationTable > div > span[class=\"span_title\"]").length;
 	
 	for(var i=0; i<vnTitleCount; i++){
-		$("#span"+i+"_title").attr("focus",false);
+		$("#span"+i+"_title").attr("focus","false");
 	}
 }
 
@@ -29,10 +29,10 @@ focusOut.div = function(){
 
 
 focusOut.td = function(){
-	var vnTableFocusCount = $(".tableFocus").length;
+	var vnTableFocusCount = $("td[tableFocus=true]").length;
 	if(vnTableFocusCount != 0){
 		for(var i=0; i<vnTableFocusCount; i++){
-			$(".tableFocus")[0].className = "tbtd_content creationTd";
+			$("td[tableFocus=true]").eq(0).attr("tableFocus","false");
 		}
 	}
 }
@@ -41,7 +41,7 @@ focusOut.td = function(){
 focusOut.input = function(){
 	var vnInputBoxCount = $("input[class=\"inputBox ui-draggable ui-draggable-handle\"]").length; //수정필요
 	for(var i=0; i<vnInputBoxCount; i++){
-		$("input[name=value"+i+"]").attr("focus",false);
+		$("input[name=value"+i+"]").attr("focus","false");
 	}
 }
 
@@ -49,14 +49,14 @@ focusOut.input = function(){
 focusOut.button = function(){
 	var vnButtonCount = $(".button").length;
 	for(var i=0; i<vnButtonCount; i++){
-		$("#button"+i).attr("focus",false);
+		$("#button"+i).attr("focus","false");
 	}
 }
 
 focusOut.select = function(){
 	var vnSelectCount = $(".selectBox").length;
 	for(var i=0; i<vnSelectCount; i++){
-		$("select[name=value"+i+"]").attr("focus",false);
+		$("select[name=value"+i+"]").attr("focus","false");
 	}
 }
 
@@ -71,7 +71,7 @@ focusOut.divYn = function(){
 }
 
 focusOut.tableYn = function(){
-	var vnFocusCount = $(".tableFocus").length;
+	var vnFocusCount = $("td[tableFocus=true]").length;
 	if (vnFocusCount == 0) {
 		return false;
 	} else{
@@ -79,5 +79,5 @@ focusOut.tableYn = function(){
 	}
 }
 
-
+/**/
 

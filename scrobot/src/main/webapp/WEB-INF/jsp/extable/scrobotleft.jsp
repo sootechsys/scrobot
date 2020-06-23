@@ -693,7 +693,7 @@
 		
 			else if(e.keyCode == 46){ // delete
 				if($(document.activeElement).attr("id") == null){
-					var vsTdFocus = $(".tableFocus");
+					var vsTdFocus = $("td[tableFocus=true]");
 					var vnTdFocusLengh = vsTdFocus.length;
 					
 					if(vnTdFocusLengh != 0){
@@ -777,7 +777,8 @@
  	$(document).click(function(e){
 		
  		fn_draggable();
-		if(e.target.className != "tbtd_content"){
+ 		
+		if($(e.target).attr("tableFocus") == "true"){
 			onclick.focus(shiftHold,e);
 		}
 		
@@ -789,7 +790,7 @@
  	
  		vsMouseDownYn = "Y";
  		
-		e.className = "tableFocus";
+ 		$(e).attr("tableFocus","true");
 		vsMouseDownInfo.row = $(e.parentElement).attr("row");
 		vsMouseDownInfo.col = $(e).attr("shell");
 	}
@@ -831,8 +832,8 @@
 					if($("#"+vsTableID+" [row="+i+"] [shell="+j+"]").css("display") == "none"){
 						continue;
 					}
-					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").removeClass("creationTd tbtd_content");
-					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").addClass("tableFocus");
+					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").attr("tableFocus","false");
+					$("#"+vsTableID+" [row="+i+"] [shell="+j+"]").attr("tableFocus","true");
 				}
 			}
 			
@@ -919,7 +920,7 @@
 			return false;
 		}
     	voPromptObject.textContent = param[0];
-    	$(".tableFocus").attr("value",param[0]);
+    	$("td[tableFocus=true]").attr("value",param[0]);
     	
     	robot.getAttr(voPromptObject);
     	
@@ -975,9 +976,9 @@
 	fn_tableColAddDown = function(){
 		tableEdit.addDown();
 	}
-
-	fn_tableColDel = function(){
-		tableEdit.ColDelete();
+	
+	fn_deleter = function(param){
+		tableEdit.deleteNode(param);
 	}
 
 	fn_tableRowAddLeft = function(){
@@ -1023,7 +1024,7 @@
 		
 		if(vsCompoRealId == ""){
 			if($("[focus=true]").length == 0){
-				vsDvsValue = ".tableFocus"
+				vsDvsValue = "td[tableFocus=true]"
 			} else{
 				vsDvsValue = "[focus=true]";
 			}
@@ -1177,210 +1178,6 @@
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* 테이블그리기 */
-	function test() {
-		testCallBack([4,2])
-	}
-	
-	/* 테이블그리기 CallBack */
-	testCallBack = function(param) {
-		if(param == "" || param == null){
-			return false;
-		}
-		
-		// 부모 가로크기
-		//var width = $(voFocusDivInfo).css("width");
-
-		// table 시작
-		var vsSource = "<div id=\"div_table"+vnTableCount+"\"";
-		vsSource += " class=\"div_table\" focus=false";
-		vsSource += " style=\"top:"+onclick.fn_creationPosition()+"px;\" compoDvs=\"div_table\" ";
-		vsSource += ">";
-		vsSource += "<table id=\"table" + vnTableCount + "\"";;
-		vsSource += " class=\"table\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" ";
-		vsSource += " compoDvs=\"table\" ";
-		vsSource += "\n <colgroup>";
-
-		for (var i = 0; i < param[0]; i++) {
-			//짝수 셀
-			if(i % 2 == 0){
-				vsSource += "\n  <col width=\"100\"/>";
-			// 홀수 셀
-			} else{
-				vsSource += "\n  <col width=\"225\"/>";
-			}
-			
-		}
-		vsSource += "\n </colgroup>";
-		
-		//tbody 추가
-		vsSource += "\n <tbody>"
-
-		for (var i = 0; i < param[1]; i++) {
-			vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" >";
-			for (var j = 0; j < param[0]; j++) {
-				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
-				vsSource += "shell=\""+j+"\" ";
-				vsSource += "compoDvs=\"td\" ";
-				vsSource += "colspan=\"1\" ";
-				vsSource += "rowspan=\"1\" ";
-				vsSource += "style=\"height:30px;\" "
-					
-				vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
-				vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
-					
-				vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
-				vsSource += "</td>";
-			}
-			vsSource += "\n </tr>";
-		}
-		
-		//tbody 추가
-		vsSource += "\n </tbody>"
-
-		vsSource += "</table>";
-		vsSource += "</div>";
-		
-		// div focus 여부
-		// 포커스가 없다면 body에 생성
-		if(!focusOut.divYn()){
-			$("#creationTable").append(vsSource);
-		// 포커스가 있다면 포커스잡힌 div에 생성
-		} else{
-			$("[compoDvs=div_content][mainfocus=true]").append(vsSource);
-		}
-
-		vnTableCount++;
-		
-		// form 크기 동적조정
-		onclick.fn_setformSize();
-	}
-	
-	testMerge = function(){
-		
-	}
-	
-	testColDivision = function(){
-		
-	}
-	
-	testRowDivision = function(){
-		robot.prompt("몇개로?", ["몇개"],"생성","취소","testRowDivisionCallBack");
-		
-		
-		
-		
-	}
-	
-	testRowDivisionCallBack = function(param){
-	
-		var vsSource = "";
-		var a = param[0];
-		var focus = $(".tableFocus");
-		var focusRowSpan = focus.attr("rowSpan");
-		
-		
-		var tr = focus.parent();
-		
-		var totalTd = tr.children();
-		
-		var tdCount = totalTd.length;
-		
-		
-		// 포커스잡힌 셀의 rowspan이 1 이상이면
-		if(focusRowSpan != 1){
-			
-			// 분할할 셀이 포커스잡힌 rowspan보다 작거나 같다면 그냥분할 후 td추가
-			if(a <= focusRowSpan){
-				var rowSpan = focusRowSpan/a;
-				var seconde = focusRowSpan/a;
-				var trRow = tr.parent().children().index(tr);
-				
-				$("#table0 tbody").children().eq(trRow).attr("rowSpan")
-				for (var i=0; i<a-1; i++){
-					
-					
-					vsSource += "\n  <td class=\"tbtd_content creationTd\" "
-					vsSource += "shell=\""+j+"\" ";
-					vsSource += "compoDvs=\"td\" ";
-					vsSource += "colspan=\"1\" ";
-					vsSource += "rowspan=\"1\" ";
-					vsSource += "style=\"height:30px;\" "
-						
-					vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
-					vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
-						
-					vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
-					vsSource += "</td>";
-					$("#table0 tbody").children().eq(1+trRow).append(vsSource);
-					
-				}
-			} else{
-				
-			}
-			
-		// 포커스잡힌 셀의 rowspan이 1일경우
-		} else{
-			for(var k=0; k<tdCount; k++){
-				if(totalTd.eq(k).attr("class").indexOf("tableFocus") == -1){
-					
-					
-					if(totalTd.eq(k).attr("rowSpan") == 1){
-						totalTd.eq(k).attr("rowSpan",a)
-					} else{
-						totalTd.eq(k).attr("rowSpan",totalTd.eq(i).attr("rowSpan")+a)
-					}
-					
-					var count = focus.length;
-				}
-			}
-			
-			for (var i = 0; i < a-1; i++) {
-				vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" >";
-				for (var j = 0; j < count; j++) {
-					vsSource += "\n  <td class=\"tbtd_content creationTd\" "
-					vsSource += "shell=\""+j+"\" ";
-					vsSource += "compoDvs=\"td\" ";
-					vsSource += "colspan=\"1\" ";
-					vsSource += "rowspan=\"1\" ";
-					vsSource += "style=\"height:30px;\" "
-						
-					vsSource += "onmousedown=\"fn_tdMouseDown(this)\" ";
-					vsSource += "onmouseover=\"fn_tdMouseOver(this)\" ";
-						
-					vsSource += "ondblclick=\"fn_tdDbClick(this)\"> "
-					vsSource += "</td>";
-				}
-				vsSource += "\n </tr>";
-			}
-				
-					
-					
-					
-					
-			$(".tableFocus").parent().after(vsSource);
-		}
-		
-		
-		
-		
-		
-		
-	}
-
-	
-	
 </script>
 
 </head>
@@ -1424,7 +1221,7 @@
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableColAddDown();">아래 행 추가</td>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableColDel();">행 삭제</td>
+					onclick="fn_deleter(1);">행삭제</td>
 			</tr>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"
@@ -1432,7 +1229,7 @@
 				<td class="tbtd_content" style="cursor: pointer"
 					onclick="fn_tableRowAddRight();">우측 열 추가</td>
 				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_fn_tableRowDel();">열 삭제</td>
+					onclick="fn_deleter(2);">열삭제</td>	
 			</tr>
 			<tr>
 				<td class="tbtd_content" style="cursor: pointer"

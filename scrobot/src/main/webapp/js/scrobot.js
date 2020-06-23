@@ -303,7 +303,7 @@ robot.getAttr = function(param, i){
 
 		var focusYn = $(param).attr("focus");
 		
-		if($(".tableFocus").length != 0){
+		if($("td[tableFocus=true]").length != 0){
 			focusYn = "true";
 		}
 		

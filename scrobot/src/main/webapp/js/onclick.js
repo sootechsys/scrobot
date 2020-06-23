@@ -15,17 +15,16 @@ onclick.focus = function(param,e){
 		//
 		if(vsCompoDvs == "td"){
 			vsMouseDownYn = "N";
-			var vitdCount = $(".tableFocus").length;
+			var vitdCount = $("td[tableFocus=true]").length;
 			if(vitdCount == 0){
 				focusOut.td();
-				if(vsClassNm.indexOf("creationTd") != -1){
-					
-					e.target.className = "tableFocus";
+				if($(e.target).attr("tableFocus") == "false"){
+					$(e.target).attr("tableFocus","true");
 					
 				}
 			} else if(vitdCount >= 1){
 				focusOut.td();
-				e.target.className = "tableFocus";
+				$(e.target).attr("tableFocus","true");
 			}
 				
 			
@@ -117,11 +116,11 @@ onclick.focus = function(param,e){
 		
 	} else if(param == 1){
 		
-		if (vsClassNm.indexOf("tableFocus") != -1) {
-			e.target.className = "tbtd_content creationTd";
+		if ($(e.target).attr("tableFocus") == "true") {
+			$(e.target).attr("tableFocus","false");
 			
-		} else if(vsClassNm.indexOf("tbtd_content") != -1){
-			e.target.className = "tableFocus";
+		} else {
+			$(e.target).attr("tableFocus","true");
 		}
 	}
 }
@@ -313,7 +312,7 @@ onclick.draw = function(tagName, param){
 					onclick.fn_setDivContentSize();
 				}
 			} else{
-				$(".tableFocus").append(vsSource);
+				$("td[tableFocus=true]").append(vsSource);
 			}
 			
 		}
@@ -359,7 +358,7 @@ onclick.draw = function(tagName, param){
 		
 	// 포커스가 있다면 포커스잡힌 td에 생성
 	} else{
-		$(".tableFocus").append(vsSource);
+		$("td[tableFocus=true]").append(vsSource);
 	}
 	
 	vnLabelCount++;
@@ -392,7 +391,7 @@ onclick.draw = function(tagName, param){
 		vsSource += "</div>";
 
 		// input박스 왼쪽정렬
-		$(".tableFocus").css("text-align","left");
+		$("td[tableFocus=true]").css("text-align","left");
 		
 		
 		// table focus 여부
@@ -409,7 +408,7 @@ onclick.draw = function(tagName, param){
 			
 		// 포커스가 있다면 포커스잡힌 td에 생성
 		} else{
-			$(".tableFocus").append(vsSource);
+			$("td[tableFocus=true]").append(vsSource);
 		}
 		
 		vnInputCount++;
@@ -439,7 +438,7 @@ onclick.draw = function(tagName, param){
 		vsSource += "</div>";
 		
 		// input박스 왼쪽정렬
-		$(".tableFocus").css("text-align","left");
+		$("td[tableFocus=true]").css("text-align","left");
 		
 		// table focus 여부
 		// 포커스가 없다면 body에 생성
@@ -455,7 +454,7 @@ onclick.draw = function(tagName, param){
 			
 		// 포커스가 있다면 포커스잡힌 td에 생성
 		} else{
-			$(".tableFocus").append(vsSource);
+			$("td[tableFocus=true]").append(vsSource);
 		}
 		
 		vnSelectCount++;	
@@ -497,7 +496,7 @@ onclick.draw = function(tagName, param){
 			
 		// 포커스가 있다면 포커스잡힌 td에 생성
 		} else{
-			$(".tableFocus").append(vsSource);
+			$("td[tableFocus=true]").append(vsSource);
 		}
 		
 		vnButtonCount++;
@@ -539,7 +538,7 @@ onclick.draw = function(tagName, param){
 		for (var i = 0; i < param[1]; i++) {
 			vsSource += "\n <tr name=\"tr\" row=\""+i+"\" compoDvs=\"tr\" height=\"40\">";
 			for (var j = 0; j < param[0]; j++) {
-				vsSource += "\n  <td class=\"tbtd_content creationTd\" "
+				vsSource += "\n  <td class=\"td\" tableFocus=false "
 				vsSource += "shell=\""+j+"\" ";
 				vsSource += "compoDvs=\"td\" ";
 				//짝수 셀

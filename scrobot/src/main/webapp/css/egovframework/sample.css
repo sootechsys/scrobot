@@ -186,12 +186,9 @@ body{
 	cursor:pointer;
 }
 
-.creationTd:hover{
-	 cursor:pointer;
-}
 
-.tableFocus {
-	background-color: #d5d3f7;
+td[tableFocus="true"]{
+	background-color: #d5d3f7 !important;
 }
 
 
@@ -300,11 +297,10 @@ body{
 }
 
 
-
-
 [focus="true"]{
-	border: 3px solid grey !important;
+	border: 3px solid grey;
 }
+
 
 
 
