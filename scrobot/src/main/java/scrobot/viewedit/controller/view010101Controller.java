@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 
 import scrobot.sourceFileGenerator.Application;
@@ -43,8 +44,16 @@ public class view010101Controller {
 	 * 화면그리기 화면을 조회한다.
 	 */
 	@RequestMapping(value = "/viewEdit.do", method = RequestMethod.GET, produces = "application/text; charset=utf8" )
-	public String main() throws Exception {
-		return "view/view010101";
+	public String main(HttpServletRequest request) throws Exception {
+		
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		if(userId != null) {
+			return "view/view010101";
+		} else {
+			return "user/user010101";
+		}
+		
 	}
 	
 	/**
@@ -55,12 +64,28 @@ public class view010101Controller {
 		Application.main(param);
 	}
 	
+	
+	/**
+	 * 불러오기전 새션확인
+	 */
+	@RequestMapping(value = "/userIdSessionYn.do", produces = "application/text; charset=utf8" )
+	@ResponseBody
+	public String userIdSessionYn(HttpServletRequest request) throws Exception {
+		
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		
+		return userId;
+	}
+	
+	
 	/**
 	 * HTML 만들기를 실행한다.
 	 */
 	@RequestMapping(value = "/creationHTML.do", produces = "application/text; charset=utf8" )
-	public void creationHTML(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
-		//paramMap = Application.creationHTML(paramMap);
+	@ResponseBody
+	public String creationHTML(@RequestParam Map<String, Object> paramMap, SessionStatus status, HttpServletRequest request) throws Exception {
+		paramMap = Application.creationHTML(paramMap);
 		
 		
 		HttpSession session = request.getSession();
@@ -71,6 +96,8 @@ public class view010101Controller {
 		paramMap.put("source", paramMap.get("html"));
 		view010101service.registViewDrawWrk(paramMap);
 		view010101service.registViewDrawWrkHistry(paramMap);
+		
+		return "Y";
 	}
 	
 

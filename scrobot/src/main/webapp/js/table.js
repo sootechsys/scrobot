@@ -44,12 +44,12 @@ tableEdit.startInfo = function(param){
 	if(typeof param =="undefined" || param == null){
 		var voTableArray = [];
 		
-		var vsTableId = $(".creationTd[focus=true]").parent().parent().parent().attr("id"); //현재 table
+		var vsTableId = $("td[tableFocus=true]").parent().parent().parent().attr("id"); //현재 table
 		var vnCurrentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
 		var vnCurrentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
 		vnCurrentTdNum = vnCurrentTdNum / vnCurrentTrNum; // table td길이
-		var vnFocusTrRow = parseInt($(".creationTd[focus=true]").parent().attr("row")); //focus row
-		var vnFocusTdShell = parseInt($(".creationTd[focus=true]").attr("shell")); //focs td shell
+		var vnFocusTrRow = parseInt($("td[tableFocus=true]").parent().attr("row")); //focus row
+		var vnFocusTdShell = parseInt($("td[tableFocus=true]").attr("shell")); //focs td shell
 		
 		
 		
@@ -69,8 +69,8 @@ tableEdit.startInfo = function(param){
 		var vnCurrentTrNum = $("#"+vsTableId+" > tbody > tr").length; // table tr길이
 		var vnCurrentTdNum = $("#"+vsTableId+" > tbody > tr > td").length; 
 		vnCurrentTdNum = vnCurrentTdNum / vnCurrentTrNum; // table td길이
-		//var vnFocusTrRow = parseInt($(".creationTd[focus=true]").parent().attr("row")); //focus row
-		//var vnFocusTdShell = parseInt($(".creationTd[focus=true]").attr("shell")); //focs td shell
+		//var vnFocusTrRow = parseInt($("td[tableFocus=true]").parent().attr("row")); //focus row
+		//var vnFocusTdShell = parseInt($("td[tableFocus=true]").attr("shell")); //focs td shell
 		
 		
 		
@@ -96,13 +96,18 @@ tableEdit.startInfo = function(param){
  * */
 tableEdit.ColBuffer = function(voTableArray){
 	
-	var vsBuffer = "<tr name=\"tr\" row=\"\" >";
+	var vsBuffer = "<tr name=\"tr\" row=\"\" compoDvs=\"tr\" height=\"40\">";
 	
 	for(var i=0; i<voTableArray[2]; i++){
-		vsBuffer += "\n  <td class=\"tbtd_content creationTd\""
-		vsBuffer += "shell = \""+i+"\" focus=false ";
+		vsBuffer += "\n  <td class=\"td\" "
+		vsBuffer += "shell = \""+i+"\" tableFocus=false ";
 		vsBuffer += "style=\"height:30px; cursor:pointer\" "
 		vsBuffer += "compoDvs=\"td\" "
+			
+		vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+		vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+		vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+		
 		vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> "
 		vsBuffer += "</td>"
 	}
@@ -124,10 +129,16 @@ tableEdit.ColBuffer = function(voTableArray){
 tableEdit.RowBuffer = function(voTableArray){ //반복문 사용해서 추가해야한다.
 	
 	var vsBuffer = "";
-		vsBuffer += "<td class=\"tbtd_content creationTd\" ";
-		vsBuffer += "shell=\"\" focus=false ";
+		vsBuffer += "<td class=\"td\" ";
+		vsBuffer += "shell=\"\" tableFocus=false ";
 		vsBuffer += "style=\"height:30px; cursor:pointer\" ";
 		vsBuffer += "compoDvs=\"td\" ";
+		
+		vsBuffer += "width=\"100\" ";
+		vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+		vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+		vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+		
 		vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
 		vsBuffer += "</td>";
 		
@@ -320,7 +331,7 @@ tableEdit.Vector = function(vsTableId, voTotal){
 tableEdit.addUp = function(){
 	
 	
-	debugger;
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -329,8 +340,7 @@ tableEdit.addUp = function(){
 	if(voTableArray[3] == 0){ //focus top
 		$("#"+voTableArray[0]+"> tbody > tr:first").before(vsBuffer);
 		
-		var voTableArrayEnd = tableEdit.endInfo();
-		tableEdit.trReset(voTableArrayEnd[0]);
+		tableEdit.trReset(voTableArray[0]);
 	}
 	else{
 
@@ -452,7 +462,7 @@ tableEdit.addUp = function(){
  * */
 tableEdit.addDown = function(){
 	
-	debugger;
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -461,8 +471,7 @@ tableEdit.addDown = function(){
 	if(voTableArray[3] == voTableArray[1]-1){ // bottom if start
 		// 최 하단 찍은것,
 		$("#"+voTableArray[0]+"> tbody > tr:last").after(vsBuffer);	
-		var voTableArrayEnd = tableEdit.endInfo();
-		tableEdit.trReset(voTableArrayEnd[0]);
+		tableEdit.trReset(voTableArray[0]);
 	}
 	else{
 		
@@ -581,7 +590,7 @@ tableEdit.addDown = function(){
  * */
 tableEdit.addLeft = function(){
 	
-	debugger;
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -602,8 +611,7 @@ tableEdit.addLeft = function(){
 		for(var i=0; i<voTableArray[1]; i++){
 			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td:first").before(vsBuffer);
 		}
-		var voTableArrayEnd = tableEdit.endInfo();
-		tableEdit.trReset(voTableArrayEnd[0]);
+		tableEdit.trReset(voTableArray[0]);
 	}
 	else if(voTableArray[4] != 0){
 		for(var i=0; i<voTableArray[1]; i++){
@@ -722,7 +730,7 @@ tableEdit.addLeft = function(){
  * */
 tableEdit.addRight = function(){
 	
-	debugger;
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -743,8 +751,7 @@ tableEdit.addRight = function(){
 		for(var i=0; i<voTableArray[1]; i++){
 			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td:last").after(vsBuffer);
 		}
-		var voTableArrayEnd = tableEdit.endInfo();
-		tableEdit.trReset(voTableArrayEnd[0]);
+		tableEdit.trReset(voTableArray[0]);
 	}
 	else if(voTableArray[4] != voTableArray[2]-1){
 		
@@ -859,15 +866,14 @@ tableEdit.addRight = function(){
  * deleteNode = 삭제 메소드 분기 호출 
  * */
 
-tableEdit.deleteNode = function(){
+tableEdit.deleteNode = function(param){
 	
-	debugger;
 	
 	var voTableArray = tableEdit.startInfo();
 		
-	var focusLength = $("#"+voTableArray[0]+" > tbody > tr > td[focus=true]").length; // focus 갯수
+	var focusLength = $("#"+voTableArray[0]+" > tbody > tr > td[tableFocus=true]").length; // focus 갯수
 
-	var check = prompt("행 : 1 / 열 : 2");
+	var check = param;
 	
 	if(focusLength == 1){ // 단일선택
 		
@@ -1459,13 +1465,13 @@ tableEdit.Merge = function(){
 	//focus cell check Process
 	for(var i=0; i<voTableArray[1]; i++){
 		for(var j=0; j<voTableArray[2]; j++){
-			voTableFocus[i][j] = $("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("focus");
+			voTableFocus[i][j] = $("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("tableFocus");
 		}
 	}
 	
-	var tableFocusRowNumber = $(".creationTd[focus=true]").parent().attr("row"); //focus cell top row
+	var tableFocusRowNumber = $("td[tableFocus=true]").parent().attr("row"); //focus cell top row
 	var stub = parseInt(tableFocusRowNumber);
-	var tableFocusShellNumber = $(".creationTd[focus=true]").attr("shell"); //focus cell top shell
+	var tableFocusShellNumber = $("td[tableFocus=true]").attr("shell"); //focus cell top shell
 	var stub2 = parseInt(tableFocusShellNumber);
 	
 	var Span = []; // Span check
@@ -1656,13 +1662,13 @@ tableEdit.Divide = function(){
 	
 	var voTableArray = tableEdit.startInfo();
 	
-	var vsCheckColSpan = $(".creationTd[focus=true]").attr("colspan");
+	var vsCheckColSpan = $("td[tableFocus=true]").attr("colspan");
  	if(typeof vsCheckColSpan == "undefined"){
  		vsCheckColSpan = 0;
  	}
  	var vnfocusShellCol = parseInt(vsCheckColSpan);
  
- 	var vsCheckRowSpan = $(".creationTd[focus=true]").attr("rowspan");
+ 	var vsCheckRowSpan = $("td[tableFocus=true]").attr("rowspan");
  	if(typeof vsCheckRowSpan == "undefined"){
  		vsCheckRowSpan = 0;
  	}
@@ -1713,10 +1719,15 @@ tableEdit.Divide = function(){
 		  * */
  		 	// 2번
 			var vsBuffer = "";
-				vsBuffer += "\n  <td class=\"tbtd_content creationTd\"";
+				vsBuffer += "\n  <td class=\"td\"";
 				vsBuffer += "shell = \""+voTableArray[4]+"\"";
-				vsBuffer += "style=\"height:30px; cursor:pointer\" focus=false ";
+				vsBuffer += "style=\"height:30px; cursor:pointer\" tableFocus=false ";
 				vsBuffer += "compoDvs=\"td\" ";
+				vsBuffer += "width=\"100\" ";
+				vsBuffer += "onmousedown=\"fn_tdMouseDown(this)\" ";
+				vsBuffer += "onmouseover=\"fn_tdMouseOver(this)\" ";
+				vsBuffer += "onmouseup=\"fn_tdMouseUp(this)\" ";
+				
 				vsBuffer += "ondblclick=\"fn_tdDbClick(this)\"> ";
 				vsBuffer += "</td>";
 	
@@ -1729,9 +1740,8 @@ tableEdit.Divide = function(){
 				}
 			}
 			// 3번
-			var voTableArrayEnd = tableEdit.endInfo();
-			tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
-			tableEdit.trReset(voTableArrayEnd[0]);
+			tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+			tableEdit.trReset(voTableArray[0]);
 			
 			var voTableArrayStart2 = tableEdit.startInfo();
 			
@@ -1742,7 +1752,7 @@ tableEdit.Divide = function(){
 			
 			// 4. 배열로 데이터 가져오기 
 			voTotal = tableEdit.SpanInfo(voTableArrayStart2);
-			debugger;
+			
 			// 5. 가져온 것에 원래 focus된 td 상단을 확인해서 c0이면 c0을 포함한 친구에게 col+1 / col=2  추가한 셀들은 hide
 			// c0 이면 col+1 아니면 c=2
 			for(var i=0; i<voTableArrayStart2[1]; i++){
@@ -1795,7 +1805,7 @@ tableEdit.Divide = function(){
 									voTotal[m][n]="r0";
 								}
 							}
-							debugger;
+							
 							vsCNum = "c"+vnCNum;
 							vsCNum = "r"+vsRNum+":"+vsCNum;
 							voTotal[i][j] = vsCNum;
@@ -1847,7 +1857,7 @@ tableEdit.Divide = function(){
 				}
 			}
 			
-			debugger;
+			
 			for(var i=0; i<voTableArrayStart2[1]; i++){
 				for(var j=0; j<voTableArrayStart2[2]; j++){
 					var InputSpan = voTotal[i][j];
@@ -1888,54 +1898,6 @@ tableEdit.Divide = function(){
 			}
  	 }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

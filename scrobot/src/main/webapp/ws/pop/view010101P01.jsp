@@ -159,7 +159,12 @@ fn_wrkHistryDbClickCallBack = function(param){
 		$("#creationTable").empty();
 
 		$("#creationTable").append(vsSource);
-		robot.closePop();
+		
+		fn_saveClone();
+		
+		var param = voViewHistryList[vnFocusRow].wrkNm;
+		var vsCallback = $("#callBack").val();
+		robot.closePop(param, vsCallback);
 	}
 
 }

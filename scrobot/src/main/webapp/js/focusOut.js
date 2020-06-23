@@ -1,5 +1,5 @@
 
-
+//
 focusOut = {};
 
 
@@ -29,10 +29,10 @@ focusOut.div = function(){
 
 
 focusOut.td = function(){
-	var vnTableFocusCount = $(".creationTd[focus=true]").length;
+	var vnTableFocusCount = $("td[tableFocus=true]").length;
 	if(vnTableFocusCount != 0){
 		for(var i=0; i<vnTableFocusCount; i++){
-			$(".creationTd[focus=true]")[0].attr("focus","false");
+			$("td[tableFocus=true]").eq(0).attr("tableFocus","false");
 		}
 	}
 }
@@ -71,7 +71,7 @@ focusOut.divYn = function(){
 }
 
 focusOut.tableYn = function(){
-	var vnFocusCount = $(".creationTd[focus=true]").length;
+	var vnFocusCount = $("td[tableFocus=true]").length;
 	if (vnFocusCount == 0) {
 		return false;
 	} else{
