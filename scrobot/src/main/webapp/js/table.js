@@ -314,6 +314,11 @@ tableEdit.Vector = function(vsTableId, voTotal){
 				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").attr("rowspan",viStup1);
 				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
 			}
+			else if(InputSpan.indexOf("d") != -1){
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").hide(); // h
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("colspan");
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").removeAttr("rowspan");
+			}
 		}
 	}
 	
@@ -331,7 +336,7 @@ tableEdit.Vector = function(vsTableId, voTotal){
 tableEdit.addUp = function(){
 	
 	
-	
+	debugger;
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -409,7 +414,7 @@ tableEdit.addUp = function(){
 							}
 							else{
 								vnRNum += 1;
-								voTotal[voTableArray[3]-1][i] = "r"+vnRNum;
+								voTotal[j][i] = "r"+vnRNum;
 								adderArray[i] = "r0";
 							}
 							break;
@@ -454,7 +459,6 @@ tableEdit.addUp = function(){
 
 }
 }
-
 
 
 /*
@@ -1116,14 +1120,6 @@ var voTableArray = tableEdit.startInfo();
 									}
 								}
 								
-								/*for(var k=j; k<j+minusVnCNum; k++){
-									if(k==j){
-										continue;
-									}
-									else{
-										voTotal[i][k] = "c0";
-									}
-								}*/
 							}
 							break;
 						}
@@ -1178,9 +1174,9 @@ var voTableArray = tableEdit.startInfo();
 	}
 }
 
-tableEdit.colSpanDelete = function(check , focusCol){
+tableEdit.colSpanDelete = function(check , FocusCol){
 	
-	
+	var focusCol = parseInt(FocusCol);
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -1308,21 +1304,203 @@ tableEdit.colSpanDelete = function(check , focusCol){
 		
 		
 	}
-	else if(check == 2){ // 열  
+	else if(check == 2){ // 열   /////다시체크하기 .... 반복문 0부터 시작인데 0찍으면안댐..
 		
-		
-		
-		
-		
-		/*tableEdit.Vector(voTableArray[0], voTotal);
 		
 		for(var i=0; i<voTableArray[1]; i++){
-			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
+			
+			for(var j=voTableArray[4]; j<voTableArray[4]+focusCol; j++){
+				
+				var checker = voTotal[i][j];
+				
+				if(checker.indexOf(":") != -1){// 1
+					var checkSpan = vsInCheck.split(":");
+					var vsRNum = checkSpan[0];
+					var vsCNum = checkSpan[1];
+						vsRNum = vsRNum.replace("r","");
+						vsCNum = vsCNum.replace("c","");
+					var vnRNum = parseInt(vsRNum);
+					var vnCNum = parseInt(vsCNum);
+					
+					var count = 0;
+					var fixer = 0;
+					
+					for(var m=i; m<i+vnRNum; m++){
+						for(var n=j; n<j+vnCNum; n++){
+							if(m == i){
+								if(n > voTableArray[4]+focusCol-1){
+									count+=1;
+									if(fixer ==0){
+										fixer = n;
+									}
+								}
+								else if(n <= voTableArray[4]+focusCol-1){
+									voTotal[m][n]="d";
+								}
+							}
+							else{
+								if(n > voTableArray[4]+focusCol-1){
+									continue;
+								}
+								else if(n < voTableArray[4]+focusCol-1){
+									voTotal[m][n] ="d";
+								}
+							}
+						}
+					}
+					
+					
+					
+				}
+				else if(checker.indexOf("r0") != -1){// 1
+					voTotal[i][j]="d";
+				}
+				else if(checker.indexOf("c0") != -1){// 1
+					
+					//----- c0 start -------
+					for(var m=0; m<voTableArray[2]; m++){//2 td all
+						
+						var vsInCheck = voTotal[i][m];
+						
+						if(vsInCheck.indexOf(":") != -1){
+							var checkSpan = vsInCheck.split(":");
+							var vsRNum = checkSpan[0];
+							var vsCNum = checkSpan[1];
+								vsRNum = vsRNum.replace("r","");
+								vsCNum = vsCNum.replace("c","");
+							var vnRNum = parseInt(vsRNum);
+							var vnCNum = parseInt(vsCNum);
+							
+							
+							
+						}
+						else if(vsInCheck.indexOf("r0") != -1){
+							continue;
+						}
+						else if(vsInCheck.indexOf("c0") != -1){
+							continue;				
+						}
+						else if(vsInCheck.indexOf("r") != -1){
+							continue;
+						}
+						else if(vsInCheck.indexOf("c") != -1){
+							var vsCNum = vsInCheck.replace("c","");
+							var vnCNum = parseInt(vsCNum);
+							
+							if(m+vnCNum-1 < voTableArray[4]){
+								continue;
+							}
+							else if(m+vnCNum-1 >= voTableArray[4]){
+								var count =0;
+								for(var k=m; k<m+vnCNum; k++){
+									if(k >= voTableArray[4]){
+										count += 1;
+										voTotal[i][k] = "d";
+									}
+									else{
+										continue;
+									}
+								}
+								
+								var total = vnCNum - count;
+								
+								if(total == 1){
+									voTotal[i][m] = "1";
+								}
+								else if(total > 1){
+									voTotal[i][m] = "c"+total;
+								}
+								
+							
+							}
+							
+							
+						}
+						else if(vsInCheck.indexOf("1") != -1){
+							continue;
+						}
+						else if(vsInCheck.indexOf("d") != -1){
+							continue;
+						}
+					}
+					
+					
+					
+					//----- c0 end -------
+				}
+				else if(checker.indexOf("r") != -1){// 1
+					voTotal[i][j] = "d";
+				}
+				else if(checker.indexOf("c") != -1){// 1
+					var vsCNum = checker.replace("c","");
+					var vnCNum = parseInt(vsCNum);
+					
+					if(j+vnCNum-1 <= voTableArray[4]+focusCol-1){
+						
+						for(var k=j; k<j+vnCNum; k++){
+							
+							voTotal[i][k]="d";
+						}
+					}
+					else if(j+vnCNum-1 > voTableArray[4]+focusCol-1){
+						var count = 0;
+						var fixer = 0;
+						for(var k=j; k<j+vnCNum; k++){
+							if(k <= voTableArray[4]+focusCol-1){
+								voTotal[i][k] = "d";
+							}
+							else if(k > voTableArray[4]+focusCol-1){
+								count += 1;
+								if(fixer == 0){
+									fixer = k;
+								}
+							}
+						}
+						
+						if(count == 1){
+							voTotal[i][fixer] = "1";
+						}
+						else if(count > 1){
+							
+							for(var k=fixer; k<count; k++){
+								if(k==fixer){
+									voTotal[i][fixer] = "c"+count;
+								}
+								else{
+									voTotal[i][k]="c0";
+								}
+							}
+							
+						}
+						
+						
+					}
+					
+				}
+				else if(checker.indexOf("1") != -1){// 1
+					voTotal[i][j] = "d";
+				}
+				else if(checker.indexOf("d") != -1){// 1
+					continue;
+				}
+				
+				
+			}
+		}
+		
+		tableEdit.Vector(voTableArray[0], voTotal);
+		
+		for(var i=0; i<voTableArray[1]; i++){
+			for(var j=voTableArray[4]; j<voTableArray[4]+focusCol; j++){
+				
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").remove();
+				
+			}
 		}
 		
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
-		*/
+		
 	}
 	
 	
