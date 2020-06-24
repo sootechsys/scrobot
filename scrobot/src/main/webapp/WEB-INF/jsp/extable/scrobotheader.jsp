@@ -403,21 +403,21 @@
 <body>
 	 <div id="nav"> <!-- 크기조절하여 글자 라인 맞추기부터 실시 -->
 	 	<ul class="nav-container">
-	 		<li id="firstNav" class="nav-item"><img src="..//images/egovframework/menu/icon_top_new.png" onclick="fn_sourceReset();">
+	 		<li id="firstNav" class="nav-item" onclick="fn_sourceReset();"><img src="..//images/egovframework/menu/icon_top_new.png">
 	 		<p id="new">새로만들기</p></li>
-	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_open.png" onclick="fn_saveListCall();">
+	 		<li class="nav-item" onclick="fn_saveListCall();"><img src="..//images/egovframework/menu/icon_top_open.png">
 	 		<p id="open">불러오기</p></li>
-	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_save.png" onclick="fn_createSource();">
+	 		<li class="nav-item" onclick="fn_createSource();"><img src="..//images/egovframework/menu/icon_top_save.png">
 	 		<p id="save">저장</p></li>
-			<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_resave.png" onclick="fn_diffrentNmSave();">
+			<li class="nav-item" onclick="fn_diffrentNmSave();"><img src="..//images/egovframework/menu/icon_top_resave.png">
 			<p id="resave">다른이름저장</p></li>
-	 		<li id="li_rollback" class="nav-item"><img src="..//images/egovframework/menu/icon_top_back.png" onclick=";">
+	 		<li id="li_rollback" class="nav-item" onclick=";"><img src="..//images/egovframework/menu/icon_top_back.png">
 	 		<p id="back">되돌리기</p></li>
-	 		<li id="li_restart" class="nav-item"><img src="..//images/egovframework/menu/icon_top_refresh.png" onclick=";">
+	 		<li id="li_restart" class="nav-item" onclick=";"><img src="..//images/egovframework/menu/icon_top_refresh.png">
 	 		<p id="refresh">재실행</p></li>
-	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_detail.png" onclick="info();">
+	 		<li class="nav-item" onclick="info();"><img src="..//images/egovframework/menu/icon_top_detail.png">
 	 		<p id="detail">속성보기</p></li>
-	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_preview.png" onclick="fn_preview();">
+	 		<li class="nav-item" onclick="fn_preview();"><img src="..//images/egovframework/menu/icon_top_preview.png">
 	 		<p id="preview">미리보기</p></li>
 	 			 		
 
