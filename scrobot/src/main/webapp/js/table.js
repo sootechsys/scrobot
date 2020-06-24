@@ -1099,22 +1099,38 @@ var voTableArray = tableEdit.startInfo();
 					else if(checker.indexOf("c") != -1){
 						var vsCheck = checker.replace("c","");
 						var vnCNum = parseInt(vsCheck);
+						if(j + vnCNum - 1 >= voTableArray[4]){
 							if(vnCNum == 2){
 								voTotal[i][j] = "1";
 								voTotal[i][j+1] = "1";
 							}
 							else if(vnCNum != 2){
-								minusVnCNum = vnCNum - 1;
+								var minusVnCNum = vnCNum - 1;
 								voTotal[i][j] = "c"+minusVnCNum;
-								for(var k=j; k<j+vnCNum; k++){
+								for(var k=j; k<j+vnCNum; k++){ // 전부 1로 변환
 								if(k == j){
 									continue;
-								}
+									}
 								else{
-									voTotal[i][k]="1";
+									voTotal[i][k]="c0";
+									}
 								}
+								
+								/*for(var k=j; k<j+minusVnCNum; k++){
+									if(k==j){
+										continue;
+									}
+									else{
+										voTotal[i][k] = "c0";
+									}
+								}*/
 							}
+							break;
 						}
+						else{
+							continue;
+						}
+							
 					
 					}
 					else if(checker.indexOf("1") != -1){
@@ -1124,12 +1140,12 @@ var voTableArray = tableEdit.startInfo();
 			}
 			else if(vsChecker.indexOf("c") != -1){//
 				var checker = vsChecker.replace("c","");
-				var vnCNum = parseInt(check);
+				var vnCNum = parseInt(checker);
 				if(vnCNum == 2){
 					voTotal[i][voTableArray[4]] = "1";
 					voTotal[i][voTableArray[4]+1] = "1";
 				}
-				else if(vmCNum != 2){
+				else if(vnCNum != 2){
 					var minVnCNum = vnCNum - 1;
 					voTotal[i][voTableArray[4]] = "c"+minVnCNum;
 					
