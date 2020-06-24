@@ -14,17 +14,15 @@
 <style>
 /* 사이드바 스타일      */
 .sidenav {
-	height: 100%;
-	position: fixed;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	margin-top: 50px;
-	background-color: #ccb68d;
-	overflow-x: hidden;
-	transition: 0.5s ease-in-out;
-	width: 320px;
-	/* padding-top: 60px; */
+height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    margin-top: 0px;
+    background-color: #ccb68d;
+    overflow-x: hidden;
+    transition: 0.5s ease-in-out;
 }
 
 .sidenav tr {
@@ -37,10 +35,10 @@
 }
 
 .sidenav table {
-	/* margin:auto; */
-	width: 100%;
+    /* margin: auto; */
+    width: 100%;
+    margin-top: 250px;
 }
-
 .sidenav table thead tr th {
 	margin: auto;
 }
@@ -60,15 +58,19 @@
 
 /* 미디어쿼리 적용 */
 
-/* #propertyTable{
-	width:100%; 
-	border: 1px solid #444444; 
-	align: center;
-	border-collapse: collapse;
-	background-color: white;					
-} */
+ #propertyTable{
+	width: 100%;
+    border: 1px solid #444444;
+    align: center;
+    border-collapse: collapse;
+    background-color: white;
+    margin-top: 70px;
+}				
 #propertyTable tr {
-	border: 1px solid #444444;
+	width: 100%;
+    border: 1px solid #444444;
+  	border-collapse: collapse;
+    background-color: white;
 }
 
 
@@ -700,18 +702,9 @@
 						vsTdFocus.parent().parent().parent().parent().remove();
 						fn_saveClone();
 					}
-
-					var voFocusInfo = $("[focus=true]");
-					var vsCompoDvs = voFocusInfo.attr("compoDvs");
-					
-					if(["inputBox","button","selectBox","span_title","span_label"].indexOf(vsCompoDvs) != -1){
-						voFocusInfo.parent().remove();
-						fn_saveClone();
-					} else{
-						$("[focus=true]").remove();
-						fn_saveClone();
-					}
 				}
+
+
 				
 				
 			}
@@ -778,9 +771,7 @@
 		
  		fn_draggable();
  		
-		if($(e.target).attr("tableFocus") == "true"){
-			onclick.focus(shiftHold,e);
-		}
+		onclick.focus(shiftHold,e);
 		
 	});
  	
@@ -1193,54 +1184,57 @@
 				<col width="100" />
 			</colgroup>
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="divCreation();">DIV</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="titleCreation();">Title</td>
-				<td class="tbtd_content" style="cursor: pointer"
+				<td style="cursor: pointer"	onclick="divCreation();">
+				<img src="..//images/egovframework/object/icon_div.png"></td>
+				<td style="cursor: pointer" onclick="titleCreation();">
+				<img src="..//images/egovframework/object/icon_title.png"></td>
+				<td style="cursor: pointer"
 					onclick="labelCreation();">Label</td>
+				
 				
 			</tr>
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="inputCreation();">Text</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="selectCreation();">Select</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="buttonCreation();">Button</td>
+				<td style="cursor: pointer" onclick="inputCreation();">
+				<img src="..//images/egovframework/object/icon_input.png"></td>
+				<td style="cursor: pointer" onclick="selectCreation();">
+				<img src="..//images/egovframework/object/icon_select.png"></td>
+				<td style="cursor: pointer"	onclick="buttonCreation();">
+				<img src="..//images/egovframework/object/icon_button.png"></td>
+				
 			</tr>
 
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="tableCreation();">TABLE</td>
+				<td style="cursor: pointer"	onclick="tableCreation();">
+				<img src="..//images/egovframework/object/icon_table.png"></td>
 			</tr>
 			<tr>
-			   
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableColAddUp();">위로 행 추가</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableColAddDown();">아래 행 추가</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_deleter(1);">행삭제</td>
+			    <td style="cursor: pointer"onclick="fn_tableRowAddLeft();">
+				<img src="..//images/egovframework/object/icon_col_left.png"></td>
+				<td style="cursor: pointer"	onclick="fn_tableRowAddRight();">
+				<img src="..//images/egovframework/object/icon_col_right.png"></td>
+				
 			</tr>
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableRowAddLeft();">좌측 열 추가</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableRowAddRight();">우측 열 추가</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_deleter(2);">열삭제</td>	
+				<td style="cursor: pointer" onclick="fn_tableColAddUp();">
+				<img src="..//images/egovframework/object/icon_row_up.png"></td>
+				<td style="cursor: pointer"	onclick="fn_tableColAddDown();">
+				<img src="..//images/egovframework/object/icon_row_down.png""></td>
 			</tr>
 			<tr>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableMerge();">병합</td>
-				<td class="tbtd_content" style="cursor: pointer"
-					onclick="fn_tableDivision();">분할</td>
-
+				<td style="cursor: pointer"	onclick="fn_deleter(1);">
+				<img src="..//images/egovframework/object/icon_row_del.png"></td>
+				<td style="cursor: pointer"	onclick="fn_deleter(2);">
+				<img src="..//images/egovframework/object/icon_col_del.png"></td>
+			</tr>
+			<tr>
+				<td style="cursor: pointer"	onclick="fn_tableMerge();">
+				<img src="..//images/egovframework/object/icon_cell_with.png"></td>
+				<td style="cursor: pointer"	onclick="fn_tableDivision();">
+				<img src="..//images/egovframework/object/icon_cell_division.png"></td>
 			</tr>
 		</table>
 		<!-- </div> -->
-		<table id="propertyTable"">
+		<table id="propertyTable">
 			<thead>
 			</thead>
 			<tbody>

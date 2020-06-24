@@ -10,32 +10,40 @@
 <title>scrobot_공통헤더</title>
 <script src="https://code.jquery.com/jquery-latest.js"></script> 
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>" />
+<%-- <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrBase.css'/>" />
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrLayout.css'/>" />
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>" /> --%>
 <style>
 	
 	.nav-container {
-		display:flex;
-		flex-direction:row;
-		width:100%;
-		height:50px;
-		margin:0;
-		padding:0;
-		background-color:lightsky;
-		list-style-type:none;
-		background-color:#ccb68d;
-		
+	display: flex;
+    flex-direction: row;
+    width: 75%;
+    height: 137px;
+    padding: 0px;
+    margin-left: 157px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    list-style-type: none;
+    background-color: #ccb68d;
+    margin-top: 0px;
 	}
 	
 	#nav{
-		z-index:1;
-		position:fixed;
-		width:100%
+		z-index: 1;
+    position: fixed;
+    width: 80%;
+    margin-left: 107px;
+    height: auto;
 	}
 	
 	.nav-item {
-		padding:15px;
-		color:black;
-		font-size:11pt;
-		font-weight: bold;
+	padding-top: 43px;
+    color: black;
+    padding-left: 40px;
+    font-size: 11pt;
+    padding-right: 0px;
+	    
 	}
 	
 	.nav-item:hover {
@@ -47,6 +55,40 @@
 		text-decoration:none;
 		color:white;
 		
+	}
+	
+	
+	
+	#new{
+   		margin-top: 15px;
+	}
+	
+	#open{
+    	margin-top: 20px;
+	}
+	
+	#save{
+		margin-top: 17px;
+	}
+	
+	#resave{
+   		margin-top: 11px;
+	}
+	
+	#back{
+	    margin-top: 10px;
+	}
+	
+	#refresh{
+	    margin-top: 12px;
+	}
+	
+	#detail{
+		margin-top: 10px;
+	}
+	
+	#preview{
+		margin-top: 15px;
 	}
 	
 </style>
@@ -352,17 +394,26 @@
 </head>
 
 <body>
-	 <div id="nav">
+	 <div id="nav"> <!-- 크기조절하여 글자 라인 맞추기부터 실시 -->
 	 	<ul class="nav-container">
-	 		<li class="nav-item" onclick="fn_sourceReset();">새로만들기</li>
-	 		<li class="nav-item" onclick="fn_saveListCall();">불러오기</li>
-	 		<li class="nav-item" onclick="fn_createSource();">저장</li>
-	 		<li class="nav-item" onclick="fn_diffrentNmSave();">다른이름으로저장</li>
-	 		<li id="li_rollback" class="nav-item" onclick=";" style="color:grey;">되돌리기</li>
-	 		<li id="li_restart" class="nav-item" onclick=";" style="color:grey;">다시실행</li>
-	 		<li class="nav-item" onclick="info();">속성보기</li>
-	 		<li class="nav-item" onclick="fn_preview();">미리보기</li>
-	 		
+	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_new.png" onclick="fn_sourceReset();">
+	 		<p id="new">새로만들기</p></li>
+	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_open.png" onclick="fn_saveListCall();">
+	 		<p id="open">불러오기</p></li>
+	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_save.png" onclick="fn_createSource();">
+	 		<p id="save">저장</p></li>
+			<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_resave.png" onclick="fn_diffrentNmSave();">
+			<p id="resave">다른이름저장</p></li>
+	 		<li id="li_rollback" class="nav-item"><img src="..//images/egovframework/menu/icon_top_back.png" onclick=";">
+	 		<p id="back">되돌리기</p></li>
+	 		<li id="li_restart" class="nav-item"><img src="..//images/egovframework/menu/icon_top_refresh.png" onclick=";">
+	 		<p id="refresh">재실행</p></li>
+	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_detail.png" onclick="info();">
+	 		<p id="detail">속성보기</p></li>
+	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_preview.png" onclick="fn_preview();">
+	 		<p id="preview">미리보기</p></li>
+	 			 		
+
 	 	</ul>
 	 </div>
 </body>
