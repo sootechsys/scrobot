@@ -38,12 +38,19 @@
 	}
 	
 	.nav-item {
-	padding-top: 43px;
+	padding-top: 0px;
     color: black;
-    padding-left: 40px;
+    padding-left: 27px;
     font-size: 11pt;
-    padding-right: 0px;
+    padding-right: 27px;
+    margin-bottom: 34px;
+    border-left: 2px solid #efefef;
+    margin-top: 36px;
 	    
+	}
+	
+	#firstNav{
+		border-left: none;
 	}
 	
 	.nav-item:hover {
@@ -54,7 +61,7 @@
 		text-align:center;
 		text-decoration:none;
 		color:white;
-		
+		margin-bottom: 34px;
 	}
 	
 	
@@ -396,7 +403,7 @@
 <body>
 	 <div id="nav"> <!-- 크기조절하여 글자 라인 맞추기부터 실시 -->
 	 	<ul class="nav-container">
-	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_new.png" onclick="fn_sourceReset();">
+	 		<li id="firstNav" class="nav-item"><img src="..//images/egovframework/menu/icon_top_new.png" onclick="fn_sourceReset();">
 	 		<p id="new">새로만들기</p></li>
 	 		<li class="nav-item"><img src="..//images/egovframework/menu/icon_top_open.png" onclick="fn_saveListCall();">
 	 		<p id="open">불러오기</p></li>

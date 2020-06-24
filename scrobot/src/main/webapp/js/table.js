@@ -868,6 +868,7 @@ tableEdit.addRight = function(){
 
 tableEdit.deleteNode = function(param){
 	
+	debugger;
 	
 	var voTableArray = tableEdit.startInfo();
 		
@@ -1103,8 +1104,8 @@ var voTableArray = tableEdit.startInfo();
 								voTotal[i][j+1] = "1";
 							}
 							else if(vnCNum != 2){
-								vnCNum -= 1;
-								voTotal[i][j] = "c"+vnCNum;
+								minusVnCNum = vnCNum - 1;
+								voTotal[i][j] = "c"+minusVnCNum;
 								for(var k=j; k<j+vnCNum; k++){
 								if(k == j){
 									continue;
@@ -1162,6 +1163,8 @@ var voTableArray = tableEdit.startInfo();
 }
 
 tableEdit.colSpanDelete = function(check , focusCol){
+	
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -1295,7 +1298,7 @@ tableEdit.colSpanDelete = function(check , focusCol){
 		
 		
 		
-		tableEdit.Vector(voTableArray[0], voTotal);
+		/*tableEdit.Vector(voTableArray[0], voTotal);
 		
 		for(var i=0; i<voTableArray[1]; i++){
 			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
@@ -1303,7 +1306,7 @@ tableEdit.colSpanDelete = function(check , focusCol){
 		
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
-		
+		*/
 	}
 	
 	
@@ -1322,16 +1325,16 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 	voTotal = tableEdit.SpanInfo(voTableArray);	
 	
 	if(check == 1){ // 행
-		/////////////////////
 		
 		
 		
-		tableEdit.Vector(voTableArray[0], voTotal);
+		
+/*		tableEdit.Vector(voTableArray[0], voTotal);
 		
 		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
 		
 		tableEdit.trReset(voTableArray[0]);
-		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);*/
 	}
 	else if(check == 2){ // 열
 		
@@ -1430,7 +1433,10 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 
 
 tableEdit.SpanDelete = function(check, focusCol, focusRow){
-	////////////
+		/*
+		 * 2차 구현 예정
+		 * 
+		 * */
 }
 
 
