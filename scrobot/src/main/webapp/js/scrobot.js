@@ -11,7 +11,7 @@ robot = {};
  * btn2 : 버튼2 name(String)
  * callBack : callback함수(String)
  * */
-robot.prompt = function(msg, ele, btn1, btn2, callBack){
+robot.prompt = function(header, msg, ele, btn1, btn2, callBack){
 	
 	if(typeof(ele) != "object"){
 		robot.alert("프롬프트 메소드 에러","");
@@ -32,7 +32,12 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 		btn2 = "취소";
 	}
 	
-	vsSource += "<input type=\"button\" id=\"btn_promptSave\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.promptOnclick(";
+	if(header == null || header == ""){
+		header = "prompt";
+	}
+	
+	
+	vsSource += "<input type=\"button\" class=\"btn_retrieve\" id=\"btn_promptSave\" value=\""+btn1+"\" onclick=\"robot.promptOnclick(";
 	
 	if(typeof(ele) == "object"){
 		vsSource += "[";
@@ -52,11 +57,11 @@ robot.prompt = function(msg, ele, btn1, btn2, callBack){
 	}
 	
 	vsSource += "," + callBack+")\"></input>";
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('',"+callBack+")\"></input>";
+	vsSource += "<input type=\"button\" class=\"btn_retrieve\" value=\""+btn2+"\" onclick=\"robot.closePop('',"+callBack+")\"></input>";
 	
-	var info = {"header" : "prompt",
+	var info = {"header" : header,
 			    "callBack" : callBack};
-	robot.openPop(info, vsSource,"tag");
+	robot.openPop(info, vsSource,"tag","prompt");
 }
 
 robot.promptOnclick = function(ele, callBack){
@@ -103,7 +108,7 @@ robot.alert = function(msg, btn, param, callBack){
 		btn = "확인";
 	}
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn+"\" onclick=\"robot.closePop(";
+	vsSource += "<input type=\"button\" class=\"btn_retrieve\" value=\""+btn+"\" onclick=\"robot.closePop(";
 	
 	if(typeof(param) == "object"){
 		vsSource += "{";
@@ -153,7 +158,7 @@ robot.confirm = function(msg, btn1, btn2, param, callBack){
 	}
 	
 	
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn1+"\" onclick=\"robot.closePop(";
+	vsSource += "<input type=\"button\" class=\"btn_retrieve\" value=\""+btn1+"\" onclick=\"robot.closePop(";
 	
 	if(typeof(param) == "object"){
 		vsSource += "{";
@@ -178,7 +183,7 @@ robot.confirm = function(msg, btn1, btn2, param, callBack){
 	
 	
 	vsSource += ","+callBack+");\"></input>";
-	vsSource += "<input type=\"button\" style=\"width:30px; height:20px;\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
+	vsSource += "<input type=\"button\" class=\"btn_retrieve\" value=\""+btn2+"\" onclick=\"robot.closePop('','');\"></input>";
 	
 	var info = {"header" : "prompt",
 		        "callBack" : callBack};
@@ -193,7 +198,7 @@ robot.confirm = function(msg, btn1, btn2, param, callBack){
  * urlDvs : jsp를 호출할지 tag를 직접입력할지 여부(String)
  *        - tag경우에 append, url인경우 load
  * */
-robot.openPop = function(info, url, urlDvs){
+robot.openPop = function(info, url, urlDvs,tagDvs){
 
 	var header = info.header;
 	var width = info.width;
@@ -251,9 +256,9 @@ robot.openPop = function(info, url, urlDvs){
 	
 	
 	info += "    <div id=\"div_pop_content"+div_popCount+"\" class=\"div_pop_content\" style=\"width:"+width+"; height:"+height+"\">";
-	info += "      <div style=\"height:30px; background-color:#ccb68d; text-align:left; \">";
-	info += "      <span style=\"font-size:15pt; color:black; font-weight:bold; height:30px;\">"+header+"</span>";
-	info += "      <input type=\"button\" value=\"X\" style=\"float:right; background-color:#ccb68d; height:100%; width:30px; font-size:15pt; font-weight:bold;\"";
+	info += "      <div style=\"height:40px; background: linear-gradient( to bottom, #dce1e7, #c7cad1 ); text-align:left; \">";
+	info += "      <span class=\"span_content\" style=\"height:30px; margin:5px 0px 0px 5px; display:inline-block;\">"+header+"</span>";
+	info += "      <input type=\"button\" value=\"X\" style=\"float:right; background: linear-gradient( to bottom, #dce1e7, #c7cad1 ); height:100%; width:40px; font-size:15pt; font-weight:bold;\"";
 	info += "      onclick=\"robot.closePop('',"+vsCallBack+");\">";
 	info += "      </div>";
 	info += "      <div id=\"pop_content"+div_popCount+"\" class=\"pop_content\">";
@@ -267,7 +272,7 @@ robot.openPop = function(info, url, urlDvs){
 	
 	if(urlDvs == "tag"){
 		$("#pop_content"+div_popCount).append(url);
-		if(header == "prompt"){
+		if(tagDvs == "prompt"){
 			$(".prompt_input").eq(0).focus();
 		}
 	} else {

@@ -5,26 +5,8 @@
 <head>
 
 <style>
-.div_grid{
-	float:left;
-	width:300px;
-	height:300px;
-	text-align: left;
-}
-.div_detailGrid{
-	float:left;
-	width:300px;
-	height:300px;
-	text-align: left;
-}
-.div_retrieve_result{
-	margin-top:50px;
-}
 
-tr[focus=true]{
-	border: 2px solid black !important;
-	background: skyblue;
-}
+
 
 </style>
 
@@ -54,6 +36,10 @@ fn_retrieveWrk = function(){
 		type : "POST",
 		data : vjRetrieveInfo,
 		success : function(data) {
+			
+			$(".div_retrieve_result").css("display","block")
+			$(".div_btnArea").css("display","block")
+			
 			voViewList = {};
 			voViewHistryList = {};
 			voViewList = data.resultMap.wrkList;
@@ -188,8 +174,8 @@ fn_btnSaveClick = function(){
  	<input type="text" id="ibx_retrieveWrktype"></input>
  	<input id="" class="btn_retrieve" type="button" value="조회" onclick="fn_retrieveWrk()"></input>
  </div>
- <div class="div_retrieve_result">
- 	<div class="div_grid">
+ <div class="div_retrieve_result" style="display:none">
+ 	<div class="div_grid LblockListTable LblockPageSubtitle">
  		<h2> 화면목록</h2>
  		<table id="viewList">
  			<colgroup>
@@ -205,7 +191,7 @@ fn_btnSaveClick = function(){
  		</table>
  	</div>
  	
- 	<div class="div_detailGrid">
+ 	<div class="div_detailGrid LblockListTable LblockPageSubtitle">
  		<h2> 화면변경 이력목록</h2>
  		<table id="viewChangeHistryList">
  			<colgroup>
@@ -223,7 +209,7 @@ fn_btnSaveClick = function(){
  	</div>
  	
  </div>
-  <div class="div_btnArea">
+  <div class="div_btnArea" style="display:none">
   	<input id="" class="btn_retrieve" type="button" value="적용" onclick="fn_btnSaveClick()"></input>
   	<input id="" class="btn_retrieve" type="button" value="취소" onclick="robot.closePop()"></input>
   </div>

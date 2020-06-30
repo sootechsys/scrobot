@@ -456,8 +456,9 @@ tableEdit.addUp = function(){
 	var voTableArray2 = tableEdit.startInfo();
 	
 	tableEdit.Vector(voTableArray2[0],voTotal);
-
+	
 }
+fn_saveClone();
 }
 
 
@@ -585,6 +586,7 @@ tableEdit.addDown = function(){
 	tableEdit.Vector(voTableArray2[0],voTotal);
 
 	}
+		fn_saveClone();
 }
 
 
@@ -722,6 +724,7 @@ tableEdit.addLeft = function(){
 	}
 	
 	tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+	fn_saveClone();
 }
 
 
@@ -862,6 +865,7 @@ tableEdit.addRight = function(){
 		}
 		
 		tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+		fn_saveClone();
 }
 
 
@@ -1172,6 +1176,7 @@ var voTableArray = tableEdit.startInfo();
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
 	}
+	fn_saveClone();
 }
 
 tableEdit.colSpanDelete = function(check , FocusCol){
@@ -1503,11 +1508,13 @@ tableEdit.colSpanDelete = function(check , FocusCol){
 		
 	}
 	
-	
+	fn_saveClone();
 }
 
 
 tableEdit.rowSpanDelete = function(check, focusRow){
+
+	debugger; 
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -1520,15 +1527,116 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 	
 	if(check == 1){ // 행
 		
+		/*
+		 * rowSpan 만큼 td 전부 검사해서 col / row 변동사항 입력
+		 * */
 		
+		for(var i=voTableArray[3]; i<voTableArray[3]+focusRow; i++){ // focus rowSpan 전부 
+			for(var j=0; j<voTableArray[2]; j++){ // td 전체
+				
+				var check = voTotal[i][j];
+				
+				if(check.indexOf(":") != -1){
+					
+				}
+				else if(check.indexOf("r0") != -1){ // r0을 보게되면 위에서 아래로 훑어서 확인
+					
+					for(var m=0; m<voTableArray[1]; m++){ // 전체 tr 확인
+						
+						var inCheck = voTotal[m][j];
+						
+						if(inCheck.indexOf(":") != -1){
+							
+						}
+						else if(inCheck.indexOf("r0") != -1){
+							continue;
+						}
+						else if(inCheck.indexOf("c0") != -1){
+							continue;						
+						}
+						else if(inCheck.indexOf("r") != -1){
+							var vsRNum = inCheck.replace("r","");
+							var vnRNum = parseInt(vsRNum);
+							var count = 0;
+							if(m+vnRNum-1 > i){
+								continue;
+							}
+							else if(m+vnRNum-1 <= i){ // rowSpan 만큼 삭제하는 범위에 들어오면
+								for(var n=m; n<m+vnRNum; n++){ // m에서 vnRNum 만큼 반복
+									if(n >= i){
+										count += 1;  
+										voTotal[n][j] = "d";
+									}
+									else if(n < i){
+										continue;
+									}
+								}
+								
+							var minusRNum = vnRNum - count;
+							
+							if(minusRNum == 1){
+								voTotal[m][j] = "1";
+							}
+							else if(minusRNum >= 2){
+								voTotal[m][j] = "r"+minusRNum;
+							}
+								
+							}
+							
+						}
+						else if(inCheck.indexOf("c") != -1){
+							continue;
+						}
+						else if(inCheck.indexOf("1") != -1){
+							continue;
+						}
+						else if(inCheck.indexOf("d") != -1){
+							continue;
+						}
+						
+					}
+				}
+				else if(check.indexOf("c0") != -1){//
+					voTotal[i][j]="d";
+				}
+				else if(check.indexOf("r") != -1){//
+					var vsRNum = check.replace("r","");
+					var vnRNum = parseInt(vsRNum);
+					
+					for(var m=i; m<i+vnRNum; m++){
+						voTotal[m][j]="d";
+					}
+					
+				}
+				else if(check.indexOf("c") != -1){//
+					var vsCNum = check.replace("c","");		
+					var vnCNum = parseInt(vsCNum);
+					for(var m=j; m<j+vnCNum; m++){
+						voTotal[i][m]="d";
+					}
+				}
+				else if(check.indexOf("1") != -1){//
+					voTotal[i][j] = "d";
+				}
+				else if(check.indexOf("d") != -1){//
+					continue;
+				}
+				
+			}
+		}
 		
+		tableEdit.Vector(voTableArray[0], voTotal);
 		
-/*		tableEdit.Vector(voTableArray[0], voTotal);
-		
-		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
+		for(var i=voTableArray[3]; i<voTableArray[3]+focusRow; i++){
+			for(var j=0; j<voTableArray[2]; j++){
+				$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+j+"]").remove();
+			}
+		}
 		
 		tableEdit.trReset(voTableArray[0]);
-		tableEdit.tdReset(voTableArray[0],voTableArray[1]);*/
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		fn_saveClone();
+		
 	}
 	else if(check == 2){ // 열
 		
@@ -1621,16 +1729,17 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 		
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		fn_saveClone();
 	}
 
 }
 
 
 tableEdit.SpanDelete = function(check, focusCol, focusRow){
-		/*
-		 * 2차 구현 예정
-		 * 
-		 * */
+		
+	
+	
+	
 }
 
 

@@ -421,10 +421,10 @@ body#LblockFooter {
 
 /* Block : pageTitle
 ---------------------------------------------------------*/
-#LblockPageTitle {
+.LblockPageTitle {
 	background:url(../images/leftTitle_bg.gif) repeat-x left bottom;
 }
-#LblockPageTitle h1 {
+.LblockPageTitle h1 {
 	font-size:1.1em;
 	padding:1px 0 0 5px;
 	color:#4e5ca3;
@@ -436,7 +436,7 @@ body#LblockFooter {
 	color:#788be7;
 	font-size:1em;
 	font-weight:bold;
-	padding:1px 0px 0px 21px;
+	padding:1px 0px 0px 10px;
 	background:url(../images/leftMenu_blt.gif) no-repeat 7px 50%;
 }
 

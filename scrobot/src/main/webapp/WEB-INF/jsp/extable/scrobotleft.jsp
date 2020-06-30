@@ -12,65 +12,134 @@
 
 
 <style>
+
+
+#mysidenav img:hover{
+	cursor:pointer;
+}
+
 /* 사이드바 스타일      */
 .sidenav {
-height: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    margin-top: 0px;
-    background-color: #ccb68d;
-    overflow-x: hidden;
-    transition: 0.5s ease-in-out;
+	height: 100%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #dee5f7;
+	overflow-x: hidden;
+	transition: 0.5s ease-in-out;
+	width: 226px;
 }
 
-.sidenav tr {
-	padding: 10px 10px 10px 10px;
-	text-decoration: none;
-	/* font-size: 25px; */
-	color: #fff;
-	display: block;
-	transition: 0.2s ease-in-out;
+#div_mainImg{
+	position:relative;
+	margin-top:50px;
 }
 
-.sidenav table {
-    /* margin: auto; */
-    width: 100%;
-    margin-top: 250px;
-}
-.sidenav table thead tr th {
-	margin: auto;
+#div_mainImg img:hover{
+	cursor:default;
 }
 
-.sidenav tbody {
-	width: 80%;
+#div_compoTable{
+	text-align:center;
 }
 
-.sidenav td {
-	width: 50px;
-	height: 20px;
+#compoTable{
+	display: inline-block;
+	position:relative;
+	margin-top:50px;
 }
 
 .JCLRgrip {
 	cursor: ew-resize;
 }
 
-/* 미디어쿼리 적용 */
 
- #propertyTable{
-	width: 100%;
-    border: 1px solid #444444;
-    align: center;
-    border-collapse: collapse;
-    background-color: white;
-    margin-top: 70px;
-}				
-#propertyTable tr {
-	width: 100%;
-    border: 1px solid #444444;
-  	border-collapse: collapse;
-    background-color: white;
+#compoTable tr{
+	height :50px;
+}
+
+#compoTable td{
+	width: 80px;
+}
+
+#div_cellTable{
+	position:relative;
+	margin-top:10px;
+	text-align: center;
+}
+
+#cellTable{
+	display: inline-block;
+	position:relative;
+	border-collapse: collapse;
+}
+
+#cellTable tr{
+	height:45px;
+}
+
+#cellTable td:not(:last-child){
+	border-right:1px solid grey;
+}
+
+#cellTable tr:not(:last-child){
+	border-bottom:1px solid grey;
+}
+
+
+
+
+#div_propertyTable{
+	position:relative;
+	margin-top:100px;
+	background-color: #bbc2d5;
+	text-align: left;
+	height:180px;
+	
+}
+
+#div_propertyTable h4{
+	position:relative;
+	padding-top:10px;
+}
+
+
+#propertyTable{
+	display:block;
+	width:90%; 
+	align: center;
+	border-collapse: collapse;
+	background-color: white;
+	margin : 10px 10px 5px 10px;
+	overflow:auto;
+}
+
+#propertyTable tr:not(:nth-child(6)){
+	border-bottom:1px solid black;
+}
+
+
+#propertyTable tr td:first-child{
+	border-right:1px solid black;
+}
+
+#propertyTable tr td{
+	padding-left:5px;
+}
+
+
+#propertyTable input{
+	border:none;
+}
+
+.ibx_property{
+	width:125px;
+	font-size:1em;
+}
+
+#btn_infoUpdate{
+	margin-right:10px;
 }
 
 
@@ -169,7 +238,7 @@ height: 100%;
    * accordion 관련 함수
    **************************************/
     fn_draggable = function(){
-	 
+    	
 	 
 	 
 	 if($( "[compoDvs=div_content]" ).length != 0){
@@ -192,7 +261,7 @@ height: 100%;
 	 
 	 if($( ".div_table" ).length != 0){
 		 $( ".div_table" ).draggable({ cursor: "move",
-				grid: [ 10, 10 ],
+				/* grid: [ 10, 10 ], */
 				cancel: "table",
 				stop: function( event, ui ) {
 					  fn_creationTableResize(ui);
@@ -333,8 +402,8 @@ height: 100%;
 	    				$(ui.helper).css("top",(vnTop+10)+"px");
 	    			},
 	    			stop: function( event, ui ) {
-	    				ui.element.width(ui.element.width()+30)
-	    				ui.element.height(ui.element.height()+30)
+	    				ui.element.width(ui.element.width()+20)
+	    				ui.element.height(ui.element.height()+20)
 	    			
 	    				ui.element.children().eq(0).width(ui.helper.width()-3);
 	    				ui.element.children().eq(0).height(ui.helper.height()-2);
@@ -465,7 +534,7 @@ height: 100%;
 	         	
 	         	var vsDivYn = "N";
 	        	var vnDivRow = 0;
-	        	
+	        	debugger;
 	            if(vsParentClass != null){
 	            	// 출발한 곳이 테이블이라면
 	            	if(ui.draggable.parent().prop("tagName") == "TD"){
@@ -475,9 +544,9 @@ height: 100%;
 		            	// 출발한 div의 폭
 		            	var vnOldParentLeft = Number(ui.draggable.parent().offset().left);
 		            	vnCurrTop += vnOldParentTop;
-		            	vnCurrTop -= 76;
+		            	vnCurrTop -= 132;
 		            	vnCurrLeft += vnOldParentLeft;
-		            	vnCurrLeft -= 337;
+		            	vnCurrLeft -= 248;
 	            	}
 	            	
 	            	// 출발한 곳이 안이라면
@@ -499,8 +568,8 @@ height: 100%;
 	                		var width = Number(voContent.eq(i).css("width").replace("px",""));
 	                		
 	                		// 도착한 곳이 div 안이라면(밖->안)
-	    	                if(vnCurrTop < top+height && vnCurrTop > top-22 &&
-	    	                   vnCurrLeft < left+width && vnCurrLeft > left-22){
+	    	                if(vnCurrTop < top+height && vnCurrTop > top &&
+	    	                   vnCurrLeft < left+width && vnCurrLeft > left){
 	    	                	
 	    	                	vsDivYn = "Y";
 	    	                }
@@ -524,8 +593,8 @@ height: 100%;
 	                		var width = Number(voContent.eq(i).css("width").replace("px",""));
 	                		
 	                		// 도착한 곳이 div 안이라면(밖->안)
-	    	                if(vnCurrTop < top+height && vnCurrTop > top &&
-	    	                   vnCurrLeft < left+width && vnCurrLeft > left){
+	    	                if(vnCurrTop <= top+height && vnCurrTop >= top &&
+	    	                   vnCurrLeft <= left+width && vnCurrLeft >= left){
 	    	                	
 	    	                	vsDivYn = "Y";
 	    	                }
@@ -557,7 +626,7 @@ height: 100%;
 	        			var vnNewParentLeft = Number(voContent.eq(vnDivRow).css("left").replace("px",""));
 	        			
 	        			ui.draggable.css("top",(vnCurrTop-vnNewParentTop-31)+"px")
-            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-31)+"px")
+            			ui.draggable.css("left",(vnCurrLeft-vnNewParentLeft-21)+"px")
             			
             			
             			voContent.eq(vnDivRow).append(ui.draggable);
@@ -586,8 +655,8 @@ height: 100%;
 	            	// 도착한 곳이 div 밖이라면(안->밖)
 	            	} else{
 	            		
-	            		ui.draggable.css("top",(vnCurrTop+31)+"px")
-	            		ui.draggable.css("left",(vnCurrLeft+31)+"px")
+	            		ui.draggable.css("top",(vnCurrTop+33)+"px")
+	            		ui.draggable.css("left",(vnCurrLeft+23)+"px")
 	            		$( this ).append(ui.draggable);
 	            	}
 	            	
@@ -662,7 +731,7 @@ height: 100%;
 	
 	/* 테이블그리기 */
 	function tableCreation() {
-		robot.prompt("행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
+		robot.prompt("테이블생성", "행과 열의 갯수를 지정하십시오.", ["행","열"],"생성","취소","fn_tableCreationCallBack");
 	}
 	
 	/* 테이블그리기 CallBack */
@@ -694,17 +763,24 @@ height: 100%;
 			}
 		
 			else if(e.keyCode == 46){ // delete
-				if($(document.activeElement).attr("id") == null){
-					var vsTdFocus = $("td[tableFocus=true]");
-					var vnTdFocusLengh = vsTdFocus.length;
-					
-					if(vnTdFocusLengh != 0){
-						vsTdFocus.parent().parent().parent().parent().remove();
-						fn_saveClone();
-					}
+			
+				var vsTdFocus = $("td[tableFocus=true]");
+				var vnTdFocusLengh = vsTdFocus.length;
+				var voFocusInfo = $("[focus=true]");
+				var vsCompoDvs = voFocusInfo.attr("compoDvs");
+				
+				if(vnTdFocusLengh != 0 && $(document.activeElement).attr("class") != "ibx_property"){
+					vsTdFocus.parent().parent().parent().parent().remove();
+					fn_saveClone();
 				}
-
-
+					
+				if(["inputBox","button","selectBox","span_title","span_label"].indexOf(vsCompoDvs) != -1){
+					voFocusInfo.parent().remove();
+					fn_saveClone();
+				} else{
+					$("[focus=true]").remove();
+					fn_saveClone();
+				}
 				
 				
 			}
@@ -768,7 +844,9 @@ height: 100%;
 	};
 	
  	$(document).click(function(e){
-		
+		if($(".div_pop span").text() == "Preview"){
+			return false;
+		}
  		fn_draggable();
  		
 		onclick.focus(shiftHold,e);
@@ -848,26 +926,27 @@ height: 100%;
 		// 기능구분되면 작성
 	}
 	
-	
 	fn_titleOnDblClick = function(param){ // title
-		
-		robot.prompt("타이틀을 입력하시오",["타이틀"],"","","fn_titleOnDblClickCallBack");
+		$(param).attr("focus","true");
+		robot.getAttr(param);
+		robot.prompt("타이틀입력","타이틀을 입력하시오",["타이틀"],"","","fn_titleOnDblClickCallBack");
 	
 		voPromptObject = param;
 			
 	}
 	
 	fn_labelOnDblClick = function(param){
-		
-		robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_titleOnDblClickCallBack");
+		$(param).attr("focus","true");
+		robot.getAttr(param);
+		robot.prompt("라벨입력","라벨을 입력하시오",["라벨"],"","","fn_titleOnDblClickCallBack");
 	
 		voPromptObject = param;
 		
-		vsLabelYn = "Y"
+		vsLabelYn = "Y";
 			
 	}
 	
-	fn_titleOnDblClickCallBack = function(param){
+	fn_titleOnDblClickCallBack = function(param){debugger;
 		
 		if(param == ""){
 			voPromptObject = "";
@@ -893,7 +972,7 @@ height: 100%;
     fn_tdDbClick = function(param) {
     	
     	if(vsLabelYn != "Y"){
-    		robot.prompt("라벨을 입력하시오",["라벨"],"","","fn_tdDbClickCallBack");
+    		robot.prompt("라벨입력","라벨을 입력하시오",["라벨"],"","","fn_tdDbClickCallBack");
         	
         	voPromptObject = param;
     	}
@@ -922,7 +1001,7 @@ height: 100%;
 	
 	
 	fn_buttonOnDblClick = function(param){ //button
-		robot.prompt("버튼명을 입력하시오",["버튼명"],"","","fn_buttonOnDblClickCallBack");
+		robot.prompt("버튼명입력","버튼명을 입력하시오",["버튼명"],"","","fn_buttonOnDblClickCallBack");
 	
 		voPromptObject = param;
 
@@ -1044,13 +1123,15 @@ height: 100%;
 		
 		
 			
-		if(["td","span_title","span_label"].indexOf(vsCompoDvs) != -1){
+		if(["span_title","span_label"].indexOf(vsCompoDvs) != -1){
 			$(vsDvsValue).text(vsCompoValue);
+			fn_setTitleValueProperty(vsDvsValue,vsCompoValue);
 		}
 		
 		$(vsDvsValue).attr("id",vsCompoId);
 		
 		if(vsCompoDvs == "td"){
+			$(vsDvsValue).text(vsCompoValue);
 			var vsTrInfo = $(vsDvsValue).parent();
 			var vsTableId = vsTrInfo.parent().parent().attr("id");
 			
@@ -1111,6 +1192,27 @@ height: 100%;
 
 		 
 	}//수정 프로세스 end
+	
+	
+	fn_setTitleValueProperty = function(compoId,value){
+	if(value == ""){
+		compoId = "";
+		return false;
+	}
+	
+	$(compoId).parent().css("width","1000px");
+	$(compoId).text(value);
+	$(compoId).attr("value",value);
+	
+	var vnWidth = Number($(compoId).css("width").replace("px",""));
+	var vnHeight = Number($(compoId).css("height").replace("px",""));
+	$(compoId).parent().css("width",(vnWidth+30)+"px");
+	$(compoId).parent().css("height",(vnHeight+20)+"px");
+	
+	robot.getAttr(compoId);
+	voPromptObject = "";
+	vsLabelYn = "N";
+	}
 	
 		
 	/**********************************
@@ -1175,107 +1277,135 @@ height: 100%;
 
 <body>
 	<div id="mysidenav" class="sidenav">
-		<!-- <div style="width: 500px; float: left;"> -->
-		<table border="1" cellpadding="0" cellspacing="0"
-			style="align: center; bordercolor: #D3E2EC; bordercolordark: #FFFFFF; border-collapse: collapse;">
-			<colgroup>
-				<col width="100" />
-				<col width="100" />
-				<col width="100" />
-			</colgroup>
-			<tr>
-				<td style="cursor: pointer"	onclick="divCreation();">
-				<img src="..//images/egovframework/object/icon_div.png"></td>
-				<td style="cursor: pointer" onclick="titleCreation();">
-				<img src="..//images/egovframework/object/icon_title.png"></td>
-				<td style="cursor: pointer"
-					onclick="labelCreation();">Label</td>
-				
-				
-			</tr>
-			<tr>
-				<td style="cursor: pointer" onclick="inputCreation();">
-				<img src="..//images/egovframework/object/icon_input.png"></td>
-				<td style="cursor: pointer" onclick="selectCreation();">
-				<img src="..//images/egovframework/object/icon_select.png"></td>
-				<td style="cursor: pointer"	onclick="buttonCreation();">
-				<img src="..//images/egovframework/object/icon_button.png"></td>
-				
-			</tr>
-
-			<tr>
-				<td style="cursor: pointer"	onclick="tableCreation();">
-				<img src="..//images/egovframework/object/icon_table.png"></td>
-			</tr>
-			<tr>
-			    <td style="cursor: pointer"onclick="fn_tableRowAddLeft();">
-				<img src="..//images/egovframework/object/icon_col_left.png"></td>
-				<td style="cursor: pointer"	onclick="fn_tableRowAddRight();">
-				<img src="..//images/egovframework/object/icon_col_right.png"></td>
-				
-			</tr>
-			<tr>
-				<td style="cursor: pointer" onclick="fn_tableColAddUp();">
-				<img src="..//images/egovframework/object/icon_row_up.png"></td>
-				<td style="cursor: pointer"	onclick="fn_tableColAddDown();">
-				<img src="..//images/egovframework/object/icon_row_down.png""></td>
-			</tr>
-			<tr>
-				<td style="cursor: pointer"	onclick="fn_deleter(1);">
-				<img src="..//images/egovframework/object/icon_row_del.png"></td>
-				<td style="cursor: pointer"	onclick="fn_deleter(2);">
-				<img src="..//images/egovframework/object/icon_col_del.png"></td>
-			</tr>
-			<tr>
-				<td style="cursor: pointer"	onclick="fn_tableMerge();">
-				<img src="..//images/egovframework/object/icon_cell_with.png"></td>
-				<td style="cursor: pointer"	onclick="fn_tableDivision();">
-				<img src="..//images/egovframework/object/icon_cell_division.png"></td>
-			</tr>
-		</table>
-		<!-- </div> -->
-		<table id="propertyTable">
-			<thead>
-			</thead>
-			<tbody>
+		<div id="div_mainImg">
+			<img src="<c:url value='/images/egovframework/main_scrobot.png'/>" alt=""/>
+		</div>
+		<div id="div_compoTable">
+			<table id="compoTable">
+				<colgroup>
+					<col width="100" />
+					<col width="100" />
+					<col width="100" />
+				</colgroup>
 				<tr>
-					<td>id</td>
-					<td><input type=text id="ibx_propertyTable_id" value="" ></input></td>
-				</tr>
-				<tr>
-					<td>class</td>
-					<td><input type=text id="ibx_propertyTable_class" value=""></input></td>
-				</tr>
-				<tr>
-					<td>name</td>
-					<td><input type=text id="ibx_propertyTable_name" value=""></input></td>
-				</tr>
-				<tr>
-					<td>label</td>
-					<td><input type=text id="ibx_propertyTable_label" value=""></input></td>
-				</tr>
-				<tr>
-					<td>style</td>
-					<td><input type=text id="ibx_propertyTable_style" value=""></input></td>
-				</tr>
-				<tr>
-					<td>value</td>
-					<td><input type=text id="ibx_propertyTable_value" value=""></input></td>
-					<td><input type="button" id="btn_infoUpdate" onclick="infoUpdate();" value="수정" style="margin-left:20px; display:none;"></input></td>
-				</tr>
-				<tr style="display:none;">
-					<td><input type=hidden id="ibx_propertyTable_compoDvs" value=""></input></td>
-					<td><input type=hidden id="ibx_propertyTable_realId" value=""></input></td>
+					<td class="" onclick="divCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_div.png'/>" title="DIV생성"/>
+					</td>
+					<td class="" onclick="titleCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_title.png'/>" title="TITLE생성"/>
+					</td>
+						
+					<td class="" onclick="labelCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_label.png'/>" title="LABEL생성"/>
+					</td>
 					
 				</tr>
-			</tbody>
-			
-		</table>
+				<tr>
+					<td class="" onclick="buttonCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_button.png'/>" title="버튼생성"/>
+					</td>
+					<td class="" onclick="inputCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_input.png'/>" title="TEXT생성"/>
+					</td>
+					<td class="" onclick="selectCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_select.png'/>" title="SELECT생성"/>
+					</td>
+				</tr>
+	
+				<tr>
+					<td class="" onclick="tableCreation();">
+						<img src="<c:url value='/images/egovframework/object/icon_table.png'/>" title="테이블생성"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="div_cellTable">
+			<table id="cellTable">
+				<colgroup>
+					<col width="50" />
+					<col width="50" />
+					<col width="50" />
+				</colgroup>
+
+				<tr>
+				   
+					<td class="" onclick="fn_tableColAddUp();">
+						<img src="<c:url value='/images/egovframework/object/icon_row_up.png'/>" title="위로 행 추가"/>
+					</td>
+					<td class="" onclick="fn_tableColAddDown();">
+						<img src="<c:url value='/images/egovframework/object/icon_row_down.png'/>" title="아래 행 추가"/>
+					</td>
+					<td class="" onclick="fn_deleter(1);">
+						<img src="<c:url value='/images/egovframework/object/icon_row_del.png'/>" title="행삭제"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="" onclick="fn_tableRowAddLeft();">
+						<img src="<c:url value='/images/egovframework/object/icon_col_left.png'/>" title="좌로 열 추가"/>
+					</td>
+					<td class="" onclick="fn_tableRowAddRight();">
+						<img src="<c:url value='/images/egovframework/object/icon_col_right.png'/>" title="우로 열 추가"/>
+					</td>
+					<td class="" onclick="fn_deleter(2);">
+						<img src="<c:url value='/images/egovframework/object/icon_col_del.png'/>" title="열삭제"/>
+					</td>	
+				</tr>
+				<tr>
+					<td class="" onclick="fn_tableMerge();">
+						<img src="<c:url value='/images/egovframework/object/icon_cell_with.png'/>" title="병합"/>
+					</td>
+					<td class="" onclick="fn_tableDivision();">
+						<img src="<c:url value='/images/egovframework/object/icon_cell_division.png'/>" title="분할"/>
+					</td>
+					<td class="">
+					</td>
+	
+				</tr>
+			</table>
+		</div>
+		
+		<div id="div_propertyTable">
+			<h4>◎ Property</h4>
+			<table id="propertyTable">
+				<tbody>
+					<tr>
+						<td>id</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_id" value="" ></input></td>
+					</tr>
+					<tr>
+						<td>class</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_class" value=""></input></td>
+					</tr>
+					<tr>
+						<td>name</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_name" value=""></input></td>
+					</tr>
+					<tr>
+						<td>label</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_label" value=""></input></td>
+					</tr>
+					<tr>
+						<td>style</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_style" value=""></input></td>
+					</tr>
+					<tr>
+						<td>value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td><input type=text class="ibx_property" id="ibx_propertyTable_value" value=""></input></td>
+					</tr>
+					<tr style="display:none;">
+						<td><input type=hidden id="ibx_propertyTable_compoDvs" value=""></input></td>
+						<td><input type=hidden id="ibx_propertyTable_realId" value=""></input></td>
+						
+					</tr>
+				</tbody>
+				
+			</table>
+			<div style="text-align: right;">
+				<input type="button" id="btn_infoUpdate" onclick="infoUpdate();" value="수정" style="display:none;"></input>
+			</div>
+		</div>
 	</div>
 
-	<div style="width: 150px; float: right; display: none;">
-		<ul id="sortable">
-		</ul>
-	</div>
 </body>
 </html>

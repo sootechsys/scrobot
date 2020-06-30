@@ -5,51 +5,52 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html>
-<head>
+<head profile="http://www.w3.org/2005/10/profile">
+<link rel="icon" type="image/png" href="http://example.com/myicon.png">
 <meta charset="UTF-8">
 <title>scrobot_공통헤더</title>
-<script src="https://code.jquery.com/jquery-latest.js"></script> 
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>" />
-<%-- <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrBase.css'/>" />
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrBase.css'/>" />
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrLayout.css'/>" />
-<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>" /> --%>
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/scrStyle.css'/>" />
 <style>
 	
 	.nav-container {
-	display: flex;
-    flex-direction: row;
-    width: 75%;
-    height: 137px;
-    padding: 0px;
-    margin-left: 157px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    list-style-type: none;
-    background-color: #ccb68d;
-    margin-top: 0px;
+		display:flex;
+		flex-direction:row;
+		width:100%;
+		height:100px;
+		margin:0;
+		padding:0;
+		background-color:lightsky;
+		list-style-type:none;
+		left:250px;
+		position:relative;
+		
 	}
 	
 	#nav{
-		z-index: 1;
-    position: fixed;
-    width: 80%;
-    margin-left: 107px;
-    height: auto;
+		z-index:1;
+		position:fixed;
+		width:100%;
+		background: linear-gradient( to bottom, #dce1e7, #c7cad1 );
 	}
 	
 	.nav-item {
-	padding-top: 0px;
-    color: black;
-    padding-left: 27px;
-    font-size: 11pt;
-    padding-right: 27px;
-    margin-bottom: 34px;
-    border-left: 2px solid #efefef;
-    margin-top: 36px;
-	    
+		color:black;
+		font-size:11pt;
+		font-weight: bold;
+		border-left: 2px solid #c9ccd3;
+		width:100px;
+		height:65px;
+		margin-top:20px;
 	}
 	
-	#firstNav{
+	.nav-item p{
+		font-size:9pt;
+	}
+	
+	.nav-item:first-child{
 		border-left: none;
 	}
 	
@@ -61,10 +62,8 @@
 		text-align:center;
 		text-decoration:none;
 		color:white;
-		margin-bottom: 34px;
+		
 	}
-	
-	
 	
 	#new{
    		margin-top: 15px;
@@ -98,6 +97,19 @@
 		margin-top: 15px;
 	}
 	
+	#li_rollback img, #li_rollback p{
+		opacity:0.3;
+	}
+	
+	#li_restart img, #li_restart p{
+		opacity:0.3;
+	}
+	
+	#logout:hover{
+		cursor:pointer;
+		color:blue;
+	}
+	
 </style>
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -107,10 +119,28 @@
 <script type="text/javascript" src="./js/table.js" ></script> 
 <script src ="./js/colResizable-1.6.js"></script>
 <script src ="./js/colResizable-1.6.min.js"></script>
-<head>
 <script type="text/javaScript">
 
 
+$(document).ready(function(){
+
+	$("#li_rollback").hover(function(){
+		 if($("#li_rollback img").css("opacity") == "1"){
+			 $(this).css("cursor","pointer");
+		 } else{
+			 $(this).css("cursor","default");
+		 }
+	});
+	
+	$("#li_restart").hover(function(){
+		 if($("#li_restart img").css("opacity") == "1"){
+			 $(this).css("cursor","pointer");
+		 } else{
+			 $(this).css("cursor","default");
+		 }
+	});
+});
+	
 	// 현재 화면 업무명
 	vsWrkNm = "";
 	
@@ -120,25 +150,30 @@
 	//clone index
 	vnCloneIndex = 0;
 	
+	
 	/* 2020.05.04
 	상세보기 페이지를 위치시킨다.
 	*///
 	function info(){ 
 		
-		if($("#propertyTable").css("display") == "table"){
-			$("#propertyTable").hide();
+		if($("#div_propertyTable").css("display") == "block"){
+			$("#div_propertyTable").hide();
 		}
 		else{
-			$("#propertyTable").show();
+			$("#div_propertyTable").show();
 		}
 	}
 	
 	function fn_sourceReset(){
 	
-		fn_saveClone();
+		if($("#creationTable").children().length != 0){
+			
 
-		$("#creationTable").empty();
-		vsWrkNm = "";
+			$("#creationTable").empty();
+			fn_saveClone();
+			vsWrkNm = "";
+		}
+		
 	}
 		
 	
@@ -146,7 +181,7 @@
 	
 		
 	$("#li_rollback").attr("onclick","fn_sourceRollBack()");
-	$("#li_rollback").css("color", "black");
+	$("#li_rollback img, #li_rollback p").css("opacity", "1.0");
 	
 	if(vnCloneIndex == 0){
 		
@@ -171,7 +206,7 @@
 			voClone.unshift($("#creationTable").html());
 		}
 		$("#li_restart").attr("onclick","");
-		$("#li_restart").css("color", "grey");
+		$("#li_restart img, #li_restart p").css("opacity", "0.3");
 		vnCloneIndex = 0;
 	}
 	
@@ -197,14 +232,17 @@
 		
 		if(vnCloneIndex == voClone.length-1){
 			$("#li_rollback").attr("onclick","");
-			$("#li_rollback").css("color", "grey");
+			$("#li_rollback img, #li_rollback p").css("opacity", "0.3");
+			$("#li_rollback").css("cursor", "default");
 		} else{
 			$("#li_rollback").attr("onclick","fn_sourceRollBack()");
-			$("#li_rollback").css("color", "black");
+			$("#li_rollback img, #li_rollback p").css("opacity", "1.0");
+			$("#li_rollback").css("cursor", "pointer");
 		}
 		
 		$("#li_restart").attr("onclick","fn_sourceRestart()");
-		$("#li_restart").css("color", "black");
+		$("#li_restart img, #li_restart p").css("opacity", "1.0");
+		$("#li_restart").css("cursor", "pointer");
 
 			
 	}
@@ -219,14 +257,17 @@
 		
 			if(vnCloneIndex == 0){
 				$("#li_restart").attr("onclick","");
-				$("#li_restart").css("color", "grey");
+				$("#li_restart img, #li_restart p").css("opacity", "0.3");
+				$("#li_restart").css("cursor", "default");
 			} else{
 				$("#li_restart").attr("onclick","fn_sourceRestart()");
-				$("#li_restart").css("color", "black");
+				$("#li_restart img, #li_restart p").css("opacity", "1.0");
+				$("#li_restart").css("cursor", "pointer");
 			}
 			
 			$("#li_rollback").attr("onclick","fn_sourceRollBack()");
-			$("#li_rollback").css("color", "black");
+			$("#li_rollback img, #li_rollback p").css("opacity", "1.0");
+			$("#li_rollback").css("cursor", "pointer");
 		}
 	}
 	
@@ -235,9 +276,14 @@
 	fn_preview = function(){
 	
 		var info = {"header" : "Preview",
-				    "width"  : $("#creationForm").css("width"),
-				    "height" : $("#creationForm").css("height")}
+				    "width"  : "1200px",
+				    "height" : "700px"}
 		robot.openPop(info,$("#div_creationForm").html(),"tag");
+		debugger;
+		$(".pop_content .ui-resizable-handle").remove();
+		$(".pop_content .ui-draggable").removeClass("ui-draggable");
+		$(".pop_content .ui-resizable").removeClass("ui-resizable");
+		$(".pop_content .ui-draggable-handle").removeClass("ui-draggable-handle");
 	}
 	
 	/* 다른이름으로 저장 function */
@@ -254,7 +300,7 @@
 					
 				// 세션에 id가 있다면
 				} else{
-					robot.prompt("업무명을 입력하시오",["업무명"],"","","fn_diffrentNmSaveCallBack");
+					robot.prompt("다른이름으로 저장","업무명을 입력하시오",["업무명"],"","","fn_diffrentNmSaveCallBack");
 				}
 
 			},
@@ -315,7 +361,7 @@
 				// 세션에 id가 있다면
 				} else{
 					if(vsWrkNm == ""){
-						robot.prompt("업무명을 입력하시오",["업무명"],"","","fn_diffrentNmSaveCallBack");
+						robot.prompt("저장","업무명을 입력하시오",["업무명"],"","","fn_diffrentNmSaveCallBack");
 					} else{
 						fn_diffrentNmSaveCallBack([vsWrkNm]);
 					}
@@ -395,6 +441,17 @@
 	fn_saveListCallCallBack = function(param){
 		vsWrkNm = param;
 	}
+	
+	fn_logout = function(){
+		robot.confirm("로그아웃 하시겠습니까?","","","true","fn_logoutCallBack")
+		
+	}
+	
+	fn_logoutCallBack = function(param){
+		if(param == "true"){
+			window.location.href = "/logout.do";
+		}
+	}
 
 
 </script>
@@ -403,7 +460,7 @@
 <body>
 	 <div id="nav"> <!-- 크기조절하여 글자 라인 맞추기부터 실시 -->
 	 	<ul class="nav-container">
-	 		<li id="firstNav" class="nav-item" onclick="fn_sourceReset();"><img src="..//images/egovframework/menu/icon_top_new.png">
+	 		<li class="nav-item"  onclick="fn_sourceReset();"><img src="..//images/egovframework/menu/icon_top_new.png">
 	 		<p id="new">새로만들기</p></li>
 	 		<li class="nav-item" onclick="fn_saveListCall();"><img src="..//images/egovframework/menu/icon_top_open.png">
 	 		<p id="open">불러오기</p></li>
@@ -420,7 +477,9 @@
 	 		<li class="nav-item" onclick="fn_preview();"><img src="..//images/egovframework/menu/icon_top_preview.png">
 	 		<p id="preview">미리보기</p></li>
 	 			 		
-
+			<li>
+				<span id="logout" onclick="fn_logout()">로그아웃</span>
+			</li>
 	 	</ul>
 	 </div>
 </body>

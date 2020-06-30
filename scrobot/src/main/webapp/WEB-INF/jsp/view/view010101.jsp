@@ -29,7 +29,6 @@
 
 </style>
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-
 <script type="text/javaScript" language="javascript" defer="defer">
 
 
@@ -37,7 +36,7 @@
 </script>
 </head>
 
-<body onselectstart="return false">
+<body id="LblockBody" onselectstart="return false">
 	<jsp:include page="../extable/scrobotheader.jsp" />
 	<jsp:include page="../extable/scrobotleft.jsp" flush="false"/>
 
@@ -49,7 +48,6 @@
 			</div>
 			
 		</div>
-		
 	</form:form>
 
 </body>
