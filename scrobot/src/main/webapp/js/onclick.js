@@ -385,7 +385,7 @@ onclick.draw = function(tagName, param){
 		}
 		
 		
-		vsSource += "<input id=\"inputBox"+vnInputCount+"\" type=\"text\" class=\"inputBox\" name=\"value"+vnInputCount+"\" ";
+		vsSource += "<input id=\"inputBox"+vnInputCount+"\" type=\"text\" class=\"inputBox Ltext\" name=\"value"+vnInputCount+"\" ";
 		vsSource += " focus=false compoDvs=\"inputBox\" "
 		vsSource += "</input>";
 		vsSource += "</div>";

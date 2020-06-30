@@ -453,6 +453,7 @@ tableEdit.addUp = function(){
 	tableEdit.Vector(voTableArray2[0],voTotal);
 
 }
+	fn_saveClone();
 }
 
 
@@ -472,6 +473,7 @@ tableEdit.addDown = function(){
 		// 최 하단 찍은것,
 		$("#"+voTableArray[0]+"> tbody > tr:last").after(vsBuffer);	
 		tableEdit.trReset(voTableArray[0]);
+		
 	}
 	else{
 		
@@ -581,6 +583,8 @@ tableEdit.addDown = function(){
 	tableEdit.Vector(voTableArray2[0],voTotal);
 
 	}
+	
+	fn_saveClone();
 }
 
 
@@ -718,6 +722,7 @@ tableEdit.addLeft = function(){
 	}
 	
 	tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+	fn_saveClone();
 }
 
 
@@ -858,6 +863,7 @@ tableEdit.addRight = function(){
 		}
 		
 		tableEdit.tdReset(voTableArrayEnd[0],voTableArrayEnd[1]);
+		fn_saveClone();
 }
 
 
@@ -867,6 +873,7 @@ tableEdit.addRight = function(){
  * */
 
 tableEdit.deleteNode = function(param){
+	
 	
 	
 	var voTableArray = tableEdit.startInfo();
@@ -1098,22 +1105,38 @@ var voTableArray = tableEdit.startInfo();
 					else if(checker.indexOf("c") != -1){
 						var vsCheck = checker.replace("c","");
 						var vnCNum = parseInt(vsCheck);
+						if(j + vnCNum - 1 >= voTableArray[4]){
 							if(vnCNum == 2){
 								voTotal[i][j] = "1";
 								voTotal[i][j+1] = "1";
 							}
 							else if(vnCNum != 2){
-								vnCNum -= 1;
-								voTotal[i][j] = "c"+vnCNum;
-								for(var k=j; k<j+vnCNum; k++){
+								var minusVnCNum = vnCNum - 1;
+								voTotal[i][j] = "c"+minusVnCNum;
+								for(var k=j; k<j+vnCNum; k++){ // 전부 1로 변환
 								if(k == j){
 									continue;
-								}
+									}
 								else{
-									voTotal[i][k]="1";
+									voTotal[i][k]="c0";
+									}
 								}
+								
+								/*for(var k=j; k<j+minusVnCNum; k++){
+									if(k==j){
+										continue;
+									}
+									else{
+										voTotal[i][k] = "c0";
+									}
+								}*/
 							}
+							break;
 						}
+						else{
+							continue;
+						}
+							
 					
 					}
 					else if(checker.indexOf("1") != -1){
@@ -1123,12 +1146,12 @@ var voTableArray = tableEdit.startInfo();
 			}
 			else if(vsChecker.indexOf("c") != -1){//
 				var checker = vsChecker.replace("c","");
-				var vnCNum = parseInt(check);
+				var vnCNum = parseInt(checker);
 				if(vnCNum == 2){
 					voTotal[i][voTableArray[4]] = "1";
 					voTotal[i][voTableArray[4]+1] = "1";
 				}
-				else if(vmCNum != 2){
+				else if(vnCNum != 2){
 					var minVnCNum = vnCNum - 1;
 					voTotal[i][voTableArray[4]] = "c"+minVnCNum;
 					
@@ -1159,9 +1182,13 @@ var voTableArray = tableEdit.startInfo();
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
 	}
+	
+	fn_saveClone();
 }
 
 tableEdit.colSpanDelete = function(check , focusCol){
+	
+	
 	
 	var voTableArray = tableEdit.startInfo();
 	
@@ -1295,7 +1322,7 @@ tableEdit.colSpanDelete = function(check , focusCol){
 		
 		
 		
-		tableEdit.Vector(voTableArray[0], voTotal);
+		/*tableEdit.Vector(voTableArray[0], voTotal);
 		
 		for(var i=0; i<voTableArray[1]; i++){
 			$("#"+voTableArray[0]+"> tbody > tr[row="+i+"] > td[shell="+voTableArray[4]+"]").remove();
@@ -1303,8 +1330,10 @@ tableEdit.colSpanDelete = function(check , focusCol){
 		
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
-		
+		*/
 	}
+	
+	fn_saveClone();
 	
 	
 }
@@ -1322,16 +1351,16 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 	voTotal = tableEdit.SpanInfo(voTableArray);	
 	
 	if(check == 1){ // 행
-		/////////////////////
 		
 		
 		
-		tableEdit.Vector(voTableArray[0], voTotal);
+		
+/*		tableEdit.Vector(voTableArray[0], voTotal);
 		
 		$("#"+voTableArray[0]+" > tbody > tr[row="+voTableArray[3]+"]").remove();
 		
 		tableEdit.trReset(voTableArray[0]);
-		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
+		tableEdit.tdReset(voTableArray[0],voTableArray[1]);*/
 	}
 	else if(check == 2){ // 열
 		
@@ -1425,12 +1454,17 @@ tableEdit.rowSpanDelete = function(check, focusRow){
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[0],voTableArray[1]);
 	}
+	
+	fn_saveClone();
 
 }
 
 
 tableEdit.SpanDelete = function(check, focusCol, focusRow){
-	////////////
+		/*
+		 * 2차 구현 예정
+		 * 
+		 * */
 }
 
 
@@ -1650,6 +1684,8 @@ tableEdit.Merge = function(){
 		
 		tableEdit.trReset(voTableArray[0]);
 		tableEdit.tdReset(voTableArray[1],voTableArray[1]);
+		
+		fn_saveClone();
 }
 
 
@@ -1897,6 +1933,8 @@ tableEdit.Divide = function(){
 				}
 			}
  	 }
+ 	 
+ 	fn_saveClone();
 }
 
 

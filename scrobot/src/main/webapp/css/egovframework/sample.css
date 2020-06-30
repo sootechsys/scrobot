@@ -22,7 +22,6 @@ body {
 	
 table, tr, td, th {font-family:"돋움"; font-size:11px; color:#333333;}
 .listtd {padding:10px 5px 8px 5px; border-bottom:1px solid #e5e5e5;}
-th {background-color:#F3F5E0; background:url(../../images/egovframework/example/th_bg.gif) 0 0 repeat; height:26px; text-align:center; vertical-align:middle; color:#003366;}
 img {border:0; vertical-align:middle;}
 p { height:20px; margin:0; padding:5 0 0 0;}
 .check ul {margin:0; padding:0; float:left;}
@@ -101,14 +100,10 @@ a:hover { font-size:11px; font-family:"돋움"; color:#339999; text-decoration:n
 button {cursor:hand; border:0px solid #FFFFFF; padding:0px 0px 0px 0px; background-color:#FFFFFF; white-space:nowrap;}
 .btn_blue_l {float:left; background:url(../../images/egovframework/example/btn_bg_l.gif) 0 0 no-repeat; height:20px; padding:0px 0px 0px 10px; margin:0px 0px 0px 0px;}
 .btn_blue_r {float:left; background:url(../../images/egovframework/example/btn_bg_r.gif) 0 0 no-repeat; background-position:right; height:20px; font-family:"돋움"; font-size:11px; color:#000000; margin:0px 0px 0px 0px; padding-top:0px; _padding-top:0px; padding-left:10px; padding-right:10px; padding-bottom:0px; text-align:center;}
-input { height:20px; font-family:"돋움"; font-size:12px; color:#000000; padding:2px 2px 0px 2px; margin-top:0px; _margin-top:-1px;}
 select {font-family:'돋움'; font-size:12px; margin-top:0px; height:20px; padding-top:0px;}
 .tbtd_caption {font-weight:bold; color:#003366; background-color:#E5EDF3; text-align:right; padding:10px 10px 9px 5px; margin:0;}
-.tbtd_content {background-color:#F5F8FA; padding:7px 10px 5px 10px; margin:0;}
 .tbtd_caption_re {font-weight:bold; color:#666633; background-color:#F6F5E5; text-align:right; padding:10px 10px 9px 5px; margin:0;}
 .tbtd_content_re {background-color:#F9F9F2; padding:7px 10px 5px 10px; margin:0;}
-input.txt               {height:18px; background-color:#FFF; border:1px solid #BCC8D8; padding-top:2px; color:#5e5e5e; cursor:text;}
-input.essentiality  {height:18px; background-color:#ebebeb; border:1px solid #BCC8D8; padding-top:2px; color:#000; cursor:text;}
 
 
 
@@ -121,10 +116,10 @@ body{
 }
 
 #creationForm {
-  width:87%;
+  width:92.5%;
   height:120%;
-  left:246px;
-  top:-120px;
+  left:146px;
+  top:-70px;
   position:absolute;
   background-color: #f6f6f6;
   background-image:
@@ -141,11 +136,11 @@ body{
 }
 
 #div_creationForm{
-  left:70px;
+  left:80px;
   top:170px;
   position:relative;
-  width:90%;
-  height:75%;
+  width:96%;
+  height:83%;
 }
 
 #creationTable{
@@ -157,7 +152,7 @@ body{
 
 [compoDvs="div_content"]{
 	position:absolute !important;
-	margin:30px 0px 0px 30px;
+	margin:30px 0px 0px 20px;
 	width:700px;
 	height:400px;
 	border: 1px solid;
@@ -166,23 +161,23 @@ body{
 
 /* ------------------table */
 
-.div_table{
+[compoDvs="div_table"]{
 	position:absolute !important;
 	margin:10px 0px 0px 10px; 
 }
-.div_table:hover{
+[compoDvs="div_table"]:hover{
 	cursor:move;
 }
 
-.table{
+[compoDvs="table"]{
 	margin:10px 10px 10px 10px; 
 }
 
-.table td{
+[compoDvs="table"] td{
 	padding:0px 0px 0px 0px; 
 }
 
-.table td:hover{
+[compoDvs="table"] td:hover{
 	cursor:pointer;
 }
 
@@ -263,12 +258,12 @@ td[tableFocus="true"]{
 
 /* ------------------input */
 
-.div_inputBox{
+[compoDvs="div_inputBox"]{
 	width:150px;
 	position:absolute;
 }
 
-.div_inputBox:hover{
+[compoDvs="div_inputBox"]:hover{
 	cursor:move;
 }
 
@@ -281,12 +276,12 @@ td[tableFocus="true"]{
 /* ------------------select */
 
 
-.div_selectBox{
+[compoDvs="div_selectBox"]{
 	width:150px;
 	position:absolute;
 }
 
-.div_selectBox:hover{
+[compoDvs="div_selectBox"]:hover{
 	cursor:move;
 }
 
@@ -308,17 +303,6 @@ td[tableFocus="true"]{
 
 .ui-resizable-helper { border: 2px dotted #00F; }
 
-#propertyTable{
-	width:100%; 
-	border: 1px solid #444444; 
-	align: center;
-	border-collapse: collapse;
-	background-color: white;					
-}
-
-#propertyTable tr {
-	 border: 1px solid #444444;
-}
 
 
 
@@ -342,6 +326,7 @@ td[tableFocus="true"]{
 	padding: 0px 0px 20px 0px;
 	border: 1px solid #888;
 	z-index: 99; /* Sit on top */
+	overflow:auto;
 }
 
 /* Modal Content/Box */
@@ -351,31 +336,53 @@ td[tableFocus="true"]{
 
 .div_retrieve_result{
 	margin-left:50px;
-
+	margin-top:50px;
 	width:600px;
 	height:300px;
 }
+
+.div_grid{
+	float:left;
+	width:200px;
+	height:300px;
+	text-align: left;
+}
+
+
+.div_detailGrid{
+	margin-left:100px !important;
+	float:left;
+	width:300px;
+	height:300px;
+	text-align: left;
+}
+
+.div_btnArea{
+	margin-top: 10px;
+}
+
+tr[focus=true]{
+	border: 2px solid black !important;
+	background: skyblue;
+}
+
+
 .btn_retrieve{
 	height:30px;
 	width:40px;
+	background: linear-gradient( to bottom, #dce1e7, #c7cad1 );
 }
 
 .btn_retrieve:hover{
 	cursor:pointer;
 }
 
-.div_retrieve_result table{
-	border:2px solid black !important;
-}
 
 .div_retrieve_result table tr{
 	height:20px;
 }
 
-.div_retrieve_result table td{
-	border:1px solid grey !important;
-	font-size:12pt;
-}
+
 
 /* sortable css **/
 #sortable { list-style-type: none; margin: 0; padding: 0; }
@@ -389,4 +396,10 @@ td[tableFocus="true"]{
 
 .mgt100{
 	margin-top:100px; 
+}
+
+.span_content{
+	color:black;
+	font-size:1.5em;
+	font-weight:bold;
 }
